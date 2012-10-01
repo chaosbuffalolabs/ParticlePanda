@@ -12,6 +12,7 @@ from kivy.app import App
 from cbl_gui_elements import RectangleWidget, TagItemContainer, TagItem
 
 
+
 class VariationSelector(TagItemContainer):
     variation_count = NumericProperty(1)
 
@@ -26,6 +27,33 @@ class VariationSelector(TagItemContainer):
             self.add_item('Variation %s' %(self.variation_count,))
         else:
             self.main.change_variation(instance.text)
+
+class ParameterEditor(TagItemContainer):
+    available_parameters = ['texture', 'lifetime', 'x', 'y', 'velocity_x', 'velocity_y', 'color_r', 'color_g', 'color_b', 'color_a', 'width', 'height']
+
+    def __init__(self, main = None, **kwargs):
+        super(ParameterEditor,self).__init__(**kwargs)
+        self.main = main
+        self.items = ['frequency', 'texture', 'frame_rate','lifetime', 'width', 'height']
+
+    def item_callback(self,instance):
+        if instance.text == '[blank]':
+            pass
+            # need a popup here that lets you select from those available_parameters that are not already in self.items
+        else:
+            pass
+            # need a popup here that lets you set the various values for each parameter. You'll want to use and expand on the EffectParameter class.
+
+class EffectParameter():
+    
+    initial_value = 0
+    #leave scatter as None to leave out of CBLP and thus accept default
+    scatter = None
+
+    interval_change = None
+
+    def __init__(self,name):
+        self.name = name
 
 
 
@@ -43,7 +71,7 @@ class MainScreen(BoxLayout):
         bl2 = BoxLayout(orientation = 'vertical', spacing = 10, padding = 10, size_hint=(.25,1.))
         bl2.add_widget(Label(text='Parameters',height=15,size_hint_y=None))
         bl2.add_widget(RectangleWidget(color = (0,204,255), height = 3, size_hint_y = None))
-        bl2.add_widget(TagItemContainer())
+        bl2.add_widget(ParameterEditor(main=self))
         
         preview_pane = FloatLayout(size_hint=(.5,1.))
 
@@ -52,7 +80,8 @@ class MainScreen(BoxLayout):
         self.add_widget(preview_pane)
 
     def change_variation(self,variation_id):
-        print variation_id
+        pass
+        # here we need code that switches the active parameter list to the new variation. we'll want a visual cue that this is happening too, like highlighting the active variation 
 
 class ParticleEngineApp(App):
     def build(self):
