@@ -1,0 +1,120 @@
+variation:
+    frequency: .25
+    atlas: 'VFX/VFX_Set1.atlas'
+    image_basename: 'VFX-0-SnowFlake'
+    lifetime: 8.
+    width: 32
+    height: 32
+    x:
+        scatter: 400
+    y:
+        scatter: 0
+    velocity_x:
+        average: 0
+        scatter: 10
+    velocity_y:
+        average: -75
+        scatter: 30
+    color_r: 
+        initial: 255
+        scatter: 0
+    color_g:
+        initial: 255
+        scatter: 0
+    color_b:
+        initial: 255
+        scatter: 0
+    color_a:
+        initial: 200
+        scatter: 55
+
+variation:
+    frequency: .25
+    atlas: 'VFX/VFX_Set1.atlas'
+    image_basename: 'VFX-1-SnowFlake'
+    lifetime: 8.
+    width: 32
+    height: 32
+    x:
+        scatter: 400
+    y:
+        scatter: 0
+    velocity_x:
+        average: 0
+        scatter: 10
+    velocity_y:
+        average: -75
+        scatter: 30
+    color_r: 
+        initial: 255
+        scatter: 0
+    color_g:
+        initial: 255
+        scatter: 0
+    color_b:
+        initial: 255
+        scatter: 0
+    color_a:
+        initial: 200
+        scatter: 55
+
+
+variation:
+    frequency: .25
+    atlas: 'VFX/VFX_Set1.atlas'
+    image_basename: 'VFX-2-SnowFlake'
+    lifetime: 8.
+    width: 32
+    height: 32
+    x:
+        scatter: 400
+    y:
+        scatter: 0
+    velocity_x:
+        average: 0
+        scatter: 10
+    velocity_y:
+        average: -75
+        scatter: 30
+    color_r: 
+        initial: 255
+        scatter: 0
+    color_g:
+        initial: 255
+        scatter: 0
+    color_b:
+        initial: 255
+        scatter: 0
+    color_a:
+        initial: 200
+        scatter: 55
+
+variation:
+    frequency: .25
+    atlas: 'VFX/VFX_Set1.atlas'
+    image_basename: 'VFX-3-SnowFlake'
+    lifetime: 8.
+    width: 64
+    height: 64
+    x:
+        scatter: 400
+    y:
+        scatter: 0
+    velocity_x:
+        average: 0
+        scatter: 10
+    velocity_y:
+        average: -75
+        scatter: 30
+    color_r: 
+        initial: 255
+        scatter: 0
+    color_g:
+        initial: 255
+        scatter: 0
+    color_b:
+        initial: 255
+        scatter: 0
+    color_a:
+        initial: 200
+        scatter: 55
