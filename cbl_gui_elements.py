@@ -10,6 +10,8 @@ from kivy.graphics import Color, Rectangle, Line
 from kivy.app import App
 
 class RectangleWidget(Widget):
+    """This is just a widget that contains a simple colored rectangle. Useful for dividers within layouts."""
+
     def __init__(self,color=None,**kwargs):
         super(RectangleWidget,self).__init__(**kwargs)
         self.color = (1,1,1) if color is None else color
@@ -21,7 +23,8 @@ class RectangleWidget(Widget):
             Rectangle(pos=self.pos, size=self.size)
 
 class TagItem(Widget):
-
+    """A widget that contains a simple label over a colored rectangular background, and a "remove" button that calls parent.remove() when pressed. 
+    Useful for implementing "tagging" type interfaces where a category can contain an undetermined number of characteristics or "tags"."""
     parent = ObjectProperty(None,allownone = True)
 
     def __init__(self,text,color=None,text_color=None,**kwargs):
@@ -61,11 +64,13 @@ class TagItem(Widget):
 
 
 class TagItemContainer(BoxLayout):
+    """This is a vertical list of removable, addable TagItems that call item_callback when pressed. 
+    Needs to be subclassed to gain functionality (override the item_callback method) """
+
     items = ListProperty([])
 
     def __init__(self,**kwargs):
         super(TagItemContainer,self).__init__(orientation='vertical', spacing = 10, padding = 10, **kwargs)
-        # self.items = []
         Clock.schedule_once(self.redraw)
         
 

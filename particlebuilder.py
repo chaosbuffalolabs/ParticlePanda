@@ -16,6 +16,8 @@ from cbl_gui_elements import RectangleWidget, TagItemContainer, TagItem
 
 
 class VariationSelector(TagItemContainer):
+    """Subclass of TagItemContainer, simply adds variations sequentially and calls main.change_variation when one is selected."""
+
     variation_count = NumericProperty(1)
 
     def __init__(self, main = None, **kwargs):
@@ -31,6 +33,9 @@ class VariationSelector(TagItemContainer):
             self.main.change_variation(instance.text)
 
 class ParameterEditor(TagItemContainer):
+    """Subclass of TagItemContainer, allows user to add parameters from available_parameters. 
+    When a parameter tag is touched, runs main.change_parameter() to tell the main widget to switch to the appropriate ValueEditor"""
+
     available_parameters = ['frequency','texture', 'lifetime', 'x', 'y', 'velocity_x', 'velocity_y', 'color_r', 'color_g', 'color_b', 'color_a', 'width', 'height']
 
     def __init__(self, main = None, **kwargs):
@@ -59,7 +64,8 @@ class LabeledValueSlider(Widget):
 
 
 class ValueEditor(BoxLayout):
-
+    """This is the class with all the actual sliders and buttons that control the effects. 
+    There will be one for each parameter -- the class takes an EffectParameter as input"""
     tb_initial_value = ObjectProperty(None)
 
     def __init__(self,parameter,**kwargs):
