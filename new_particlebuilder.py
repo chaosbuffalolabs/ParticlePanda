@@ -16,14 +16,15 @@ class ParticleBuilder(Widget):
 
 	def setup_window(self, dt):
 		tp = TabbedPanel()
-		th = TabbedPanelHeader(text='Tab1')
+		th = TabbedPanelHeader(text='Position')
 		tp.pos = (100, 100)
 		tp.size = (400,500)
 		th.content = ParticleXY()
 		tp.default_tab = TabbedPanelHeader(text='Default')
+		tp.default_content = ParticleXY()
 		tp.add_widget(th)
-		th2 = TabbedPanelHeader(text='Tab2')
-		th2.content = Blank()
+		th2 = TabbedPanelHeader(text='Color')
+		th2.content = ParticleColor()
 		tp.add_widget(th2)
 		self.add_widget(tp)
 
@@ -31,6 +32,9 @@ class Blank(FloatLayout):
 	pass
 
 class ParticleXY(Widget):
+	pass
+
+class ParticleColor(Widget):
 	pass
 
 class Particle_Pos_Prop(BoxLayout):
@@ -57,7 +61,7 @@ class Particle_Property(BoxLayout):
 	iter_maximum = NumericProperty(10)
 	iter_value = NumericProperty(1)
 
-
+Factory.register('ParticleColor', ParticleColor)
 Factory.register('ParticleXY', ParticleXY)
 Factory.register('Particle_Property', Particle_Property)
 Factory.register('Particle_Pos_Prop', Particle_Pos_Prop)

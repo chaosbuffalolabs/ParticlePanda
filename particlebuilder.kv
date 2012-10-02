@@ -140,6 +140,43 @@
                 initial_value: 30
                 size_hint: (1., .4)
 
+<ParticleColor>:
+    BoxLayout:
+        size_hint:(1.,1.)
+        orientation: 'vertical'
+        size: (400, 400)
+        pos: (root.pos[0], root.pos[1] + 25)
+        BoxLayout:
+            orientation: 'vertical'
+            Particle_Property:
+                prop_type: 'Color R'
+                size_hint: (1., .25)
+                initial_minimum: 0
+                initial_maximum: 255
+                initial_value: 200
+            Particle_Property:
+                prop_type: 'Color G'
+                size_hint: (1., .25)
+                initial_minimum: 0
+                initial_maximum: 255
+                initial_value: 200
+            Particle_Property:
+                prop_type: 'Color B'
+                size_hint: (1., .25)
+                initial_minimum: 0
+                initial_maximum: 255
+                initial_value: 200
+            Particle_Property:
+                prop_type: 'Color A'
+                size_hint: (1., .25)
+                initial_minimum: 0
+                initial_maximum: 255
+                initial_value: 200
+            
+            
+            
+
+
 
 
 
