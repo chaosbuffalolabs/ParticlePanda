@@ -34,7 +34,7 @@ class ParameterEditor(TagItemContainer):
     def __init__(self, main = None, **kwargs):
         super(ParameterEditor,self).__init__(**kwargs)
         self.main = main
-        self.items = ['frequency', 'texture', 'frame_rate','lifetime', 'width', 'height']
+        self.items = ['frequency', 'texture', 'frame_rate', 'lifetime', 'width', 'height']
 
     def item_callback(self,instance):
         if instance.text == '[blank]':
@@ -42,11 +42,18 @@ class ParameterEditor(TagItemContainer):
             # need a popup here that lets you select from those available_parameters that are not already in self.items
         else:
             pass
-            # need a popup here that lets you set the various values for each parameter. You'll want to use and expand on the EffectParameter class.
+            # needs to ask parent to switch to new instance of ValueEditor based on this parameter
+
+
+class ValueEditor(Widget):
+    def __init__(self,parameter,**kwargs):
+        super(ValueEditor, self).__init__(**kwargs)
+
 
 class EffectParameter():
     
     initial_value = 0
+
     #leave scatter as None to leave out of CBLP and thus accept default
     scatter = None
 
@@ -59,31 +66,44 @@ class EffectParameter():
 
 class MainScreen(BoxLayout):
     def __init__(self,**kwargs):
-        super(MainScreen,self).__init__(orientation='horizontal', spacing = 10, padding = 10, **kwargs)
+        super(MainScreen,self).__init__(orientation='vertical', spacing = 10, padding = 10, **kwargs)
         Clock.schedule_once(self.setup_window)
 
     def setup_window(self,dt):
+        controls_bl = BoxLayout(orientation='horizontal',size_hint=(1,.5))
+
         bl1 = BoxLayout(orientation = 'vertical', spacing = 10, padding = 10, size_hint=(.25,1.))
         bl1.add_widget(Label(text='Particle Variations',height=15,size_hint_y=None))
         bl1.add_widget(RectangleWidget(color = (0,204,255), height = 3, size_hint_y = None))
-        bl1.add_widget(VariationSelector(main = self))
+        self.variation_selector = VariationSelector(main = self)
+        bl1.add_widget(self.variation_selector)
 
         bl2 = BoxLayout(orientation = 'vertical', spacing = 10, padding = 10, size_hint=(.25,1.))
         bl2.add_widget(Label(text='Parameters',height=15,size_hint_y=None))
         bl2.add_widget(RectangleWidget(color = (0,204,255), height = 3, size_hint_y = None))
-        bl2.add_widget(ParameterEditor(main=self))
+        self.parameter_editor = ParameterEditor(main=self)
+        bl2.add_widget(self.parameter_editor)
         
-        preview_pane = FloatLayout(size_hint=(.5,1.))
+        bl3 = BoxLayout(orientation = 'vertical', spacing = 10, padding = 10, size_hint=(.5,1.))
+        bl3.add_widget(Label(text='Values',height=15,size_hint_y=None))
+        bl3.add_widget(RectangleWidget(color = (0,204,255), height = 3, size_hint_y = None))
+        self.value_editor = ValueEditor(None,size_hint = (1.,1.))
+        bl3.add_widget(self.value_editor)
 
-        self.add_widget(bl1)
-        self.add_widget(bl2)
-        self.add_widget(preview_pane)
+        self.preview_pane = FloatLayout(size_hint=(1,.5))
+
+        controls_bl.add_widget(bl1)
+        controls_bl.add_widget(bl2)
+        controls_bl.add_widget(bl3)
+
+        self.add_widget(self.preview_pane)
+        self.add_widget(controls_bl)
 
     def change_variation(self,variation_id):
         pass
         # here we need code that switches the active parameter list to the new variation. we'll want a visual cue that this is happening too, like highlighting the active variation 
 
-class ParticleEngineApp(App):
+class ParticleBuilderApp(App):
     def build(self):
         # 'atlas://VFX/smoke_particles/VFX_SmokeParticle'
         fl = MainScreen(pos=(0,0),size=Window.size)
@@ -92,4 +112,4 @@ class ParticleEngineApp(App):
 
 
 if __name__ == '__main__':
-    ParticleEngineApp().run()
+    ParticleBuilderApp().run()

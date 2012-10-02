@@ -1,0 +1,35 @@
+#:kivy 1.3.0
+#: import ToggleButton kivy.uix.togglebutton
+#: import BoxLayout kivy.uix.boxlayout
+
+<ValueEditor>:
+    BoxLayout:
+        pos: root.pos
+        size: root.size
+        spacing: 5
+        margins: 5
+        orientation: 'vertical'
+        ToggleButton:
+            id: tb1
+            state: 'down'
+            text: 'Initial Value'
+            height: 20
+            size_hint_y: None
+        Slider:
+            height: 30 if tb1.state == 'down' else 0
+            size_hint_y: None
+            min: 0
+            max: 255
+        ToggleButton:
+            id: tb2
+            state: 'down'
+            text: 'Scatter'
+            height: 20
+            size_hint_y: None
+        Slider:
+            height: 30 if tb2.state == 'down' else 0
+            size_hint_y: None
+            min: 0
+            max: 255
+        Widget:
+            size_hint: (1,1)
