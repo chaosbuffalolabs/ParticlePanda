@@ -116,12 +116,12 @@
             size_hint: (.2, 1.)
             text: str(root.slider5.value)
 
-<ParticleBuilder>:
+<ParticleXY>:
     BoxLayout:
         size_hint: (1., 1.)
         orientation: 'vertical'
         size: (400, 400)
-        pos: 100, 100
+        pos: (root.pos[0], root.pos[1] + 25)
         BoxLayout:
             orientation: 'vertical'
             Particle_Pos_Prop:
@@ -139,6 +139,11 @@
                 initial_maximum: 50
                 initial_value: 30
                 size_hint: (1., .4)
+
+
+
+
+
             
 
 
