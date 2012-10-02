@@ -1,0 +1,154 @@
+#:kivy 1.3.0
+
+<Particle_Pos_Prop>
+    slider: pos_prop_slider
+    size_hint: (1.,1.)
+    orientation: 'vertical'
+    Label:
+        size_hint: (1., .2)
+        text: root.pos_type if root.pos_type is not None else 'Not Set'
+    BoxLayout:
+        size_hint: (1., .8)
+        orientation: 'horizontal'
+        Label:
+            size_hint: (.3, 1.)
+            text: 'scatter:'
+        Slider:
+            id: pos_prop_slider
+            size_hint: (.5, 1.)
+            orientation: 'horizontal'
+            min: root.scatter_minimum
+            max: root.scatter_maximum
+            value: root.scatter_value
+        Label:
+            size_hint: (.2, 1.)
+            text: str(root.slider.value)
+
+<Particle_Property>
+    slider1: initial_prop_slider
+    slider2: scatter_prop_slider
+    slider3: rate_prop_slider
+    slider4: amount_change_prop_slider
+    slider5: num_iterations_prop_slider
+    orientation: 'vertical'
+    Label:
+        size_hint: (1., .2)
+        text: root.prop_type if root.prop_type is not None else 'Not Set'
+    BoxLayout:
+        size_hint: (1., .2)
+        orientation: 'horizontal'
+        Label:
+            size_hint: (.3, 1.)
+            text: 'Initial Value:'
+        Slider:
+            id: initial_prop_slider
+            size_hint: (.5, 1.)
+            orientation: 'horizontal'
+            min: root.initial_minimum
+            max: root.initial_maximum
+            value: root.initial_value
+        Label:
+            size_hint: (.2, 1.)
+            text: str(root.slider1.value)
+    BoxLayout:
+        size_hint: (1., .2)
+        orientation: 'horizontal'
+        Label:
+            size_hint: (.3, 1.)
+            text: 'Scatter Value:'
+        Slider:
+            id: scatter_prop_slider
+            size_hint: (.5, 1.)
+            orientation: 'horizontal'
+            min: root.scatter_minimum
+            max: root.scatter_maximum
+            value: root.scatter_value
+        Label:
+            size_hint: (.2, 1.)
+            text: str(root.slider2.value)
+    BoxLayout:
+        size_hint: (1., .2)
+        orientation: 'horizontal'
+        Label:
+            size_hint: (.3, 1.)
+            text: 'Rate of Change:'
+        Slider:
+            id: rate_prop_slider
+            size_hint: (.5, 1.)
+            orientation: 'horizontal'
+            min: root.rate_minimum
+            max: root.rate_maximum
+            value: root.rate_value
+        Label:
+            size_hint: (.2, 1.)
+            text: str(root.slider3.value)
+    BoxLayout:
+        size_hint: (1., .2)
+        orientation: 'horizontal'
+        Label:
+            size_hint: (.3, 1.)
+            text: 'Amount Change:'
+        Slider:
+            id: amount_change_prop_slider
+            size_hint: (.5, 1.)
+            orientation: 'horizontal'
+            min: root.amount_minimum
+            max: root.amount_maximum
+            value: root.amount_value
+        Label:
+            size_hint: (.2, 1.)
+            text: str(root.slider4.value)
+    BoxLayout:
+        size_hint: (1., .2)
+        orientation: 'horizontal'
+        Label:
+            size_hint: (.3, 1.)
+            text: 'Num Iterations:'
+        Slider:
+            id: num_iterations_prop_slider
+            size_hint: (.5, 1.)
+            orientation: 'horizontal'
+            min: root.iter_minimum
+            max: root.iter_maximum
+            value: root.iter_value
+            step: 1.0
+        Label:
+            size_hint: (.2, 1.)
+            text: str(root.slider5.value)
+
+<ParticleBuilder>:
+    BoxLayout:
+        size_hint: (1., 1.)
+        orientation: 'vertical'
+        size: (400, 400)
+        pos: 100, 100
+        BoxLayout:
+            orientation: 'vertical'
+            Particle_Pos_Prop:
+                pos_type: 'X'
+                size_hint: (1., .1)
+            Particle_Pos_Prop:
+                pos_type: 'Y'
+                size_hint: (1., .1)
+            Particle_Property:
+                prop_type: 'Velocity X'
+                size_hint: (1., .4)
+            Particle_Property:
+                prop_type: 'Velocity Y'
+                initial_minimum: -50
+                initial_maximum: 50
+                initial_value: 30
+                size_hint: (1., .4)
+            
+
+
+
+                            
+
+
+
+
+
+
+
+

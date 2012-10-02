@@ -76,6 +76,15 @@ class Particle(InstructionGroup):
         if 'color_a' in self.param_changes:
             self.color_a_gen = (x for x in self.param_changes['color_a'])
             self.update_color_a(None)
+        if 'color_r' in self.param_changes:
+            self.color_r_gen = (x for x in self.param_changes['color_r'])
+            self.update_color_a(None)
+        if 'color_g' in self.param_changes:
+            self.color_g_gen = (x for x in self.param_changes['color_g'])
+            self.update_color_a(None)
+        if 'color_b' in self.param_changes:
+            self.color_b_gen = (x for x in self.param_changes['color_b'])
+            self.update_color_a(None)
         
         self.update_pos(None)
 
@@ -109,7 +118,6 @@ class Particle(InstructionGroup):
         Clock.schedule_once(self.update_texture,time)
 
     def update_color_a(self,dt):
-
         try:
             val, time = self.color_a_gen.next()
         except StopIteration:
@@ -119,6 +127,39 @@ class Particle(InstructionGroup):
         if a < 0: a = 0
         self.change_color((self.color_code[0], self.color_code[1], self.color_code[2], a))
         Clock.schedule_once(self.update_color_a,time)
+
+    def update_color_r(self,dt):
+        try:
+            val, time = self.color_r_gen.next()
+        except StopIteration:
+            return False
+
+        r = self.color_code[0]+(val/255.)
+        if r < 0: r = 0
+        self.change_color((r, self.color_code[1], self.color_code[2], self.color_code[3]))
+        Clock.schedule_once(self.update_color_r,time)
+
+    def update_color_g(self,dt):
+        try:
+            val, time = self.color_g_gen.next()
+        except StopIteration:
+            return False
+
+        g = self.color_code[1]+(val/255.)
+        if g < 0: g = 0
+        self.change_color((self.color_code[0], g, self.color_code[2], self.color_code[3]))
+        Clock.schedule_once(self.update_color_g,time)
+
+    def update_color_b(self,dt):
+        try:
+            val, time = self.color_b_gen.next()
+        except StopIteration:
+            return False
+
+        b = self.color_code[2]+(val/255.)
+        if b < 0: b = 0
+        self.change_color((self.color_code[0], self.color_code[1], b, self.color_code[3]))
+        Clock.schedule_once(self.update_color_b,time)
 
     def change_color(self,color_code):
         # is there not a faster way to do this that works?

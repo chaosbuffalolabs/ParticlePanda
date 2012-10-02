@@ -25,9 +25,21 @@ variation:
     color_r: 
         initial: 210
         scatter: 0
+        interval_change:
+            rate: 0.2
+            amount: -40
+            max_iter: 8
     color_g:
         initial: 210
         scatter: 0
+        interval_change:
+            rate: 0.2
+            amount: -40
+            max_iter: 8
     color_b:
         initial: 210
         scatter: 0
+        interval_change:
+            rate: 0.2
+            amount: -40
+            max_iter: 8
