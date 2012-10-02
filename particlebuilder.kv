@@ -1,8 +1,6 @@
 #:kivy 1.3.0
-#: import ToggleButton kivy.uix.togglebutton
-#: import BoxLayout kivy.uix.boxlayout
 
-<ValueEditor>:
+<ValueEditor2>:
     BoxLayout:
         pos: root.pos
         size: root.size
@@ -28,8 +26,60 @@
             size_hint_y: None
         Slider:
             height: 30 if tb2.state == 'down' else 0
+            visible: False
             size_hint_y: None
             min: 0
             max: 255
         Widget:
             size_hint: (1,1)
+
+<ValueSlider>
+    value: slider1.value
+    BoxLayout:
+        orientation: 'horizontal'
+        margin: 0
+        spacing: 0
+        pos: root.pos
+        size: root.size
+        Slider:
+            id: slider1
+            height: root.height
+            size_hint_y: None
+            min: root.min
+            max: root.max
+        Label:
+            text: str(round(root.value,1))
+            size_hint_x: None
+            width: 64
+            size_hint_y: None
+            height: root.height
+
+<LabeledValueSlider>:
+    value: slider1.value
+    BoxLayout:
+        orientation: 'vertical'
+        pos: root.pos
+        size: root.size
+        Label:
+            id: label1
+            text: root.labeltext
+            text_size: self.size
+            height: 25
+            size_hint_y: None
+            valign: 'middle'
+        BoxLayout:
+            orientation: 'horizontal'
+            height: 25
+            size_hint_y: None
+            Slider:
+                id: slider1
+                height: 25
+                size_hint_y: None
+                min: root.min
+                max: root.max
+            Label:
+                text: str(round(root.value,1))
+                size_hint_x: None
+                width: 64
+                size_hint_y: None
+                height: 25
