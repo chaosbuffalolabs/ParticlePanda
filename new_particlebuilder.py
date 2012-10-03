@@ -7,35 +7,28 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import NumericProperty, BooleanProperty, ListProperty, StringProperty, ObjectProperty
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
+from kivy.lang import Builder
 
 class ParticleBuilder(Widget):
-	def __init__(self, **kwargs):
-		super(ParticleBuilder,self).__init__(**kwargs)
-		Clock.schedule_once(self.setup_window)
-		
-
-	def setup_window(self, dt):
-		tp = TabbedPanel()
-		th = TabbedPanelHeader(text='Position')
-		tp.pos = (100, 100)
-		tp.size = (400,500)
-		th.content = ParticleXY()
-		tp.default_tab = TabbedPanelHeader(text='Default')
-		tp.default_content = ParticleXY()
-		tp.add_widget(th)
-		th2 = TabbedPanelHeader(text='Color')
-		th2.content = ParticleColor()
-		tp.add_widget(th2)
-		self.add_widget(tp)
-
-class Blank(FloatLayout):
 	pass
+
 
 class ParticleXY(Widget):
 	pass
 
 class ParticleColor(Widget):
 	pass
+
+class ParticleVariationLayout(Widget):
+	num_variants = NumericProperty(0)
+	
+	def add_variant_button(self):
+		if self.num_variants < 9:
+			self.num_variants += 1
+			ctx = {'text': 'Variant'.join(str(self.num_variants))}
+			button = Builder.template('VariantButton', **ctx)
+			self.variation_layout.add_widget(button)
+
 
 class Particle_Pos_Prop(BoxLayout):
 	pos_type = StringProperty(None)
@@ -65,11 +58,19 @@ Factory.register('ParticleColor', ParticleColor)
 Factory.register('ParticleXY', ParticleXY)
 Factory.register('Particle_Property', Particle_Property)
 Factory.register('Particle_Pos_Prop', Particle_Pos_Prop)
+Factory.register('ParticleBuilder', ParticleBuilder)
+Factory.register('ParticleVariationLayout', ParticleVariationLayout)
+
+
+
 
 class ParticleBuilderApp(App):
     def build(self):
+    	pass
 
-        return ParticleBuilder()
+    def on_start(self, *largs):
+  		win = self.root.get_parent_window()
+  		print win.size
 
 if __name__ == '__main__':
     ParticleBuilderApp().run()
