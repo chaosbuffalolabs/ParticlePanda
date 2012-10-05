@@ -5,6 +5,7 @@ ParticleBuilder:
 <ParticleBuilder>:
     params_layout: params_layout
     variation_layout: variation_layout
+    particle_window: particle_window
     FloatLayout: 
         canvas:
             Color:
@@ -21,6 +22,19 @@ ParticleBuilder:
             id: params_layout
             pos: root.pos[0] + root.width*.02 + root.width/2, root.pos[1] + root.height*.032
             size: (root.size[0]/2. - root.size[0]*.04, root.size[1] - root.size[1]*.064)
+        FloatLayout:
+            id: particle_window
+            pos: root.pos[0] + root.width*.02, root.pos[1] + root.height*.5 + root.height*.032
+            size: (root.size[0]/2 - root.size[0]*.04, root.size[1]/2 - root.size[1]*.064)
+            on_size: 
+                root.demo_particle.emitter_x = self.pos[0] + self.width *.5
+                root.demo_particle.emitter_y = self.pos[1] + self.height *.5
+            canvas:
+                Color:
+                    rgb: (0., 0., 0.)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
 
 <ParticleVariationLayout>:
     canvas:
@@ -75,7 +89,85 @@ ParticleBuilder:
 <Default_Particle_Panel>:
     Label:
         center: root.center
-        text: 'Add a Particle to Begin Editing'
+        text: 'Add or Choose a Particle to Begin Editing'
+
+<Particle_Color_Sliders>:
+    color_r_slider: color_r_slider
+    color_g_slider: color_g_slider
+    color_b_slider: color_b_slider
+    color_a_slider: color_a_slider
+    slider_text: root.slider_text
+    BoxLayout:
+        pos: root.pos[0], root.pos[1] + root.height*.1
+        size: root.size[0], root.size[1]*.9
+        orientation: 'vertical'
+        BoxLayout:
+            size_hint: (1., .8)
+            orientation: 'horizontal'
+            Label:
+                size_hint: (.4, .7)
+                text: '[b]'+root.slider_text+'[/b]' if root.slider_text is not None else 'No Label'
+                text_size: (root.width*.35, root.height)
+                markup: True
+                halign: 'center'
+                valign: 'middle'
+                color: (root.color_r_slider.value, root.color_g_slider.value, root.color_b_slider.value, root.color_a_slider.value)
+            Slider:
+                id: color_r_slider
+                size_hint: (.15, .7)
+                min: 0.0
+                max: 1.0
+                value: 1.
+                orientation: 'vertical'
+                on_value: root.color_r = self.value
+                canvas:
+                    Color:
+                        rgba: (self.value, 0, 0, 1.)
+                    Rectangle:
+                        pos: self.pos[0], self.pos[1]+self.height*.3
+                        size: self.size[0]*.2, self.size[1]*.4
+            Slider:
+                id: color_g_slider
+                size_hint: (.15, .7)
+                min: 0.0
+                max: 1.0
+                value: 1.
+                orientation: 'vertical'
+                on_value: root.color_g = self.value
+                canvas:
+                    Color:
+                        rgba: (0, self.value, 0, 1.)
+                    Rectangle:
+                        pos: self.pos[0], self.pos[1]+self.height*.3
+                        size: self.size[0]*.2, self.size[1]*.4
+            Slider:
+                id: color_b_slider
+                size_hint: (.15, .7)
+                min: 0.0
+                max: 1.0
+                value: 1.
+                orientation: 'vertical'
+                on_value: root.color_b = self.value
+                canvas:
+                    Color:
+                        rgba: (0, 0, self.value, 1.)
+                    Rectangle:
+                        pos: self.pos[0], self.pos[1]+self.height*.3
+                        size: self.size[0]*.2, self.size[1]*.4
+            Slider:
+                id: color_a_slider
+                size_hint: (.15, .7)
+                min: 0.0
+                max: 1.0
+                value: 1.0
+                orientation: 'vertical'
+                on_value: root.color_a = self.value
+                canvas:
+                    Color:
+                        rgba: (0, 0, 0, self.value)
+                    Rectangle:
+                        pos: self.pos[0], self.pos[1]+self.height*.3
+                        size: self.size[0]*.2, self.size[1]*.4
 
 <Particle_Property_Slider>:
     prop_slider: prop_slider
@@ -132,6 +224,7 @@ ParticleBuilder:
             slider_bounds_min: root.property('max_num_particles').get_min(root)
             slider_bounds_max: root.property('max_num_particles').get_max(root)
             slider_bounds_init_value: root.max_num_particles
+            on_value: root.max_num_particles = self.value
         Particle_Property_Slider:
             id: life_span_slider
             size_hint: (1., .2)
@@ -155,6 +248,7 @@ ParticleBuilder:
             slider_bounds_min: root.property('start_size').get_min(root)
             slider_bounds_max: root.property('start_size').get_max(root)
             slider_bounds_init_value: root.start_size
+            on_value: root.start_size = self.value
         Particle_Property_Slider:
             id: start_size_variance_slider
             size_hint: (1., .2)
@@ -370,20 +464,54 @@ ParticleBuilder:
             slider_bounds_min: root.property('rotate_per_second').get_min(root)
             slider_bounds_max: root.property('rotate_per_second').get_max(root)
             slider_bounds_init_value: root.rotate_per_second
+            step: .025
             on_value: root.rotate_per_second = self.value
         Particle_Property_Slider:
             id: rotate_per_second_variance_slider
             size_hint: (1., .1)
-            slider_text: 'Rotate Per Second'
+            slider_text: 'Rotate Per Second Variance'
             slider_bounds_min: root.property('rotate_per_second_variance').get_min(root)
             slider_bounds_max: root.property('rotate_per_second_variance').get_max(root)
             slider_bounds_init_value: root.rotate_per_second_variance
+            step: .025
             on_value: root.rotate_per_second_variance = self.value
 
 <ColorPanel>:
-    canvas:
-        Color:
-            rgb:(0, 0, 1)
-        Rectangle:
-            pos: self.pos
-            size: self.size
+    start_color_sliders: start_color_sliders
+    start_color_variation_sliders: start_color_variation_sliders
+    end_color_sliders: end_color_sliders
+    end_color_variation_sliders: end_color_variation_sliders
+    BoxLayout:
+        pos: root.pos
+        size: root.size
+        orientation: 'vertical'
+        Particle_Color_Sliders:
+            id: start_color_sliders
+            slider_text: 'Start Color RGBA'
+            on_color_r: root.start_color_r = self.color_r
+            on_color_g: root.start_color_g = self.color_r
+            on_color_b: root.start_color_b = self.color_r
+            on_color_a: root.start_color_a = self.color_r
+        Particle_Color_Sliders:
+            id: start_color_variation_sliders
+            slider_text: 'Start Color Variation RGBA'
+            on_color_r: root.start_color_r_variance = self.color_r
+            on_color_g: root.start_color_g_variance = self.color_r
+            on_color_b: root.start_color_b_variance = self.color_r
+            on_color_a: root.start_color_a_variance = self.color_r
+        Particle_Color_Sliders:
+            id: end_color_sliders
+            slider_text: 'End Color RGBA'
+            on_color_r: root.end_color_r = self.color_r
+            on_color_g: root.end_color_g = self.color_r
+            on_color_b: root.end_color_b = self.color_r
+            on_color_a: root.end_color_a = self.color_r
+        Particle_Color_Sliders:
+            id: end_color_variation_sliders
+            slider_text: 'End Color Variation RGBA'
+            on_color_r: root.end_color_r_variance = self.color_r
+            on_color_g: root.end_color_g_variance = self.color_r
+            on_color_b: root.end_color_b_variance = self.color_r
+            on_color_a: root.end_color_a_Variance = self.color_r
+
+    
