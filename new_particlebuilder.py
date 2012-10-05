@@ -14,18 +14,26 @@ class ParticleBuilder(Widget):
 
 class ParticleParamsLayout(Widget):
 	all_tabs = ListProperty(None)
-
+	all_tabs2 = ListProperty(None)
+	
 	def create_tab(self, num_tab):
-		th = TabbedPanelHeader(text = 'tab ' + str(num_tab))
-		tab_content = self.get_content(num_tab)
-		th.content = tab_content
-		self.all_tabs.append(th)
+		new_num_variants = num_tab
+		th1 = TabbedPanelHeader(text = 'tab ' + str(num_tab) + '-1')
+		th2 = TabbedPanelHeader(text = 'tab ' + str(num_tab) + '-2')
+		th1_tab_content = self.get_particle_content(num_tab)
+		th2_tab_content = self.get_behavior_content(num_tab)
+		th1.content = th1_tab_content
+		th2.content = th2_tab_content
+		self.all_tabs.append(th1)
+		self.all_tabs2.append(th2)
 
 	def add_tab_to_layout(self, num_tab):
 		self.particle_tabs.add_widget(self.all_tabs[num_tab-1])
+		self.particle_tabs.add_widget(self.all_tabs2[num_tab-1])
 
 	def remove_tab_from_layout(self, num_tab):
 		self.particle_tabs.remove_widget(self.all_tabs[num_tab-1])
+		self.particle_tabs.remove_widget(self.all_tabs2[num_tab-1])
 
 	def get_current_tab(self):
 		return self.current_tab
@@ -34,16 +42,11 @@ class ParticleParamsLayout(Widget):
 		default_content = Default_Particle_Panel()
 		return default_content
 	
-	def get_content(self, num_tab):
-		if num_tab == 1:
-			s = ParticlePanel()
-			return s
-		if num_tab == 2:
-			s = BehaviorPanel()
-			return s
-		if num_tab >= 3:
-			s = ColorPanel()
-			return s
+	def get_particle_content(self, num_tab):
+		return ParticlePanel()
+
+	def get_behavior_content(self, num_tab):
+		return BehaviorPanel()
 		
 class ParticleVariationLayout(Widget):
 	num_variants = NumericProperty(0)
