@@ -61,6 +61,12 @@ class ParticleVariationLayout(Widget):
 class Default_Particle_Panel(Widget):
 	pass
 
+class Particle_Property_Slider(Widget):
+	slider_bounds_min = NumericProperty(0)
+	slider_bounds_max = NumericProperty(100)
+	slider_bounds_init_value = NumericProperty(0)
+	slider_step = NumericProperty(1.0)
+
 class ParticlePanel(Widget):
 	max_num_particles = BoundedNumericProperty(200, min=0, max=1000)
 	life_span = BoundedNumericProperty(2, min=0, max=10)
@@ -77,34 +83,49 @@ class ParticlePanel(Widget):
 	end_rotation_variance = BoundedNumericProperty(0, min=0, max=360)
 
 class BehaviorPanel(Widget):
-	pass
+	emitter_type = NumericProperty(0)
+	## Gravity Emitter Params
+	emitter_x_variance = BoundedNumericProperty(0, min=0, max=1000)
+	emitter_y_variance = BoundedNumericProperty(0, min=0, max=1000)
+	gravity_x = BoundedNumericProperty(0, min=-500, max=500)
+	gravity_y = BoundedNumericProperty(0, min=-500, max=500)
+	speed = BoundedNumericProperty(0, min=0, max=500)
+	speed_variance = BoundedNumericProperty(0, min=0, max=500)
+	radial_acceleration = BoundedNumericProperty(100, min=-400, max=400)
+	radial_acceleration_variance = BoundedNumericProperty(0, min=0, max=400)
+	tangential_acceleration = BoundedNumericProperty(0, min=-500, max=500)
+	tangential_acceleration_variance = BoundedNumericProperty(0, min=0, max=500)
+
+	## Radial Emitter Params
+	max_radius = BoundedNumericProperty(100, min=0, max=500)
+	max_radius_variance = BoundedNumericProperty(0, min=0, max=500)
+	min_radius = BoundedNumericProperty(0, min=0, max=500)
+	rotate_per_second = BoundedNumericProperty(0, min=-360, max=360)
+	rotate_per_second_variance = BoundedNumericProperty(0, min=0, max=360)
+
+	def set_emitter_type(self, num_type):
+		self.emitter_type = num_type
 
 class ColorPanel(Widget):
-	pass
+	#all colors given as rgba
+	start_color_r = BoundedNumericProperty(1., min=0, max=1.)
+	start_color_r_variance = BoundedNumericProperty(.1, min=0, max=1.)
+	start_color_g = BoundedNumericProperty(1., min=0, max=1.)
+	start_color_g_variance = BoundedNumericProperty(.1, min=0, max=1.)
+	start_color_b = BoundedNumericProperty(1., min=0, max=1.)
+	start_color_b_variance = BoundedNumericProperty(.1, min=0, max=1.)
+	start_color_a = BoundedNumericProperty(1., min=0, max=1.)
+	start_color_a_variance = BoundedNumericProperty(.1, min=0, max=1.)
+	end_color_r = BoundedNumericProperty(0, min=0, max=1.)
+	end_color_r_variance = BoundedNumericProperty(.1, min=0, max=1.)
+	end_color_g = BoundedNumericProperty(0, min=0, max=1.)
+	end_color_g_variance = BoundedNumericProperty(.1, min=0, max=1.)
+	end_color_b = BoundedNumericProperty(0, min=0, max=1.)
+	end_color_b_variance = BoundedNumericProperty(.1, min=0, max=1.)
+	end_color_a = BoundedNumericProperty(0, min=0, max=1.)
+	end_color_a_variance = BoundedNumericProperty(.1, min=0, max=1.)
 
-class Particle_Pos_Prop(BoxLayout):
-	pos_type = StringProperty(None)
-	scatter_minimum = NumericProperty(-100)
-	scatter_maximum = NumericProperty(100)
-	scatter_value = NumericProperty(0)
 
-class Particle_Property(BoxLayout):
-	prop_type = StringProperty(None)
-	initial_minimum = NumericProperty(-100)
-	initial_maximum = NumericProperty(100)
-	initial_value = NumericProperty(0)
-	scatter_minimum = NumericProperty(-100)
-	scatter_maximum = NumericProperty(100)
-	scatter_value = NumericProperty(0)
-	rate_minimum = NumericProperty(0)
-	rate_maximum = NumericProperty(5)
-	rate_value = NumericProperty(.5)
-	amount_minimum = NumericProperty(-100)
-	amount_maximum = NumericProperty(100)
-	amount_value = NumericProperty(0)
-	iter_minimum = NumericProperty(0)
-	iter_maximum = NumericProperty(10)
-	iter_value = NumericProperty(1)
 
 Factory.register('ParticleBuilder', ParticleBuilder)
 Factory.register('ParticleVariationLayout', ParticleVariationLayout)
@@ -112,6 +133,7 @@ Factory.register('ParticleParamsLayout', ParticleParamsLayout)
 Factory.register('ParticlePanel', ParticlePanel)
 Factory.register('BehaviorPanel', BehaviorPanel)
 Factory.register('ColorPanel', ColorPanel)
+Factory.register('Particle_Property_Slider', Particle_Property_Slider)
 
 class ParticleBuilderApp(App):
     def build(self):
