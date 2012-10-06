@@ -44,7 +44,7 @@ class ParticleBuilder(Widget):
             self.demo_particle.emitter_y = touch.y
 
     def on_touch_move(self, touch):
-        super(ParticleBuilder, self).on_touch_down(touch)
+        super(ParticleBuilder, self).on_touch_move(touch)
         if self.particle_window.collide_point(touch.x, touch.y):
             self.demo_particle.emitter_x = touch.x
             self.demo_particle.emitter_y = touch.y
