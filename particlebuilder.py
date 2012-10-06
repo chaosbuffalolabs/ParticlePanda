@@ -33,10 +33,6 @@ class ParticleBuilder(Widget):
         self.demo_particle.stop()
         self.remove_widget(self.demo_particle)
 
-    def remove_demo_particle_system(self):
-        self.demo_particle.stop()
-        self.remove_widget(self.demo_particle)
-
     def on_touch_down(self, touch):
         super(ParticleBuilder, self).on_touch_down(touch)
         if self.particle_window.collide_point(touch.x, touch.y):
