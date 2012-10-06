@@ -24,6 +24,8 @@ class ParticleBuilder(Widget):
 
     def add_demo_particle_system(self, num_tab):
         self.demo_particle = self.demo_particles[num_tab-1]
+        self.demo_particle.emitter_x = self.particle_window.pos[0] + self.particle_window.width *.5
+        self.demo_particle.emitter_y = self.particle_window.pos[1] + self.particle_window.height *.5
         self.add_widget(self.demo_particle)
         self.demo_particle.start()
 
