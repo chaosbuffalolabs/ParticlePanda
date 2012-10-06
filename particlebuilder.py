@@ -194,7 +194,6 @@ class ParticlePanel(Widget):
         self.particle_builder.demo_particle.emit_angle_variance = value
 
     def on_start_rotation(self, instance, value):
-        print 'start rotation'
         self.particle_builder.demo_particle.start_rotation = value
 
     def on_start_rotation_variance(self, instance, value):
