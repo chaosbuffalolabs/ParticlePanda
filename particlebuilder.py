@@ -33,6 +33,22 @@ class ParticleBuilder(Widget):
         self.demo_particle.stop()
         self.remove_widget(self.demo_particle)
 
+    def remove_demo_particle_system(self):
+        self.demo_particle.stop()
+        self.remove_widget(self.demo_particle)
+
+    def on_touch_down(self, touch):
+        super(ParticleBuilder, self).on_touch_down(touch)
+        if self.particle_window.collide_point(touch.x, touch.y):
+            self.demo_particle.emitter_x = touch.x
+            self.demo_particle.emitter_y = touch.y
+
+    def on_touch_move(self, touch):
+        super(ParticleBuilder, self).on_touch_down(touch)
+        if self.particle_window.collide_point(touch.x, touch.y):
+            self.demo_particle.emitter_x = touch.x
+            self.demo_particle.emitter_y = touch.y
+
 
 class ParticleParamsLayout(Widget):
     all_tabs = ListProperty(None)
@@ -132,7 +148,7 @@ class Particle_Color_Sliders(Widget):
 
 class ParticlePanel(Widget):
     particle_builder = ObjectProperty(None)
-    max_num_particles = BoundedNumericProperty(200, min=1, max=1000)
+    max_num_particles = BoundedNumericProperty(200, min=1, max=500)
     life_span = BoundedNumericProperty(2, min=.01, max=10)
     life_span_variance = BoundedNumericProperty(0, min=0, max=10)
     start_size = BoundedNumericProperty(16, min=0, max=70)
@@ -195,23 +211,23 @@ class BehaviorPanel(Widget):
     particle_builder = ObjectProperty(None)
     emitter_type = NumericProperty(0)
     ## Gravity Emitter Params
-    emitter_x_variance = BoundedNumericProperty(0, min=0, max=1000)
-    emitter_y_variance = BoundedNumericProperty(0, min=0, max=1000)
-    gravity_x = BoundedNumericProperty(0, min=-500, max=500)
-    gravity_y = BoundedNumericProperty(0, min=-500, max=500)
-    speed = BoundedNumericProperty(0, min=0, max=500)
-    speed_variance = BoundedNumericProperty(0, min=0, max=500)
+    emitter_x_variance = BoundedNumericProperty(0, min=0, max=100)
+    emitter_y_variance = BoundedNumericProperty(0, min=0, max=100)
+    gravity_x = BoundedNumericProperty(0, min=-100, max=100)
+    gravity_y = BoundedNumericProperty(0, min=-100, max=100)
+    speed = BoundedNumericProperty(0, min=0, max=100)
+    speed_variance = BoundedNumericProperty(0, min=0, max=100)
     radial_acceleration = BoundedNumericProperty(100, min=-400, max=400)
     radial_acceleration_variance = BoundedNumericProperty(0, min=0, max=400)
     tangential_acceleration = BoundedNumericProperty(0, min=-500, max=500)
     tangential_acceleration_variance = BoundedNumericProperty(0, min=0, max=500)
 
     ## Radial Emitter Params
-    max_radius = BoundedNumericProperty(100, min=0, max=500)
-    max_radius_variance = BoundedNumericProperty(0, min=0, max=500)
-    min_radius = BoundedNumericProperty(0, min=0, max=500)
-    rotate_per_second = BoundedNumericProperty(0, min=-10, max=10)
-    rotate_per_second_variance = BoundedNumericProperty(0, min=0, max=10)
+    max_radius = BoundedNumericProperty(100, min=0, max=250)
+    max_radius_variance = BoundedNumericProperty(0, min=0, max=250)
+    min_radius = BoundedNumericProperty(0, min=0, max=250)
+    rotate_per_second = BoundedNumericProperty(0, min=-180, max=180)
+    rotate_per_second_variance = BoundedNumericProperty(0, min=0, max=180)
 
     def __init__(self, pbuilder, **kwargs):
         super(BehaviorPanel, self).__init__(**kwargs)
