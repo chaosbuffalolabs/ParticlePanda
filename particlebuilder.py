@@ -12,12 +12,25 @@ from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
 from kivy.lang import Builder
 
 class ParticleBuilder(Widget):
+    demo_particles = ListProperty(None)
+    demo_particle = ObjectProperty(ParticleSystem)
     def __init__(self, **kwargs):
         super(ParticleBuilder, self).__init__(**kwargs)
+        
+    def create_particle_system(self):
         texture = Image('media/particle.png').texture
-        self.demo_particle = ParticleSystem(texture, None)
-        self.particle_window.add_widget(self.demo_particle)
+        demo_particle = ParticleSystem(texture, None)
+        self.demo_particles.append(demo_particle)
+
+    def add_demo_particle_system(self, num_tab):
+        self.demo_particle = self.demo_particles[num_tab-1]
+        self.add_widget(self.demo_particle)
         self.demo_particle.start()
+
+    def remove_demo_particle_system(self):
+        self.demo_particle.stop()
+        self.remove_widget(self.demo_particle)
+
 
 class ParticleParamsLayout(Widget):
     all_tabs = ListProperty(None)
@@ -41,6 +54,7 @@ class ParticleParamsLayout(Widget):
         th1.content = th1_tab_content
         th2.content = th2_tab_content
         th3.content = th3_tab_content
+        self.parent.parent.create_particle_system()
         self.all_tabs.append(th1)
         self.all_tabs2.append(th2)
         self.all_tabs3.append(th3)
@@ -50,9 +64,11 @@ class ParticleParamsLayout(Widget):
             self.particle_tabs.remove_widget(self.particle_tabs.tab_list[0])
         except: 
             print 'no tab to remove'
+
         self.particle_tabs.add_widget(self.all_tabs[num_tab-1])
         self.particle_tabs.add_widget(self.all_tabs2[num_tab-1])
         self.particle_tabs.add_widget(self.all_tabs3[num_tab-1])
+        self.parent.parent.add_demo_particle_system(num_tab)
         self.particle_tabs.switch_to(self.particle_tabs.tab_list[2])
 
     def remove_tab_from_layout(self, num_tab):
@@ -61,6 +77,7 @@ class ParticleParamsLayout(Widget):
         self.particle_tabs.remove_widget(self.all_tabs3[num_tab-1])
         default = TabbedPanelHeader(text='Hello')
         default.content = self.get_default_tab()
+        self.parent.parent.remove_demo_particle_system()
         self.particle_tabs.add_widget(default)
         self.particle_tabs.switch_to(self.particle_tabs.tab_list[0])
 
@@ -159,6 +176,7 @@ class ParticlePanel(Widget):
         self.particle_builder.demo_particle.emit_angle_variance = value
 
     def on_start_rotation(self, instance, value):
+        print 'start rotation'
         self.particle_builder.demo_particle.start_rotation = value
 
     def on_start_rotation_variance(self, instance, value):

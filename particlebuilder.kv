@@ -340,7 +340,6 @@ ParticleBuilder:
     min_radius_slider: min_radius_slider
     rotate_per_second_slider: rotate_per_second_slider
     rotate_per_second_variance_slider: rotate_per_second_variance_slider
-
     BoxLayout:
         pos: root.pos[0], root.pos[1] + root.height*.9
         size: root.width, root.height*.1 
@@ -354,7 +353,6 @@ ParticleBuilder:
             text: 'Radial Emitter'
             group: 'emitter_type'
             on_state: root.set_emitter_type(1) if self.state == 'down' else None
-
     BoxLayout:
         pos: root.pos if root.emitter_type == 0 else (-100, -100)
         size: root.size[0], root.size[1]*.9 if root.emitter_type == 0 else (1, 1)
