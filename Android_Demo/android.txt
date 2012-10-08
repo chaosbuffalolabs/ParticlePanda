@@ -1,0 +1,3 @@
+title=CBL-Skitoo Particle Editor
+author=Chaos Buffalo Labs
+orientation = landscape
