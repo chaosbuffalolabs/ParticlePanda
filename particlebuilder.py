@@ -14,6 +14,7 @@ from kivy.lang import Builder
 class ParticleBuilder(Widget):
     demo_particles = ListProperty(None)
     demo_particle = ObjectProperty(ParticleSystem)
+
     def __init__(self, **kwargs):
         super(ParticleBuilder, self).__init__(**kwargs)
         
