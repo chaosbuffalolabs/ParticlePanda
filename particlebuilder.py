@@ -63,12 +63,9 @@ class ParticleParamsLayout(Widget):
         th1 = TabbedPanelHeader(text = 'Particle' + str(num_tab))
         th2 = TabbedPanelHeader(text = 'Behavior' + str(num_tab))
         th3 = TabbedPanelHeader(text = 'Color' + str(num_tab))
-        th1_tab_content = self.get_particle_content()
-        th2_tab_content = self.get_behavior_content()
-        th3_tab_content = self.get_color_content()
-        th1.content = th1_tab_content
-        th2.content = th2_tab_content
-        th3.content = th3_tab_content
+        th1.content = self.get_particle_content()
+        th2.content = self.get_behavior_content()
+        th3.content = self.get_color_content()
         self.parent.parent.create_particle_system()
         self.all_tabs.append(th1)
         self.all_tabs2.append(th2)
@@ -127,6 +124,14 @@ class ParticleVariationLayout(Widget):
             button = Builder.template('VariantButton', **ctx)
             self.variation_layout.add_widget(button)
             pbuilder.params_layout.create_tab(num_tab)
+
+class ParticleLoadSaveLayout(Widget):
+
+    def save_particle(self):
+        print 'save'
+
+    def load_particle(self):
+        print 'load'
 
 class Default_Particle_Panel(Widget):
     pass
@@ -353,6 +358,7 @@ class ColorPanel(Widget):
 
 Factory.register('ParticleBuilder', ParticleBuilder)
 Factory.register('ParticleVariationLayout', ParticleVariationLayout)
+Factory.register('ParticleLoadSaveLayout', ParticleLoadSaveLayout)
 Factory.register('ParticleParamsLayout', ParticleParamsLayout)
 Factory.register('ParticlePanel', ParticlePanel)
 Factory.register('BehaviorPanel', BehaviorPanel)
