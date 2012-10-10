@@ -11,6 +11,9 @@ from kivy.properties import NumericProperty, BooleanProperty, ListProperty, Stri
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
 from kivy.lang import Builder
 
+from xml.dom.minidom import Document
+import xml.dom.minidom
+
 class ParticleBuilder(Widget):
     demo_particles = ListProperty(None)
     demo_particle = ObjectProperty(ParticleSystem)
@@ -126,11 +129,39 @@ class ParticleVariationLayout(Widget):
             pbuilder.params_layout.create_tab(num_tab)
 
 class ParticleLoadSaveLayout(Widget):
+    new_particle = ObjectProperty(None)
 
     def save_particle(self):
+        name = "C:\Users\Kerby\CBLParticleSystem\SavedParticles"
+
+        new_particle = Document()
+        particle_panel_values = new_particle.createElement("ParticleProperties")
+        new_particle.appendChild(particle_panel_values)
+        # particle_behavior_values = new_particle.createElement("ParticleBehaviorProperties")
+        # new_particle.appendChild(particle_behavior_values)
+        # particle_color_values = new_particle.createElement("ParticleColorProperties")
+        # new_particle.appendChild(particle_color_values)
+
+        thefile = open("name","w")
+        new_particle.writexml(thefile)
+        thefile.close()
+    
+    # def write_to_file(doc, name="C:\Users\Kerby\CBLParticleSystem\SavedParticles\particle.xml"):
+        # new_particle = Document()
+        # new_element = new_particle.createElement('saved_particle')
+        # new_particle.appendChild(new_element)
+        # thefile = open("name","w")
+        # new_particle.writexml(thefile)
+        # thefile.close()
+
+        # f = open('file.xml','wb')
+        # doc.writexml(f,encoding='utf-8')
+        # f.close()
+
         print 'save'
 
-    def load_particle(self):
+    def load_particle(name="C:\Users\Kerby\CBLParticleSystem\SavedParticles\particle.xml"):
+        return xml.dom.minidom.parse(name)
         print 'load'
 
 class Default_Particle_Panel(Widget):
