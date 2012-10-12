@@ -2,9 +2,13 @@ import kivy
 from kivy.clock import Clock
 from kivy.app import App
 from kivy.uix.widget import Widget
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 from kivy.factory import Factory
 from kivy.uix.boxlayout import BoxLayout
 from kivy.core.image import Image
+from kivy.uix.image import Image as ImageWidget
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy_particle import *
 from kivy.properties import NumericProperty, BooleanProperty, ListProperty, StringProperty, ObjectProperty, BoundedNumericProperty
@@ -63,9 +67,9 @@ class ParticleParamsLayout(Widget):
             self.particle_tabs.add_widget(default)
             self.particle_tabs.switch_to(self.particle_tabs.tab_list[0])
         new_num_variants = num_tab
-        th1 = TabbedPanelHeader(text = 'Particle' + str(num_tab))
-        th2 = TabbedPanelHeader(text = 'Behavior' + str(num_tab))
-        th3 = TabbedPanelHeader(text = 'Color' + str(num_tab))
+        th1 = TabbedPanelHeader(text = 'Particle ' + str(num_tab))
+        th2 = TabbedPanelHeader(text = 'Behavior ' + str(num_tab))
+        th3 = TabbedPanelHeader(text = 'Color ' + str(num_tab))
         th1.content = self.get_particle_content()
         th2.content = self.get_behavior_content()
         th3.content = self.get_color_content()
@@ -167,6 +171,51 @@ class ParticleLoadSaveLayout(Widget):
 class Default_Particle_Panel(Widget):
     pass
 
+class ImageChooserCell(Widget):
+    image_location = StringProperty("None")
+    image_chooser = ObjectProperty(None)
+
+    def cell_press(self):
+        self.image_chooser.select(self.image_location)
+
+
+class ImageChooserPopupContent(GridLayout):
+    def __init__(self, image_chooser = None, **kwargs):
+        super(ImageChooserPopupContent,self).__init__(rows = 8, cols = 8, col_force_default = True, row_force_default = True, row_default_height = 64, col_default_width = 64, **kwargs)
+        self.image_chooser = image_chooser
+        png_files = self.get_all_images('.', '.png')
+        # atlasses = self.get_all_images('.', '.atlas')
+        for i in png_files:
+            self.add_widget(ImageChooserCell(image_location=i, image_chooser = self.image_chooser))
+        
+
+    def get_all_images(self,dir_name,extension):
+        outputList = []
+        for root, dirs, files in os.walk(dir_name):
+            for fl in files:
+                if fl.endswith(extension): outputList.append(os.path.join(root,fl))
+        return outputList
+
+    # # not yet implemented:
+    # def get_image_urls_from_atlas(self,atlas_file):
+    #     pass
+
+class ImageChooser(Widget):
+    button_text = StringProperty("Choose a texture...")
+    image_location = StringProperty('media/particle.png')
+    
+    def __init__(self,**kwargs):
+        image_chooser_popup_content = ImageChooserPopupContent(image_chooser = self)
+        self.image_chooser_popup = Popup(title="Images", content=image_chooser_popup_content, size_hint = (None,None), size=(512,512))
+        super(ImageChooser,self).__init__(**kwargs)
+
+    def button_callback(self,):
+        self.image_chooser_popup.open()
+
+    def select(self,image_location):
+        self.image_location = image_location
+        self.image_chooser_popup.dismiss()
+
 class Particle_Property_Slider(Widget):
     slider_bounds_min = NumericProperty(0)
     slider_bounds_max = NumericProperty(100)
@@ -181,6 +230,7 @@ class Particle_Color_Sliders(Widget):
 
 class ParticlePanel(Widget):
     particle_builder = ObjectProperty(None)
+    texture_location = StringProperty("media/particle.png")
     max_num_particles = BoundedNumericProperty(200, min=1, max=500)
     life_span = BoundedNumericProperty(2, min=.01, max=10)
     life_span_variance = BoundedNumericProperty(0, min=0, max=10)
@@ -238,10 +288,14 @@ class ParticlePanel(Widget):
     def on_end_rotation_variance(self, instance, value):
         self.particle_builder.demo_particle.end_rotation_variance = value
 
+    def on_texture_location(self,instance,value):
+        self.particle_builder.demo_particle.texture = Image(value).texture
+
 
 class BehaviorPanel(Widget):
     particle_builder = ObjectProperty(None)
     emitter_type = NumericProperty(0)
+
     ## Gravity Emitter Params
     emitter_x_variance = BoundedNumericProperty(0, min=0, max=100)
     emitter_y_variance = BoundedNumericProperty(0, min=0, max=100)
@@ -396,6 +450,7 @@ Factory.register('BehaviorPanel', BehaviorPanel)
 Factory.register('ColorPanel', ColorPanel)
 Factory.register('Particle_Property_Slider', Particle_Property_Slider)
 Factory.register('Particle_Color_Sliders', Particle_Color_Sliders)
+Factory.register('ImageChooser', ImageChooser)
 
 class ParticleBuilderApp(App):
     def build(self):

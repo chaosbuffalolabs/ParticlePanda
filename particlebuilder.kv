@@ -229,6 +229,29 @@ ParticleBuilder:
             halign: 'center'
             valign: 'middle'
 
+<ImageChooser>:
+    BoxLayout:
+        pos: root.pos
+        size:root.size
+        orientation: 'horizontal'
+        Button:
+            id: choose_image_button
+            size_hint: (.7, 1.)
+            text: root.button_text
+            on_release: root.button_callback()
+        Image:
+            size_hint: (.3, 1.)
+            source: root.image_location
+
+<ImageChooserCell>:
+    Image:
+        pos: root.pos
+        size: root.size
+        source: root.image_location if root.image_location is not None else None
+        on_touch_down: self.collide_point(*args[1].pos) and root.cell_press()
+
+
+
 <ParticlePanel>:
     max_particles_slider: max_particles_slider
     life_span_slider: life_span_slider
@@ -247,6 +270,11 @@ ParticleBuilder:
         pos: root.pos
         size: root.size
         orientation: 'vertical'
+        padding: 5
+        ImageChooser:
+            id: image_chooser_button
+            size_hint: (1., .2)
+            on_image_location: root.texture_location = self.image_location
         Particle_Property_Slider:
             id: max_particles_slider
             size_hint: (1., .2)

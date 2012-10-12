@@ -9,7 +9,7 @@ from kivy.graphics.opengl import glBlendFunc, GL_SRC_ALPHA, GL_ONE, GL_ZERO, GL_
 from kivy.core.image import Image
 from kivy.logger import Logger
 from xml.dom.minidom import parse as parse_xml
-from kivy.properties import NumericProperty, BoundedNumericProperty, ListProperty
+from kivy.properties import NumericProperty, BoundedNumericProperty, ListProperty, ObjectProperty
 import random
 import sys
 import math
@@ -63,6 +63,7 @@ class Particle(object):
 class ParticleSystem(Widget):
     max_num_particles = NumericProperty(200)
     life_span = NumericProperty(2)
+    texture = ObjectProperty(None)
     life_span_variance = NumericProperty(0)
     start_size = NumericProperty(16)
     start_size_variance = NumericProperty(0)
@@ -127,6 +128,14 @@ class ParticleSystem(Widget):
         if self.capacity > value:
             self._lower_capacity(self.capacity - self.max_capacity)
         self.emission_rate = self.max_num_particles/self.life_span
+
+    def on_texture(self,instance,value):
+        for p in self.particles:
+            try:
+                self.particles_dict[p]['rect'].texture = self.texture
+            except KeyError:
+                # if particle isn't initialized yet, you can't change its texture.
+                pass
 
     def start(self, duration=sys.maxint):
         if self.emission_rate != 0:
