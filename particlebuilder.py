@@ -10,10 +10,11 @@ from kivy.core.image import Image
 from kivy.uix.image import Image as ImageWidget
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.floatlayout import FloatLayout
-from kivy_particle import *
+from kivyparticle.engine import *
 from kivy.properties import NumericProperty, BooleanProperty, ListProperty, StringProperty, ObjectProperty, BoundedNumericProperty
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
 from kivy.lang import Builder
+import os
 
 from xml.dom.minidom import Document
 import xml.dom.minidom
@@ -27,7 +28,8 @@ class ParticleBuilder(Widget):
         
     def create_particle_system(self):
         texture = Image('media/particle.png').texture
-        demo_particle = ParticleSystem(texture, None)
+        demo_particle = ParticleSystem(None)
+        demo_particle.texture = texture
         self.demo_particles.append(demo_particle)
 
     def add_demo_particle_system(self, num_tab):

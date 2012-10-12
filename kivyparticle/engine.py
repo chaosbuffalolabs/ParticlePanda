@@ -1,19 +1,19 @@
-
-import kivy
-kivy.require('1.4.1')
+# -*- coding: utf-8 -*-
 
 from kivy.uix.widget import Widget
 from kivy.clock import Clock
 from kivy.graphics import Rectangle, Color, Callback
 from kivy.graphics.opengl import glBlendFunc, GL_SRC_ALPHA, GL_ONE, GL_ZERO, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR
 from kivy.core.image import Image
-from kivy.logger import Logger
 from xml.dom.minidom import parse as parse_xml
-from kivy.properties import NumericProperty, BoundedNumericProperty, ListProperty, ObjectProperty
-import random
+from .utils import random_variance, random_color_variance
+from kivy.properties import NumericProperty, BooleanProperty, ListProperty, StringProperty, ObjectProperty, BoundedNumericProperty
+
 import sys
 import math
 import os
+
+__all__ = ['EMITTER_TYPE_GRAVITY', 'EMITTER_TYPE_RADIAL', 'Particle', 'ParticleSystem']
 
 
 EMITTER_TYPE_GRAVITY = 0
@@ -32,33 +32,17 @@ BLEND_FUNC = {0: GL_ZERO,
 }
 
 
-def clamp(value):
-    return min(max(0.0, value), 1.0)
-
-
-def random_color():
-    return Color(random.random(), random.random(), random.random())
-
-
-def random_variance(base, variance):
-    return base + variance * (random.random() * 2.0 - 1.0)
-
-
-def random_color_variance(base, variance):
-    return [clamp(random_variance(base[i], variance[i])) for i in range(4)]
-
-
 class Particle(object):
     x, y, rotation, current_time = 0, 0, 0, 0
     scale, total_time = 1.0, 1.0
     color = [1.0, 1.0, 1.0, 1.0]
     color_delta = [0.0, 0.0, 0.0, 0.0]
-    color_argb, color_argb_delta = [0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]
     start_x, start_y, velocity_x, velocity_y = 0, 0, 0, 0
     radial_acceleration, tangent_acceleration = 0, 0
     emit_radius, emit_radius_delta = 0, 0
     emit_rotation, emit_rotation_delta = 0, 0
     rotation_delta, scale_delta = 0, 0
+
 
 class ParticleSystem(Widget):
     max_num_particles = NumericProperty(200)
@@ -98,7 +82,7 @@ class ParticleSystem(Widget):
     blend_factor_dest = NumericProperty(1)
     emitter_type = NumericProperty(0)
 
-    def __init__(self, texture, config, **kwargs):
+    def __init__(self, config, **kwargs):
         super(ParticleSystem, self).__init__(**kwargs)
         self.capacity = 0
         self.particles = list()
@@ -106,8 +90,8 @@ class ParticleSystem(Widget):
         self.emission_time = 0.0
         self.frame_time = 0.0
         self.num_particles = 0
-        self.texture = texture
-        #self._parse_config(config)
+
+        if config is not None: self._parse_config(config)
         self.emission_rate = self.max_num_particles / self.life_span
         self.initial_capacity = self.max_num_particles
         self.max_capacity = self.max_num_particles
@@ -120,23 +104,6 @@ class ParticleSystem(Widget):
 
         Clock.schedule_interval(self._update, 1.0 / 60.0)
 
-    def on_max_num_particles(self, instance, value):
-        print 'max particles set to: ', value
-        self.max_capacity = value
-        if self.capacity < value:
-            self._raise_capacity(self.max_capacity - self.capacity)
-        if self.capacity > value:
-            self._lower_capacity(self.capacity - self.max_capacity)
-        self.emission_rate = self.max_num_particles/self.life_span
-
-    def on_texture(self,instance,value):
-        for p in self.particles:
-            try:
-                self.particles_dict[p]['rect'].texture = self.texture
-            except KeyError:
-                # if particle isn't initialized yet, you can't change its texture.
-                pass
-
     def start(self, duration=sys.maxint):
         if self.emission_rate != 0:
             self.emission_time = duration
@@ -147,6 +114,22 @@ class ParticleSystem(Widget):
             self.num_particles = 0
             self.particles_dict = dict()
             self.canvas.clear()
+
+    def on_max_num_particles(self, instance, value):
+        self.max_capacity = value
+        if self.capacity < value:
+            self._raise_capacity(self.max_capacity - self.capacity)
+        elif self.capacity > value:
+            self._lower_capacity(self.capacity - self.max_capacity)
+        self.emission_rate = self.max_num_particles/self.life_span
+
+    def on_texture(self,instance,value):
+        for p in self.particles:
+            try:
+                self.particles_dict[p]['rect'].texture = self.texture
+            except KeyError:
+                # if particle isn't initialized yet, you can't change its texture.
+                pass
 
     def _set_blend_func(self, instruction):
         #glBlendFunc(self.blend_factor_source, self.blend_factor_dest)
@@ -311,18 +294,9 @@ class ParticleSystem(Widget):
     def _raise_capacity(self, by_amount):
         old_capacity = self.capacity
         new_capacity = min(self.max_capacity, self.capacity + by_amount)
-
+        
         for i in range(int(new_capacity - old_capacity)):
             self.particles.append(self._create_particle())
-            self.capacity += 1
-
-    def _lower_capacity(self, by_amount):
-        old_capacity = self.capacity
-        new_capacity = min(self.max_capacity, self.capacity - by_amount)
-
-        for i in range(int(old_capacity - new_capacity)):
-
-            self.capacity -= 1
 
     def _advance_time(self, passed_time):
         particle_index = 0
@@ -349,6 +323,9 @@ class ParticleSystem(Widget):
 
             while self.frame_time > 0:
                 if self.num_particles < self.max_capacity:
+                    if self.num_particles == self.capacity:
+                        self._raise_capacity(self.capacity)
+
                     particle = self.particles[self.num_particles]
                     self.num_particles += 1
                     self._init_particle(particle)
@@ -375,6 +352,3 @@ class ParticleSystem(Widget):
                 self.particles_dict[particle]['color'].rgba = particle.color
                 self.particles_dict[particle]['rect'].pos = (particle.x - size[0] * 0.5, particle.y - size[1] * 0.5)
                 self.particles_dict[particle]['rect'].size = size
-
-
-
