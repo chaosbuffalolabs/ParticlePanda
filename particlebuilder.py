@@ -4,6 +4,7 @@ from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
+from kivy.uix.togglebutton import ToggleButton
 from kivy.factory import Factory
 from kivy.uix.boxlayout import BoxLayout
 from kivy.core.image import Image
@@ -16,12 +17,14 @@ from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
 from kivy.lang import Builder
 import os
 
+from time import sleep
 from xml.dom.minidom import Document
 import xml.dom.minidom
 
 class ParticleBuilder(Widget):
     demo_particles = ListProperty(None)
     demo_particle = ObjectProperty(ParticleSystem)
+    active = BooleanProperty(False)
 
     def __init__(self, **kwargs):
         super(ParticleBuilder, self).__init__(**kwargs)
@@ -38,10 +41,13 @@ class ParticleBuilder(Widget):
         self.demo_particle.emitter_y = self.particle_window.pos[1] + self.particle_window.height *.5
         self.add_widget(self.demo_particle)
         self.demo_particle.start()
+        self.active = True
 
     def remove_demo_particle_system(self):
+        if not self.active: return
         self.demo_particle.stop()
         self.remove_widget(self.demo_particle)
+        self.active = False
 
     def on_touch_down(self, touch):
         super(ParticleBuilder, self).on_touch_down(touch)
@@ -60,6 +66,7 @@ class ParticleParamsLayout(Widget):
     all_tabs = ListProperty(None)
     all_tabs2 = ListProperty(None)
     all_tabs3 = ListProperty(None)
+    current_tab = NumericProperty(0)
 
     def create_tab(self, num_tab):
         if num_tab == 1:
@@ -83,6 +90,7 @@ class ParticleParamsLayout(Widget):
     def add_tab_to_layout(self, num_tab):
         try:
             self.particle_tabs.remove_widget(self.particle_tabs.tab_list[0])
+            print 'removed hello tab'
         except: 
             print 'no tab to remove'
 
@@ -90,12 +98,14 @@ class ParticleParamsLayout(Widget):
         self.particle_tabs.add_widget(self.all_tabs2[num_tab-1])
         self.particle_tabs.add_widget(self.all_tabs3[num_tab-1])
         self.parent.parent.add_demo_particle_system(num_tab)
+        self.current_tab = num_tab
         self.particle_tabs.switch_to(self.particle_tabs.tab_list[2])
 
     def remove_tab_from_layout(self, num_tab):
         self.particle_tabs.remove_widget(self.all_tabs[num_tab-1])
         self.particle_tabs.remove_widget(self.all_tabs2[num_tab-1])
         self.particle_tabs.remove_widget(self.all_tabs3[num_tab-1])
+        self.current_tab = 0
         default = TabbedPanelHeader(text='Hello')
         default.content = self.get_default_tab()
         self.parent.parent.remove_demo_particle_system()
@@ -124,7 +134,7 @@ class ParticleParamsLayout(Widget):
 class ParticleVariationLayout(Widget):
     num_variants = NumericProperty(0)
     
-    def add_variant_button(self):
+    def add_variant(self):
         if self.num_variants < 10:
             self.num_variants += 1
             num_tab = self.num_variants
@@ -134,8 +144,23 @@ class ParticleVariationLayout(Widget):
             self.variation_layout.add_widget(button)
             pbuilder.params_layout.create_tab(num_tab)
 
+    def reset_variants(self):
+        for v in self.variation_layout.children:
+            if v.state == 'down': v.state = 'normal'
+
+        self.variation_layout.clear_widgets()
+        self.num_variants = 0
+
+
+    def on_num_variants(self, instance, value):
+        print "num variants changed to ", value
+
 class ParticleLoadSaveLayout(Widget):
     new_particle = ObjectProperty(None)
+
+    def __init__(self,**kwargs):
+        super(ParticleLoadSaveLayout,self).__init__(**kwargs)
+
 
     def save_particle(self):
         name = "C:\Users\Kerby\CBLParticleSystem\SavedParticles"
@@ -164,11 +189,30 @@ class ParticleLoadSaveLayout(Widget):
         # doc.writexml(f,encoding='utf-8')
         # f.close()
 
-        print 'save'
+        # print 'save'
 
-    def load_particle(name="C:\Users\Kerby\CBLParticleSystem\SavedParticles\particle.xml"):
-        return xml.dom.minidom.parse(name)
-        print 'load'
+    def load_particle(self,name='templates/fire.pex'):
+        pbuilder = self.parent.parent
+        vl = pbuilder.variation_layout
+        pl = pbuilder.params_layout
+        vl.reset_variants()
+
+        # removing 'hello' tab
+        try:
+            pl.particle_tabs.remove_widget(pl.particle_tabs.tab_list[0])
+        except: 
+            print 'no tab to remove'
+
+        new_particle = ParticleSystem(name)
+        pbuilder.demo_particles = [new_particle]
+
+        pl.all_tabs = []
+        pl.all_tabs2 = []
+        pl.all_tabs3 = []
+
+        vl.add_variant()
+        # pl.add_tab_to_layout(1)
+
 
 class Default_Particle_Panel(Widget):
     pass

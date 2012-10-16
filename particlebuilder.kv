@@ -65,7 +65,7 @@ ParticleBuilder:
             font_size: root.size[0]*.06
             halign: 'center'
             valign: 'middle'
-            on_state: root.add_variant_button() if (self.state == 'down') else None   
+            on_state: root.add_variant() if (self.state == 'down') else None   
 
 <ParticleLoadSaveLayout>:
     BoxLayout:
