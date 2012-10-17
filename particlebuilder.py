@@ -211,7 +211,13 @@ class ParticleLoadSaveLayout(Widget):
         pl.all_tabs3 = []
 
         vl.add_variant()
-        # pl.add_tab_to_layout(1)
+        vl.variation_layout.children[0].state = 'down'
+
+        pl.all_tabs[-1].content.get_values_from_particle()
+        pl.all_tabs2[-1].content.get_values_from_particle()
+        pl.all_tabs3[-1].content.get_values_from_particle()
+        print pl.all_tabs2
+        
 
 
 class Default_Particle_Panel(Widget):
@@ -293,6 +299,7 @@ class ParticlePanel(Widget):
 
     def __init__(self, pbuilder, **kwargs):
         super(ParticlePanel, self).__init__(**kwargs)
+        print dir(self)
         self.particle_builder = pbuilder.parent
 
     def on_max_num_particles(self, instance, value):
@@ -337,14 +344,21 @@ class ParticlePanel(Widget):
     def on_texture_location(self,instance,value):
         self.particle_builder.demo_particle.texture = Image(value).texture
 
+    def get_values_from_particle(self):
+        properties = ['max_num_particles', 'life_span', 'life_span_variance', 'start_size', 'start_size_variance', 
+                    'end_size', 'end_size_variance', 'emit_angle', 'emit_angle_variance', 'start_rotation', 
+                    'start_rotation_variance', 'end_rotation', 'end_rotation_variance']
+    
+        for p in properties:
+            setattr(self,p,getattr(self.particle_builder.demo_particle,p))
 
 class BehaviorPanel(Widget):
     particle_builder = ObjectProperty(None)
     emitter_type = NumericProperty(0)
 
     ## Gravity Emitter Params
-    emitter_x_variance = BoundedNumericProperty(0, min=0, max=100)
-    emitter_y_variance = BoundedNumericProperty(0, min=0, max=100)
+    emitter_x_variance = BoundedNumericProperty(0, min=0, max=200)
+    emitter_y_variance = BoundedNumericProperty(0, min=0, max=200)
     gravity_x = BoundedNumericProperty(0, min=-100, max=100)
     gravity_y = BoundedNumericProperty(0, min=-100, max=100)
     speed = BoundedNumericProperty(0, min=0, max=100)
@@ -416,6 +430,17 @@ class BehaviorPanel(Widget):
     def on_rotate_per_second_variance(self, instance, value):
         self.particle_builder.demo_particle.rotate_per_second_variance = value
 
+    def get_values_from_particle(self):
+        properties = ['emitter_x_variance', 'emitter_y_variance', 'gravity_x', 'gravity_y', 'speed', 'speed_variance',
+                     'radial_acceleration', 'radial_acceleration_variance', 'tangential_acceleration', 
+                     'tangential_acceleration_variance', 'max_radius', 'max_radius_variance', 'min_radius', 
+                     'rotate_per_second', 'rotate_per_second_variance']
+
+        for p in properties:
+            setattr(self,p,getattr(self.particle_builder.demo_particle,p))
+
+
+
 class ColorPanel(Widget):
     particle_builder = ObjectProperty(None)
     start_color_r = BoundedNumericProperty(1., min=0, max=1.)
@@ -486,6 +511,29 @@ class ColorPanel(Widget):
 
     def on_end_color_a_variance(self, instance, value):
         self.particle_builder.demo_particle.end_color_variance[3] = self.end_color_a_variance
+
+    def get_values_from_particle(self):
+        print self.start_color_r, self.start_color_g, self.start_color_b, self.start_color_a
+        
+
+        self.start_color_r = self.particle_builder.demo_particle.start_color[0]
+        self.start_color_g = self.particle_builder.demo_particle.start_color[1]
+        self.start_color_b = self.particle_builder.demo_particle.start_color[2]
+        self.start_color_a = self.particle_builder.demo_particle.start_color[3]
+        self.start_color_r_variance = self.particle_builder.demo_particle.start_color_variance[0]
+        self.start_color_g_variance = self.particle_builder.demo_particle.start_color_variance[1]
+        self.start_color_b_variance = self.particle_builder.demo_particle.start_color_variance[2]
+        self.start_color_a_variance = self.particle_builder.demo_particle.start_color_variance[3]
+        self.end_color_r = self.particle_builder.demo_particle.end_color[0]
+        self.end_color_g = self.particle_builder.demo_particle.end_color[1]
+        self.end_color_b = self.particle_builder.demo_particle.end_color[2]
+        self.end_color_a = self.particle_builder.demo_particle.end_color[3]
+        self.end_color_r_variance = self.particle_builder.demo_particle.end_color_variance[0]
+        self.end_color_g_variance = self.particle_builder.demo_particle.end_color_variance[1]
+        self.end_color_b_variance = self.particle_builder.demo_particle.end_color_variance[2]
+        self.end_color_a_variance = self.particle_builder.demo_particle.end_color_variance[3]
+
+        print self.start_color_r, self.start_color_g, self.start_color_b, self.start_color_a
 
 Factory.register('ParticleBuilder', ParticleBuilder)
 Factory.register('ParticleVariationLayout', ParticleVariationLayout)
