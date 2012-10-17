@@ -206,10 +206,6 @@ class ParticleLoadSaveLayout(Widget):
         new_particle = ParticleSystem(name)
         pbuilder.demo_particles = [new_particle]
 
-        pl.all_tabs = []
-        pl.all_tabs2 = []
-        pl.all_tabs3 = []
-
         vl.add_variant()
         vl.variation_layout.children[0].state = 'down'
 
@@ -515,23 +511,22 @@ class ColorPanel(Widget):
     def get_values_from_particle(self):
         print self.start_color_r, self.start_color_g, self.start_color_b, self.start_color_a
         
-
-        self.start_color_r = self.particle_builder.demo_particle.start_color[0]
-        self.start_color_g = self.particle_builder.demo_particle.start_color[1]
-        self.start_color_b = self.particle_builder.demo_particle.start_color[2]
-        self.start_color_a = self.particle_builder.demo_particle.start_color[3]
-        self.start_color_r_variance = self.particle_builder.demo_particle.start_color_variance[0]
-        self.start_color_g_variance = self.particle_builder.demo_particle.start_color_variance[1]
-        self.start_color_b_variance = self.particle_builder.demo_particle.start_color_variance[2]
-        self.start_color_a_variance = self.particle_builder.demo_particle.start_color_variance[3]
-        self.end_color_r = self.particle_builder.demo_particle.end_color[0]
-        self.end_color_g = self.particle_builder.demo_particle.end_color[1]
-        self.end_color_b = self.particle_builder.demo_particle.end_color[2]
-        self.end_color_a = self.particle_builder.demo_particle.end_color[3]
-        self.end_color_r_variance = self.particle_builder.demo_particle.end_color_variance[0]
-        self.end_color_g_variance = self.particle_builder.demo_particle.end_color_variance[1]
-        self.end_color_b_variance = self.particle_builder.demo_particle.end_color_variance[2]
-        self.end_color_a_variance = self.particle_builder.demo_particle.end_color_variance[3]
+        self.start_color_sliders.color_r = self.particle_builder.demo_particle.start_color[0]
+        self.start_color_sliders.color_g = self.particle_builder.demo_particle.start_color[1]
+        self.start_color_sliders.color_b = self.particle_builder.demo_particle.start_color[2]
+        self.start_color_sliders.color_a = self.particle_builder.demo_particle.start_color[3]
+        self.start_color_variation_sliders.color_r = self.particle_builder.demo_particle.start_color_variance[0]
+        self.start_color_variation_sliders.color_g = self.particle_builder.demo_particle.start_color_variance[1]
+        self.start_color_variation_sliders.color_b = self.particle_builder.demo_particle.start_color_variance[2]
+        self.start_color_variation_sliders.color_a = self.particle_builder.demo_particle.start_color_variance[3]
+        self.end_color_sliders.color_r = self.particle_builder.demo_particle.end_color[0]
+        self.end_color_sliders.color_g = self.particle_builder.demo_particle.end_color[1]
+        self.end_color_sliders.color_b = self.particle_builder.demo_particle.end_color[2]
+        self.end_color_sliders.color_a = self.particle_builder.demo_particle.end_color[3]
+        self.end_color_variation_sliders.color_r = self.particle_builder.demo_particle.end_color_variance[0]
+        self.end_color_variation_sliders.color_g = self.particle_builder.demo_particle.end_color_variance[1]
+        self.end_color_variation_sliders.color_b = self.particle_builder.demo_particle.end_color_variance[2]
+        self.end_color_variation_sliders.color_a = self.particle_builder.demo_particle.end_color_variance[3]
 
         print self.start_color_r, self.start_color_g, self.start_color_b, self.start_color_a
 
