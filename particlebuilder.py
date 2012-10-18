@@ -191,7 +191,7 @@ class ParticleLoadSaveLayout(Widget):
 
         # print 'save'
 
-    def load_particle(self,name='templates/fire.pex'):
+    def load_particle(self,name='templates/fire.pex',texture_path='media/particle.png'):
         pbuilder = self.parent.parent
         vl = pbuilder.variation_layout
         pl = pbuilder.params_layout
@@ -204,6 +204,7 @@ class ParticleLoadSaveLayout(Widget):
             print 'no tab to remove'
 
         new_particle = ParticleSystem(name)
+        new_particle.texture = Image(texture_path).texture
         pbuilder.demo_particles = [new_particle]
 
         vl.add_variant()
@@ -320,25 +321,25 @@ class ParticlePanel(Widget):
         self.particle_builder.demo_particle.end_size_variance = value
 
     def on_emit_angle(self, instance, value):
-        self.particle_builder.demo_particle.emit_angle = value
+        self.particle_builder.demo_particle.emit_angle = value * 0.0174532925
 
     def on_emit_angle_variance(self, instance, value):
-        self.particle_builder.demo_particle.emit_angle_variance = value
+        self.particle_builder.demo_particle.emit_angle_variance = value * 0.0174532925
 
     def on_start_rotation(self, instance, value):
-        self.particle_builder.demo_particle.start_rotation = value
+        self.particle_builder.demo_particle.start_rotation = value * 0.0174532925
 
     def on_start_rotation_variance(self, instance, value):
-        self.particle_builder.demo_particle.start_rotation_variance = value
+        self.particle_builder.demo_particle.start_rotation_variance = value * 0.0174532925
 
     def on_end_rotation(self, instance, value):
-        self.particle_builder.demo_particle.end_rotation = value
+        self.particle_builder.demo_particle.end_rotation = value * 0.0174532925
 
     def on_end_rotation_variance(self, instance, value):
-        self.particle_builder.demo_particle.end_rotation_variance = value
+        self.particle_builder.demo_particle.end_rotation_variance = value * 0.0174532925
 
     def on_texture_location(self,instance,value):
-        self.particle_builder.demo_particle.texture = Image(value).texture
+        self.particle_builder.demo_particle.texture = Image(value).texture * 0.0174532925
 
     def get_values_from_particle(self):
         properties = ['max_num_particles', 'life_span', 'life_span_variance', 'start_size', 'start_size_variance', 
@@ -346,7 +347,11 @@ class ParticlePanel(Widget):
                     'start_rotation_variance', 'end_rotation', 'end_rotation_variance']
     
         for p in properties:
-            setattr(self,p,getattr(self.particle_builder.demo_particle,p))
+            if p in ['emit_angle', 'emit_angle_variance', 'start_rotation', 
+                    'start_rotation_variance', 'end_rotation', 'end_rotation_variance']:
+                setattr(self,p,getattr(self.particle_builder.demo_particle,p) / 0.0174532925 )
+            else:
+                setattr(self,p,getattr(self.particle_builder.demo_particle,p))
 
 class BehaviorPanel(Widget):
     particle_builder = ObjectProperty(None)

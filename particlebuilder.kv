@@ -224,7 +224,7 @@ ParticleBuilder:
             step: root.slider_step
         Label:
             size_hint: (.2, 1.)
-            text: str(root.prop_slider.value)
+            text: str(round(root.prop_slider.value,1))
             font_size: root.size[0]*.04
             halign: 'center'
             valign: 'middle'
