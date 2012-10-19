@@ -5,6 +5,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
 from kivy.uix.togglebutton import ToggleButton
 from kivy.factory import Factory
 from kivy.uix.boxlayout import BoxLayout
@@ -158,11 +159,15 @@ class ParticleVariationLayout(Widget):
 
 class ParticleLoadSaveLayout(Widget):
     new_particle = ObjectProperty(None)
-    dir = 'templates'
+    load_dir = 'templates'
 
     def __init__(self,**kwargs):
         load_particle_popup_content = LoadParticlePopupContents(self)
         self.load_particle_popup = Popup(title="Particle Effects", content=load_particle_popup_content, size_hint = (None,None), size=(512,512))
+
+        save_particle_popup_content = SaveParticlePopupContents(self)
+        self.save_particle_popup = Popup(title="Particle Effects", content=save_particle_popup_content, size_hint = (None,None), size=(512,512))
+
         super(ParticleLoadSaveLayout,self).__init__(**kwargs)
 
     def _reset_layout(self, layout):
@@ -170,7 +175,7 @@ class ParticleLoadSaveLayout(Widget):
             if isinstance(w, Label):
                 layout.remove_widget(w)
 
-    def _show_filenames(self, fnames):
+    def _load_show_filenames(self, fnames):
         layout = self.load_particle_popup.content.blayout
 
         self._reset_layout(layout)
@@ -178,24 +183,51 @@ class ParticleLoadSaveLayout(Widget):
 
         for f in fnames:
             ctx = {'text': f, 'height': self.load_particle_popup.content.label_height, 'parent': self}
-            button = Builder.template('FilenameButton', **ctx)
+            button = Builder.template('LoadFilenameButton', **ctx)
             layout.add_widget(button)
 
     def open_filename(self,fname):
         self.load_particle_popup.dismiss()
-        self.load_particle(name=os.path.join(self.dir,fname))
+        self.load_particle(name=os.path.join(self.load_dir,fname))
 
     def load_templates(self):
-        self.dir = 'templates'
-        self._show_filenames([fn for fn in os.listdir(self.dir) if fn.endswith('.pex')])
+        self.load_dir = 'templates'
+        self._load_show_filenames([fn for fn in os.listdir(self.load_dir) if fn.endswith('.pex')])
 
     def load_user_files(self):
-        self.dir = 'user_effects'
-        self._show_filenames([fn for fn in os.listdir(self.dir) if fn.endswith('.pex')])
+        self.load_dir = 'user_effects'
+        self._load_show_filenames([fn for fn in os.listdir(self.load_dir) if fn.endswith('.pex')])
 
     def show_load_popup(self):
         self.load_templates()
         self.load_particle_popup.open()
+
+    def show_save_popup(self):
+        self._save_show_filenames([fn for fn in os.listdir('user_effects') if fn.endswith('.pex')] + ['[ New file... ]'])
+        self.save_particle_popup.open()
+
+    def _save_show_filenames(self, fnames):
+        layout = self.save_particle_popup.content.blayout
+
+        self._reset_layout(layout)
+        self.save_particle_popup.content.blayout_height = 2*layout.padding + len(fnames)*(layout.spacing + self.save_particle_popup.content.label_height)
+
+        for f in fnames:
+            ctx = {'text': f, 'height': self.save_particle_popup.content.label_height, 'parent': self}
+            button = Builder.template('SaveFilenameButton', **ctx)
+            layout.add_widget(button)
+
+    def save_filename(self, fname):
+        if fname == '[ New file... ]':
+            self.new_file_popup = Popup(title="Please choose a filename.", content = GetNewFilenameLayout(self), size_hint = (None, None), size = (512,256))
+            self.new_file_popup.open()
+            return
+
+        with open(os.path.join('user_effects', fname), 'w') as outf:
+            outf.write('this is a test')
+
+        self.save_particle_popup.dismiss()
+        self.save_particle_popup_content = SaveParticlePopupContents(self)
 
 
     def save_particle(self):
@@ -237,6 +269,24 @@ class ParticleLoadSaveLayout(Widget):
         pl.all_tabs3[-1].content.get_values_from_particle()
         print pl.all_tabs2
         
+class GetNewFilenameLayout(Widget):
+    fname_input = ObjectProperty(None)
+
+    def __init__(self, load_save_widget, **kwargs):
+        self.load_save_widget = load_save_widget
+        super(GetNewFilenameLayout,self).__init__(**kwargs)
+
+    def ok(self):
+        text = self.fname_input.text[:]
+        if not text.endswith('.pex'): text += '.pex'
+        self.load_save_widget.save_filename(text)
+        self.load_save_widget.new_file_popup.dismiss()
+        
+
+    def cancel(self):
+        self.fname_input.text = 'effect.pex'
+        self.load_save_widget.new_file_popup.dismiss()
+        
 
 class LoadParticlePopupContents(Widget):
     blayout = ObjectProperty(None)
@@ -253,6 +303,15 @@ class LoadParticlePopupContents(Widget):
             self.load_save_widget.load_templates()
         elif value == 'load user files':
             self.load_save_widget.load_user_files()
+
+class SaveParticlePopupContents(Widget):
+    blayout = ObjectProperty(None)
+    blayout_height = NumericProperty(50)
+    label_height = NumericProperty(30)
+
+    def __init__(self, load_save_widget, **kwargs):
+        self.load_save_widget = load_save_widget
+        super(SaveParticlePopupContents,self).__init__(**kwargs)
 
 
 class Default_Particle_Panel(Widget):

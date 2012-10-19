@@ -71,14 +71,13 @@ ParticleBuilder:
     BoxLayout:
         size_hint: (1.,1.)
         pos: root.pos
-        size: root.size
         orientation: 'vertical'
         spacing: 25
         Button:
             size_hint: (1.,.1)
             text: 'Save'
             font_size: root.size[0]*.125
-            on_state: root.save_particle() if (self.state == 'down') else None
+            on_state: root.show_save_popup() if (self.state == 'down') else None
         Button:
             size_hint: (1.,.1)
             text: 'Load'
@@ -87,13 +86,57 @@ ParticleBuilder:
             valign: 'middle'
             on_state: root.show_load_popup() if (self.state == 'down') else None
 
-[FilenameButton@Label]
+<GetNewFileNameLayout>:
+    fname_input: fname_input
+
+    BoxLayout:
+        size_hint: (1., 1.)
+        margin: 10
+        spacing: 10
+        orientation: 'vertical'
+        pos: root.pos
+        size: root.size
+
+        TextInput:
+            id: fname_input
+            multiline: False
+            text: 'effect.pex'
+            size_hint_y: None
+            height: 40
+        BoxLayout:
+            orientation: 'horizontal'
+            margin: 10
+            spacing: 10
+            size_hint_y: None
+            height: 40
+            Widget:
+                size_hint_x: .25
+            Button:
+                size_hint_x: .25
+                text: 'Cancel'
+                on_release: root.cancel()
+            Button:
+                size_hint_x: .25
+                text: 'OK'
+                on_release: root.ok()
+            Widget:
+                size_hint_x: .25
+
+[LoadFilenameButton@Label]
     size_hint_x: 1.
     size_hint_y: None
     height: ctx.height
     text: ctx.text
     text_size: self.size
     on_touch_down: self.collide_point(*args[1].pos) and ctx.parent.open_filename(self.text)
+
+[SaveFilenameButton@Label]
+    size_hint_x: 1.
+    size_hint_y: None
+    height: ctx.height
+    text: ctx.text
+    text_size: self.size
+    on_touch_down: self.collide_point(*args[1].pos) and ctx.parent.save_filename(self.text)
 
 [VariantButton@ToggleButton]
     size_hint: (1., .1)
@@ -288,6 +331,21 @@ ParticleBuilder:
                     group: 'importmode'
                     on_state: root.button_callback('load user files') if self.state == 'down' else None
                     size_hint: (.5, 1)
+
+<SaveParticlePopupContents>:
+    blayout: blayout
+
+    ScrollView:
+        pos: root.pos
+        size: root.size
+        BoxLayout:
+            id: blayout
+            size_hint_x: 1.
+            size_hint_y: None
+            height: root.blayout_height
+            orientation: 'vertical'
+            padding: 10
+            spacing: 5
 
 <ParticlePanel>:
     max_particles_slider: max_particles_slider
