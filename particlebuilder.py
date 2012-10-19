@@ -4,6 +4,7 @@ from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
+from kivy.uix.button import Button
 from kivy.uix.togglebutton import ToggleButton
 from kivy.factory import Factory
 from kivy.uix.boxlayout import BoxLayout
@@ -157,9 +158,44 @@ class ParticleVariationLayout(Widget):
 
 class ParticleLoadSaveLayout(Widget):
     new_particle = ObjectProperty(None)
+    dir = 'templates'
 
     def __init__(self,**kwargs):
+        load_particle_popup_content = LoadParticlePopupContents(self)
+        self.load_particle_popup = Popup(title="Particle Effects", content=load_particle_popup_content, size_hint = (None,None), size=(512,512))
         super(ParticleLoadSaveLayout,self).__init__(**kwargs)
+
+    def _reset_layout(self, layout):
+        for w in layout.children[:]:
+            if isinstance(w, Label):
+                layout.remove_widget(w)
+
+    def _show_filenames(self, fnames):
+        layout = self.load_particle_popup.content.blayout
+
+        self._reset_layout(layout)
+        self.load_particle_popup.content.blayout_height = self.load_particle_popup.content.menu_height + 2*layout.padding + len(fnames)*(layout.spacing + self.load_particle_popup.content.label_height)
+
+        for f in fnames:
+            ctx = {'text': f, 'height': self.load_particle_popup.content.label_height, 'parent': self}
+            button = Builder.template('FilenameButton', **ctx)
+            layout.add_widget(button)
+
+    def open_filename(self,fname):
+        self.load_particle_popup.dismiss()
+        self.load_particle(name=os.path.join(self.dir,fname))
+
+    def load_templates(self):
+        self.dir = 'templates'
+        self._show_filenames([fn for fn in os.listdir(self.dir) if fn.endswith('.pex')])
+
+    def load_user_files(self):
+        self.dir = 'user_effects'
+        self._show_filenames([fn for fn in os.listdir(self.dir) if fn.endswith('.pex')])
+
+    def show_load_popup(self):
+        self.load_templates()
+        self.load_particle_popup.open()
 
 
     def save_particle(self):
@@ -176,20 +212,6 @@ class ParticleLoadSaveLayout(Widget):
         thefile = open("name","w")
         new_particle.writexml(thefile)
         thefile.close()
-    
-    # def write_to_file(doc, name="C:\Users\Kerby\CBLParticleSystem\SavedParticles\particle.xml"):
-        # new_particle = Document()
-        # new_element = new_particle.createElement('saved_particle')
-        # new_particle.appendChild(new_element)
-        # thefile = open("name","w")
-        # new_particle.writexml(thefile)
-        # thefile.close()
-
-        # f = open('file.xml','wb')
-        # doc.writexml(f,encoding='utf-8')
-        # f.close()
-
-        # print 'save'
 
     def load_particle(self,name='templates/fire.pex',texture_path='media/particle.png'):
         pbuilder = self.parent.parent
@@ -215,6 +237,22 @@ class ParticleLoadSaveLayout(Widget):
         pl.all_tabs3[-1].content.get_values_from_particle()
         print pl.all_tabs2
         
+
+class LoadParticlePopupContents(Widget):
+    blayout = ObjectProperty(None)
+    blayout_height = NumericProperty(50)
+    menu_height = NumericProperty(40)
+    label_height = NumericProperty(30)
+
+    def __init__(self, load_save_widget, **kwargs):
+        self.load_save_widget = load_save_widget
+        super(LoadParticlePopupContents,self).__init__(**kwargs)
+
+    def button_callback(self,value):
+        if value == 'load templates':
+            self.load_save_widget.load_templates()
+        elif value == 'load user files':
+            self.load_save_widget.load_user_files()
 
 
 class Default_Particle_Panel(Widget):
@@ -265,6 +303,7 @@ class ImageChooser(Widget):
         self.image_location = image_location
         self.image_chooser_popup.dismiss()
 
+
 class Particle_Property_Slider(Widget):
     slider_bounds_min = NumericProperty(0)
     slider_bounds_max = NumericProperty(100)
@@ -280,19 +319,19 @@ class Particle_Color_Sliders(Widget):
 class ParticlePanel(Widget):
     particle_builder = ObjectProperty(None)
     texture_location = StringProperty("media/particle.png")
-    max_num_particles = BoundedNumericProperty(200, min=1, max=500)
-    life_span = BoundedNumericProperty(2, min=.01, max=10)
-    life_span_variance = BoundedNumericProperty(0, min=0, max=10)
-    start_size = BoundedNumericProperty(16, min=0, max=70)
-    start_size_variance = BoundedNumericProperty(0, min=0, max=70)
-    end_size = BoundedNumericProperty(16, min=0, max=70)
-    end_size_variance = BoundedNumericProperty(0, min=0, max=70)
-    emit_angle = BoundedNumericProperty(0, min=0, max=360)
-    emit_angle_variance = BoundedNumericProperty(0, min=0, max=360)
-    start_rotation = BoundedNumericProperty(0, min=0, max=360)
-    start_rotation_variance = BoundedNumericProperty(0, min=0, max=360)
-    end_rotation = BoundedNumericProperty(0, min=0, max=360)
-    end_rotation_variance = BoundedNumericProperty(0, min=0, max=360)
+    max_num_particles = BoundedNumericProperty(200., min=1., max=500.)
+    life_span = BoundedNumericProperty(2., min=.01, max=10.)
+    life_span_variance = BoundedNumericProperty(0., min=0., max=10.)
+    start_size = BoundedNumericProperty(8., min=0., max=256.)
+    start_size_variance = BoundedNumericProperty(0., min=0., max=256.)
+    end_size = BoundedNumericProperty(8., min=0., max=256.)
+    end_size_variance = BoundedNumericProperty(0., min=0., max=256.)
+    emit_angle = BoundedNumericProperty(0., min=0., max=360.)
+    emit_angle_variance = BoundedNumericProperty(0., min=0., max=360.)
+    start_rotation = BoundedNumericProperty(0., min=0., max=360.)
+    start_rotation_variance = BoundedNumericProperty(0., min=0., max=360.)
+    end_rotation = BoundedNumericProperty(0., min=0., max=360.)
+    end_rotation_variance = BoundedNumericProperty(0., min=0., max=360.)
 
     def __init__(self, pbuilder, **kwargs):
         super(ParticlePanel, self).__init__(**kwargs)
@@ -339,7 +378,7 @@ class ParticlePanel(Widget):
         self.particle_builder.demo_particle.end_rotation_variance = value * 0.0174532925
 
     def on_texture_location(self,instance,value):
-        self.particle_builder.demo_particle.texture = Image(value).texture * 0.0174532925
+        self.particle_builder.demo_particle.texture = Image(value).texture
 
     def get_values_from_particle(self):
         properties = ['max_num_particles', 'life_span', 'life_span_variance', 'start_size', 'start_size_variance', 
@@ -358,23 +397,23 @@ class BehaviorPanel(Widget):
     emitter_type = NumericProperty(0)
 
     ## Gravity Emitter Params
-    emitter_x_variance = BoundedNumericProperty(0, min=0, max=200)
-    emitter_y_variance = BoundedNumericProperty(0, min=0, max=200)
-    gravity_x = BoundedNumericProperty(0, min=-100, max=100)
-    gravity_y = BoundedNumericProperty(0, min=-100, max=100)
-    speed = BoundedNumericProperty(0, min=0, max=100)
-    speed_variance = BoundedNumericProperty(0, min=0, max=100)
-    radial_acceleration = BoundedNumericProperty(100, min=-400, max=400)
-    radial_acceleration_variance = BoundedNumericProperty(0, min=0, max=400)
-    tangential_acceleration = BoundedNumericProperty(0, min=-500, max=500)
-    tangential_acceleration_variance = BoundedNumericProperty(0, min=0, max=500)
+    emitter_x_variance = BoundedNumericProperty(0., min=0., max=200.)
+    emitter_y_variance = BoundedNumericProperty(0., min=0., max=200.)
+    gravity_x = BoundedNumericProperty(0., min=-1500., max=1500.)
+    gravity_y = BoundedNumericProperty(0., min=-1500., max=1500.)
+    speed = BoundedNumericProperty(0., min=0., max=300.)
+    speed_variance = BoundedNumericProperty(0., min=0., max=300.)
+    radial_acceleration = BoundedNumericProperty(100., min=-400., max=400.)
+    radial_acceleration_variance = BoundedNumericProperty(0., min=0., max=400.)
+    tangential_acceleration = BoundedNumericProperty(0., min=-500., max=500.)
+    tangential_acceleration_variance = BoundedNumericProperty(0., min=0., max=500.)
 
     ## Radial Emitter Params
-    max_radius = BoundedNumericProperty(100, min=0, max=250)
-    max_radius_variance = BoundedNumericProperty(0, min=0, max=250)
-    min_radius = BoundedNumericProperty(0, min=0, max=250)
-    rotate_per_second = BoundedNumericProperty(0, min=-180, max=180)
-    rotate_per_second_variance = BoundedNumericProperty(0, min=0, max=180)
+    max_radius = BoundedNumericProperty(100., min=0., max=250.)
+    max_radius_variance = BoundedNumericProperty(0., min=0., max=250.)
+    min_radius = BoundedNumericProperty(0., min=0., max=250.)
+    rotate_per_second = BoundedNumericProperty(0., min=-180., max=180.)
+    rotate_per_second_variance = BoundedNumericProperty(0., min=0., max=180.)
 
     def __init__(self, pbuilder, **kwargs):
         super(BehaviorPanel, self).__init__(**kwargs)

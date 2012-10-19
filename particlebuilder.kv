@@ -85,7 +85,15 @@ ParticleBuilder:
             font_size: root.size[0]*.125
             halign: 'center'
             valign: 'middle'
-            on_state: root.load_particle() if (self.state == 'down') else None
+            on_state: root.show_load_popup() if (self.state == 'down') else None
+
+[FilenameButton@Label]
+    size_hint_x: 1.
+    size_hint_y: None
+    height: ctx.height
+    text: ctx.text
+    text_size: self.size
+    on_touch_down: self.collide_point(*args[1].pos) and ctx.parent.open_filename(self.text)
 
 [VariantButton@ToggleButton]
     size_hint: (1., .1)
@@ -250,7 +258,36 @@ ParticleBuilder:
         source: root.image_location if root.image_location is not None else None
         on_touch_down: self.collide_point(*args[1].pos) and root.cell_press()
 
+<LoadParticlePopupContents>:
+    blayout: blayout
 
+    ScrollView:
+        pos: root.pos
+        size: root.size
+        BoxLayout:
+            id: blayout
+            size_hint_x: 1.
+            size_hint_y: None
+            height: root.blayout_height
+            orientation: 'vertical'
+            padding: 10
+            spacing: 5
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_x: 1.
+                size_hint_y: None
+                height: root.menu_height
+                ToggleButton:
+                    text: 'templates'
+                    group: 'importmode'
+                    state: 'down'
+                    on_state: root.button_callback('load templates') if self.state == 'down' else None
+                    size_hint: (.5, 1)
+                ToggleButton:
+                    text: 'user files'
+                    group: 'importmode'
+                    on_state: root.button_callback('load user files') if self.state == 'down' else None
+                    size_hint: (.5, 1)
 
 <ParticlePanel>:
     max_particles_slider: max_particles_slider
