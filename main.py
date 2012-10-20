@@ -18,6 +18,7 @@ from kivy.properties import NumericProperty, BooleanProperty, ListProperty, Stri
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
 from kivy.lang import Builder
 import os
+import math
 
 from time import sleep
 from xml.dom.minidom import Document
@@ -223,27 +224,68 @@ class ParticleLoadSaveLayout(Widget):
             self.new_file_popup.open()
             return
 
+        print "writing to", fname
+
+        pbuilder = self.parent.parent
+        new_particle = Document()
+        particle_values = new_particle.createElement("particleEmitterConfig")
+        new_particle.appendChild(particle_values)
+
+
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'sourcePositionVariance', ('x', 'y'), (pbuilder.demo_particle.emitter_x_variance, pbuilder.demo_particle.emitter_y_variance)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'gravity', ('x', 'y'), (pbuilder.demo_particle.gravity_x, pbuilder.demo_particle.gravity_y)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'emitterType', ('value'), (pbuilder.demo_particle.emitter_type)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'maxParticles', ('value'), (pbuilder.demo_particle.max_num_particles)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'particleLifeSpan', ('value'), (pbuilder.demo_particle.life_span)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'particleLifespanVariance', ('value'), (pbuilder.demo_particle.life_span_variance)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'startParticleSize', ('value'), (pbuilder.demo_particle.start_size)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'startParticleSizeVariance', ('value'), (pbuilder.demo_particle.start_size_variance)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'finishParticleSize', ('value'), (pbuilder.demo_particle.end_size)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'FinishParticleSizeVariance', ('value'), (pbuilder.demo_particle.end_size_variance)))
+        
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'angle', ('value'), (math.degrees(pbuilder.demo_particle.emit_angle))))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'angleVariance', ('value'), (math.degrees(pbuilder.demo_particle.emit_angle_variance))))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'rotationStart', ('value'), (math.degrees(pbuilder.demo_particle.start_rotation))))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'rotationStartVariance', ('value'), (math.degrees(pbuilder.demo_particle.start_rotation_variance))))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'rotationEnd', ('value'), (math.degrees(pbuilder.demo_particle.end_rotation))))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'rotationEndVariance', ('value'), (math.degrees(pbuilder.demo_particle.end_rotation_variance))))
+        
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'speed', ('value'), (pbuilder.demo_particle.speed)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'speedVariance', ('value'), (pbuilder.demo_particle.speed_variance)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'radialAcceleration', ('value'), (pbuilder.demo_particle.radial_acceleration)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'radialAccelVariance', ('value'), (pbuilder.demo_particle.radial_acceleration_variance)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'tangentialAcceleration', ('value'), (pbuilder.demo_particle.tangential_acceleration)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'tangentialAccelVariance', ('value'), (pbuilder.demo_particle.tangential_acceleration_variance)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'maxRadius', ('value'), (pbuilder.demo_particle.max_radius)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'maxRadiusVariance', ('value'), (pbuilder.demo_particle.max_radius_variance)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'minRadius', ('value'), (pbuilder.demo_particle.min_radius)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'rotatePerSecond', ('value'), (math.degrees(pbuilder.demo_particle.rotate_per_second))))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'rotatePerSecondVariance', ('value'), (math.degrees(pbuilder.demo_particle.rotate_per_second_variance))))
+        
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'startColor', ('red', 'green', 'blue', 'alpha'), pbuilder.demo_particle.start_color))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'startColorVariance', ('red', 'green', 'blue', 'alpha'), pbuilder.demo_particle.start_color_variance))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'finishColor', ('red', 'green', 'blue', 'alpha'), pbuilder.demo_particle.end_color))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'finishColorVariance', ('red', 'green', 'blue', 'alpha'), pbuilder.demo_particle.end_color_variance))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'blendFuncSource', ('value'), (pbuilder.demo_particle.blend_factor_source)))
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'blendFuncDestination', ('value'), (pbuilder.demo_particle.blend_factor_dest)))
+        
         with open(os.path.join('user_effects', fname), 'w') as outf:
-            outf.write('this is a test')
+            new_particle.writexml(outf, indent = "  ", newl = "\n")
 
         self.save_particle_popup.dismiss()
         self.save_particle_popup_content = SaveParticlePopupContents(self)
 
+    def xml_from_attribute(self,parent, attribute, fields, values):
 
-    def save_particle(self):
-        name = "C:\Users\Kerby\CBLParticleSystem\SavedParticles"
+        xml_element = parent.createElement(attribute)
+        try:
+            if isinstance(fields, basestring): raise TypeError
+            for idx in range(len(fields)):
+                xml_element.setAttribute(fields[idx], str(values[idx]))
+        except TypeError:
+            xml_element.setAttribute(fields, str(values))
 
-        new_particle = Document()
-        particle_panel_values = new_particle.createElement("ParticleProperties")
-        new_particle.appendChild(particle_panel_values)
-        # particle_behavior_values = new_particle.createElement("ParticleBehaviorProperties")
-        # new_particle.appendChild(particle_behavior_values)
-        # particle_color_values = new_particle.createElement("ParticleColorProperties")
-        # new_particle.appendChild(particle_color_values)
-
-        thefile = open("name","w")
-        new_particle.writexml(thefile)
-        thefile.close()
+        return xml_element
 
     def load_particle(self,name='templates/fire.pex',texture_path='media/particle.png'):
         pbuilder = self.parent.parent

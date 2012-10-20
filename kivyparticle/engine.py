@@ -144,8 +144,8 @@ class ParticleSystem(Widget):
         # path = os.path.dirname(os.path.abspath(config))
         # texture_path = os.path.join(path, self._parse_data('texture', 'name'))
         # self.texture = Image(texture_path).texture
-        self.emitter_x = float(self._parse_data('sourcePosition', 'x'))
-        self.emitter_y = float(self._parse_data('sourcePosition', 'y'))
+        # self.emitter_x = float(self._parse_data('sourcePosition', 'x'))
+        # self.emitter_y = float(self._parse_data('sourcePosition', 'y'))
         self.emitter_x_variance = float(self._parse_data('sourcePositionVariance', 'x'))
         self.emitter_y_variance = float(self._parse_data('sourcePositionVariance', 'y'))
         self.gravity_x = float(self._parse_data('gravity', 'x'))
