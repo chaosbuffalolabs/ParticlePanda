@@ -281,9 +281,17 @@ class ParticleLoadSaveLayout(Widget):
         try:
             if isinstance(fields, basestring): raise TypeError
             for idx in range(len(fields)):
-                xml_element.setAttribute(fields[idx], str(values[idx]))
+                if int(float(values[idx])) == float(values[idx]):
+                    val = str(int(float(values[idx])))
+                else:
+                    val = str(float(values[idx]))
+                xml_element.setAttribute(fields[idx], val)
         except TypeError:
-            xml_element.setAttribute(fields, str(values))
+            if int(float(values)) == float(values):
+                val = str(int(float(values)))
+            else:
+                val = str(float(values))
+            xml_element.setAttribute(fields, val)
 
         return xml_element
 
