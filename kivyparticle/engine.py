@@ -298,6 +298,20 @@ class ParticleSystem(Widget):
         for i in range(int(new_capacity - old_capacity)):
             self.particles.append(self._create_particle())
 
+        self.num_particles = int(new_capacity)
+        self.capacity = new_capacity
+
+    def _lower_capacity(self, by_amount):
+        old_capacity = self.capacity
+        new_capacity = max(0, self.capacity - by_amount)
+        
+        for i in range(int(old_capacity - new_capacity)):
+            self.canvas.remove(self.particles_dict[self.particles.pop()]['rect'])
+
+        self.num_particles = int(new_capacity)
+        self.capacity = new_capacity
+
+
     def _advance_time(self, passed_time):
         particle_index = 0
 
