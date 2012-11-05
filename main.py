@@ -426,6 +426,15 @@ class Particle_Color_Sliders(Widget):
     color_b = BoundedNumericProperty(1., min=0, max=1.)
     color_a = BoundedNumericProperty(1., min=0, max=1.)
 
+    # necessary because of weird slider bug that allows values to go over bounds
+    def clip(self, val, vmin, vmax):
+        if val < vmin:
+            return vmin
+        elif val > vmax:
+            return vmax
+        else:
+            return val
+
 class ParticlePanel(Widget):
     particle_builder = ObjectProperty(None)
     texture_location = StringProperty("media/particle.png")
@@ -608,6 +617,8 @@ class ColorPanel(Widget):
     def __init__(self, pbuilder, **kwargs):
         super(ColorPanel, self).__init__(**kwargs)
         self.particle_builder = pbuilder.parent
+
+
 
     def on_start_color(self, instance, value):
         self.particle_builder.demo_particle.start_color = value

@@ -199,7 +199,7 @@ ParticleBuilder:
             max: 1.0
             value: 1.
             orientation: 'horizontal'
-            on_value: root.color_r = self.value
+            on_value: root.color_r = root.clip(self.value, self.min, self.max)
             canvas:
                 Color:
                     rgba: (self.value, 0, 0, 1.)
@@ -213,7 +213,7 @@ ParticleBuilder:
             max: 1.0
             value: 1.
             orientation: 'horizontal'
-            on_value: root.color_g = self.value
+            on_value: root.color_g = root.clip(self.value, self.min, self.max)
             canvas:
                 Color:
                     rgba: (0, self.value, 0, 1.)
@@ -227,7 +227,7 @@ ParticleBuilder:
             max: 1.0
             value: 1.
             orientation: 'horizontal'
-            on_value: root.color_b = self.value
+            on_value: root.color_b = root.clip(self.value, self.min, self.max)
             canvas:
                 Color:
                     rgba: (0, 0, self.value, 1.)
@@ -241,7 +241,7 @@ ParticleBuilder:
             max: 1.0
             value: 1.0
             orientation: 'horizontal'
-            on_value: root.color_a = self.value
+            on_value: root.color_a = root.clip(self.value, self.min, self.max)
             canvas:
                 Color:
                     rgba: (0, 0, 0, self.value)
