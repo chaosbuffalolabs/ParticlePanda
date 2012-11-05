@@ -593,38 +593,27 @@ class BehaviorPanel(Widget):
 
 class ColorPanel(Widget):
     particle_builder = ObjectProperty(None)
-    start_color_r = BoundedNumericProperty(1., min=0, max=1.)
+
+    start_color = ListProperty([1,1,1,1])
+    end_color = ListProperty([1,1,1,1])
     start_color_r_variance = BoundedNumericProperty(.1, min=0, max=1.)
-    start_color_g = BoundedNumericProperty(1., min=0, max=1.)
     start_color_g_variance = BoundedNumericProperty(.1, min=0, max=1.)
-    start_color_b = BoundedNumericProperty(1., min=0, max=1.)
     start_color_b_variance = BoundedNumericProperty(.1, min=0, max=1.)
-    start_color_a = BoundedNumericProperty(1., min=0, max=1.)
     start_color_a_variance = BoundedNumericProperty(.1, min=0, max=1.)
-    end_color_r = BoundedNumericProperty(0, min=0, max=1.)
     end_color_r_variance = BoundedNumericProperty(.1, min=0, max=1.)
-    end_color_g = BoundedNumericProperty(0, min=0, max=1.)
     end_color_g_variance = BoundedNumericProperty(.1, min=0, max=1.)
-    end_color_b = BoundedNumericProperty(0, min=0, max=1.)
     end_color_b_variance = BoundedNumericProperty(.1, min=0, max=1.)
-    end_color_a = BoundedNumericProperty(0, min=0, max=1.)
     end_color_a_variance = BoundedNumericProperty(.1, min=0, max=1.)
 
     def __init__(self, pbuilder, **kwargs):
         super(ColorPanel, self).__init__(**kwargs)
         self.particle_builder = pbuilder.parent
 
-    def on_start_color_r(self, instance, value):
-        self.particle_builder.demo_particle.start_color[0] = self.start_color_r
+    def on_start_color(self, instance, value):
+        self.particle_builder.demo_particle.start_color = value
 
-    def on_start_color_g(self, instance, value):
-        self.particle_builder.demo_particle.start_color[1] = self.start_color_g
-
-    def on_start_color_b(self, instance, value):
-        self.particle_builder.demo_particle.start_color[2] = self.start_color_b
-
-    def on_start_color_a(self, instance, value):
-        self.particle_builder.demo_particle.start_color[3] = self.start_color_a
+    def on_end_color(self, instance, value):
+        self.particle_builder.demo_particle.end_color = value
 
     def on_start_color_r_variance(self, instance, value):
         self.particle_builder.demo_particle.start_color_variance[0] = self.start_color_r_variance
@@ -637,18 +626,6 @@ class ColorPanel(Widget):
 
     def on_start_color_a_variance(self, instance, value):
         self.particle_builder.demo_particle.start_color_variance[3] = self.start_color_a_variance
-
-    def on_end_color_r(self, instance, value):
-        self.particle_builder.demo_particle.end_color[0] = self.end_color_r
-
-    def on_end_color_g(self, instance, value):
-        self.particle_builder.demo_particle.end_color[1] = self.end_color_g
-
-    def on_end_color_b(self, instance, value):
-        self.particle_builder.demo_particle.end_color[2] = self.end_color_b
-
-    def on_end_color_a(self, instance, value):
-        self.particle_builder.demo_particle.end_color[3] = self.end_color_a
 
     def on_end_color_r_variance(self, instance, value):
         self.particle_builder.demo_particle.end_color_variance[0] = self.end_color_r_variance
@@ -663,26 +640,16 @@ class ColorPanel(Widget):
         self.particle_builder.demo_particle.end_color_variance[3] = self.end_color_a_variance
 
     def get_values_from_particle(self):
-        print self.start_color_r, self.start_color_g, self.start_color_b, self.start_color_a
-        
-        self.start_color_sliders.color_r_slider.value = self.particle_builder.demo_particle.start_color[0]
-        self.start_color_sliders.color_g_slider.value = self.particle_builder.demo_particle.start_color[1]
-        self.start_color_sliders.color_b_slider.value = self.particle_builder.demo_particle.start_color[2]
-        self.start_color_sliders.color_a_slider.value = self.particle_builder.demo_particle.start_color[3]
+        self.start_color_picker.selected_color = self.particle_builder.demo_particle.start_color
         self.start_color_variation_sliders.color_r_slider.value = self.particle_builder.demo_particle.start_color_variance[0]
         self.start_color_variation_sliders.color_g_slider.value = self.particle_builder.demo_particle.start_color_variance[1]
         self.start_color_variation_sliders.color_b_slider.value = self.particle_builder.demo_particle.start_color_variance[2]
         self.start_color_variation_sliders.color_a_slider.value = self.particle_builder.demo_particle.start_color_variance[3]
-        self.end_color_sliders.color_r_slider.value = self.particle_builder.demo_particle.end_color[0]
-        self.end_color_sliders.color_g_slider.value = self.particle_builder.demo_particle.end_color[1]
-        self.end_color_sliders.color_b_slider.value = self.particle_builder.demo_particle.end_color[2]
-        self.end_color_sliders.color_a_slider.value = self.particle_builder.demo_particle.end_color[3]
+        self.end_color_picker.selected_color = self.particle_builder.demo_particle.end_color
         self.end_color_variation_sliders.color_r_slider.value = self.particle_builder.demo_particle.end_color_variance[0]
         self.end_color_variation_sliders.color_g_slider.value = self.particle_builder.demo_particle.end_color_variance[1]
         self.end_color_variation_sliders.color_b_slider.value = self.particle_builder.demo_particle.end_color_variance[2]
         self.end_color_variation_sliders.color_a_slider.value = self.particle_builder.demo_particle.end_color_variance[3]
-
-        print self.start_color_r, self.start_color_g, self.start_color_b, self.start_color_a
 
 Factory.register('ParticleBuilder', ParticleBuilder)
 Factory.register('ParticleVariationLayout', ParticleVariationLayout)

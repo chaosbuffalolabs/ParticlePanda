@@ -640,6 +640,9 @@ ParticleBuilder:
             on_value: root.rotate_per_second_variance = self.value
 
 <ColorPanel>:
+    start_color_picker: start_color_picker
+    end_color_picker: end_color_picker
+
     BoxLayout:
         pos: root.pos
         size: root.size
@@ -654,8 +657,10 @@ ParticleBuilder:
             orientation: 'horizontal'
             size_hint: (1., 0.5)
             ColorPicker:
+                id: start_color_picker
                 size_hint: (0.6, 1.)
                 bg_color: (1, 1, 1, 0)
+                on_selected_color: root.start_color = self.selected_color
             Particle_Color_Sliders:
                 size_hint: (0.4,1.)
                 id: start_color_variation_sliders
@@ -673,8 +678,10 @@ ParticleBuilder:
             orientation: 'horizontal'
             size_hint: (1., 0.5)
             ColorPicker:
+                id: end_color_picker
                 size_hint: (0.6, 1.)
                 bg_color: (1, 1, 1, 0)
+                on_selected_color: root.end_color = self.selected_color
             Particle_Color_Sliders:
                 id: end_color_variation_sliders
                 size_hint: (0.4, 1.)
