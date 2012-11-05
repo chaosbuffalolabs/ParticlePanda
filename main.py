@@ -14,6 +14,7 @@ from kivy.uix.image import Image as ImageWidget
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivyparticle.engine import *
+from colorpicker.colorpicker import ColorPicker, ColorWheel
 from kivy.properties import NumericProperty, BooleanProperty, ListProperty, StringProperty, ObjectProperty, BoundedNumericProperty
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
 from kivy.lang import Builder
@@ -693,6 +694,10 @@ Factory.register('ColorPanel', ColorPanel)
 Factory.register('Particle_Property_Slider', Particle_Property_Slider)
 Factory.register('Particle_Color_Sliders', Particle_Color_Sliders)
 Factory.register('ImageChooser', ImageChooser)
+Factory.register('ColorPicker', ColorPicker)
+Factory.register('ColorWheel', ColorWheel)
+Builder.load_file('colorpicker/colorpicker.kv')
+
 
 class ParticleBuilderApp(App):
     def build(self):
