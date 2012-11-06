@@ -669,6 +669,11 @@ class DebugPanel(Widget):
         self.fps = str(int(Clock.get_rfps()))
         Clock.schedule_once(self.update_fps)
 
+class VariableDescriptions(Widget):
+    
+    def tab_info(self):
+        print 'no info yet'
+
 Factory.register('ParticleBuilder', ParticleBuilder)
 Factory.register('ParticleVariationLayout', ParticleVariationLayout)
 Factory.register('ParticleLoadSaveLayout', ParticleLoadSaveLayout)
@@ -682,8 +687,8 @@ Factory.register('ImageChooser', ImageChooser)
 Factory.register('ColorPicker', ColorPicker)
 Factory.register('ColorWheel', ColorWheel)
 Factory.register('DebugPanel', DebugPanel)
+Factory.register('VariableDescriptions', VariableDescriptions)
 Builder.load_file('colorpicker/colorpicker.kv')
-
 
 class ParticleBuilderApp(App):
     def build(self):

@@ -7,6 +7,7 @@ ParticleBuilder:
     variation_layout: variation_layout
     particle_window: particle_window
     load_save: load_save
+    descriptions: descriptions
     FloatLayout: 
         canvas:
             Color:
@@ -21,12 +22,16 @@ ParticleBuilder:
             size: (root.size[0]/3 - root.size[0]*.04, root.size[1]/2 - root.size[1]*.064)
         ParticleLoadSaveLayout:
             id: load_save
-            pos: root.pos[0] + root.width*.355, root.pos[1] + root.height*.08
+            pos: root.pos[0] + root.width*.355, root.pos[1] + root.height*.1
             size: (root.size[0]/8, root.size[1]/3)
         ParticleParamsLayout:
             id: params_layout
             pos: root.pos[0] + root.width*.02 + root.width/2, root.pos[1] + root.height*.032
             size: (root.size[0]/2. - root.size[0]*.04, root.size[1] - root.size[1]*.064)
+        VariableDescriptions:
+            id: descriptions
+            pos: root.pos[0] + root.width*.86, root.pos[1] + root.height*.86
+            size: (root.size[0]/5, root.size[1]/5)
         FloatLayout:
             id: particle_window
             pos: root.pos[0] + root.width*.02, root.pos[1] + root.height*.5 + root.height*.032
@@ -44,7 +49,7 @@ ParticleBuilder:
 <ParticleVariationLayout>:
     canvas:
         Color:
-            rgb:(0, 1, 1)
+            rgb: (.75, .75, .75, 1)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -66,7 +71,7 @@ ParticleBuilder:
             font_size: root.size[0]*.06
             halign: 'center'
             valign: 'middle'
-            background_color: (1,0,0,1)
+            background_color: (.9,.9,.9,1)
             on_state: root.add_variant() if (self.state == 'down') else None   
 
 <ParticleLoadSaveLayout>:
@@ -95,10 +100,24 @@ ParticleBuilder:
     Label:
         pos: root.pos
         size: root.size
+        font_size: root.size[0]*.13
         halign: 'center'
         valign: 'middle'
-        text: 'FPS: ' + root.fps if root.fps != None else 'Click to\nStart FPS'
+        color: (1,1,1,1)
+        text: 'FPS: ' + root.fps if root.fps != None else 'FPS:'
         on_touch_down: root.update_fps(None)
+
+<VariableDescriptions>
+    Label:
+        text: '?'
+        color: (0,.9,.9,1)
+        bold: True
+        font_size: root.size[0]*.1
+        pos: root.pos
+        size: root.size
+        halign: "center"
+        valign: 'middle'
+        on_touch_down: self.collide_point(*args[1].pos) and root.tab_info()
 
 <GetNewFileNameLayout>:
     fname_input: fname_input
@@ -163,7 +182,7 @@ ParticleBuilder:
     on_state: self.pbuilder.params_layout.add_tab_to_layout(ctx.num_tab) if root.state == 'down' else self.pbuilder.params_layout.remove_tab_from_layout(ctx.num_tab)
     canvas: 
         Color:
-            rgba: (0, .5, 0, .5)
+            rgba: (.4, .4, .4, 0)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -303,6 +322,7 @@ ParticleBuilder:
             size_hint: (.7, 1.)
             text: root.button_text
             on_release: root.button_callback()
+            background_color: (255,255,255,.35)
         Image:
             size_hint: (.3, 1.)
             source: root.image_location
@@ -516,13 +536,13 @@ ParticleBuilder:
             text: 'Gravity Emitter'
             font_size: root.size[0]*.03
             group: 'emitter_type'
-            background_color: (0,0,1,.5)
+            background_color: (255,255,255,.35) if self.state == 'normal' else (0,1,1,1)
             on_state: root.set_emitter_type(0) if self.state == 'down' else None
         ToggleButton:
             text: 'Radial Emitter'
             font_size: root.size[0]*.03
             group: 'emitter_type'
-            background_color: (0,0,1,.5)
+            background_color: (255,255,255,.35) if self.state == 'normal' else (0,1,1,1)
             on_state: root.set_emitter_type(1) if self.state == 'down' else None
     BoxLayout:
         pos: root.pos if root.emitter_type == 0 else (-100, -100)
