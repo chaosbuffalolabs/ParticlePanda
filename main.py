@@ -65,7 +65,6 @@ class ParticleBuilder(Widget):
             self.demo_particle.emitter_x = touch.x
             self.demo_particle.emitter_y = touch.y
 
-
 class ParticleParamsLayout(Widget):
     all_tabs = ListProperty(None)
     all_tabs2 = ListProperty(None)
@@ -162,7 +161,7 @@ class ParticleVariationLayout(Widget):
 class ParticleLoadSaveLayout(Widget):
     new_particle = ObjectProperty(None)
     load_dir = 'templates'
-
+   
     def __init__(self,**kwargs):
         load_particle_popup_content = LoadParticlePopupContents(self)
         self.load_particle_popup = Popup(title="Particle Effects", content=load_particle_popup_content, size_hint = (None,None), size=(512,512))
@@ -662,6 +661,14 @@ class ColorPanel(Widget):
         self.end_color_variation_sliders.color_b_slider.value = self.particle_builder.demo_particle.end_color_variance[2]
         self.end_color_variation_sliders.color_a_slider.value = self.particle_builder.demo_particle.end_color_variance[3]
 
+
+class DebugPanel(Widget):
+    fps = StringProperty(None)
+
+    def update_fps(self,dt):
+        self.fps = str(int(Clock.get_rfps()))
+        Clock.schedule_once(self.update_fps)
+
 Factory.register('ParticleBuilder', ParticleBuilder)
 Factory.register('ParticleVariationLayout', ParticleVariationLayout)
 Factory.register('ParticleLoadSaveLayout', ParticleLoadSaveLayout)
@@ -674,6 +681,7 @@ Factory.register('Particle_Color_Sliders', Particle_Color_Sliders)
 Factory.register('ImageChooser', ImageChooser)
 Factory.register('ColorPicker', ColorPicker)
 Factory.register('ColorWheel', ColorWheel)
+Factory.register('DebugPanel', DebugPanel)
 Builder.load_file('colorpicker/colorpicker.kv')
 
 
