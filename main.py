@@ -672,7 +672,21 @@ class DebugPanel(Widget):
 class VariableDescriptions(Widget):
     
     def tab_info(self):
-        print 'no info yet'
+        self.description_tab = TabbedPanel()
+        particle_info = TabbedPanelHeader(text = 'Particle')
+        behavior_info = TabbedPanelHeader(text = 'Behavior')
+        color_info = TabbedPanelHeader(text = 'Color')
+        self.description_tab.default_tab = particle_info
+        self.description_tab.tab_width = self.size[0]
+        self.description_tab.tab_height = self.size[1]*.3
+        # particle_info.content = 'nothing'
+        # behavior_info.content = 'nothing'
+        # color_info.content = 'nothing'
+        self.description_tab.add_widget(particle_info)
+        self.description_tab.add_widget(behavior_info)
+        self.description_tab.add_widget(color_info)
+        self.description_popup = Popup(title="Variable Descriptions", content = self.description_tab, size_hint = (.8,.8))
+        self.description_popup.open()
 
 Factory.register('ParticleBuilder', ParticleBuilder)
 Factory.register('ParticleVariationLayout', ParticleVariationLayout)

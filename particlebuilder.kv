@@ -30,7 +30,7 @@ ParticleBuilder:
             size: (root.size[0]/2. - root.size[0]*.04, root.size[1] - root.size[1]*.064)
         VariableDescriptions:
             id: descriptions
-            pos: root.pos[0] + root.width*.86, root.pos[1] + root.height*.86
+            pos: root.pos[0] + root.width*.86, root.pos[1] + root.height*.835
             size: (root.size[0]/5, root.size[1]/5)
         FloatLayout:
             id: particle_window
@@ -107,12 +107,12 @@ ParticleBuilder:
         text: 'FPS: ' + root.fps if root.fps != None else 'FPS:'
         on_touch_down: root.update_fps(None)
 
-<VariableDescriptions>
+<VariableDescriptions>:
     Label:
         text: '?'
         color: (0,.9,.9,1)
         bold: True
-        font_size: root.size[0]*.1
+        font_size: root.size[0]*.13
         pos: root.pos
         size: root.size
         halign: "center"
@@ -196,6 +196,8 @@ ParticleBuilder:
             id: particle_tabs
             pos: root.pos
             size: root.size
+            tab_width: root.size[0]*.3
+            tab_height: root.size[1]*.08
             default_tab_content: root.get_default_tab()
             default_tab_text: 'Hello'
 
