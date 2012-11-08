@@ -583,20 +583,23 @@ class BehaviorPanel(Widget):
         self.particle_builder.demo_particle.min_radius = value
 
     def on_rotate_per_second(self, instance, value):
-        self.particle_builder.demo_particle.rotate_per_second = value
+        self.particle_builder.demo_particle.rotate_per_second = math.radians(value)
 
     def on_rotate_per_second_variance(self, instance, value):
-        self.particle_builder.demo_particle.rotate_per_second_variance = value
+        self.particle_builder.demo_particle.rotate_per_second_variance = math.radians(value)
 
     def get_values_from_particle(self):
         properties = ['emitter_x_variance', 'emitter_y_variance', 'gravity_x', 'gravity_y', 'speed', 'speed_variance',
                      'radial_acceleration', 'radial_acceleration_variance', 'tangential_acceleration', 
                      'tangential_acceleration_variance', 'max_radius', 'max_radius_variance', 'min_radius', 
-                     'rotate_per_second', 'rotate_per_second_variance']
+                     ]
 
         for p in properties:
             setattr(self,p,getattr(self.particle_builder.demo_particle,p))
 
+        angle_properties = ['rotate_per_second', 'rotate_per_second_variance']
+        for p in properties:
+            setattr(self,p,math.degrees(getattr(self.particle_builder.demo_particle,p)))
 
 
 class ColorPanel(Widget):
