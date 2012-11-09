@@ -702,8 +702,9 @@ ParticleBuilder:
         padding: 10
         Label:
             text: "[b]Start Color[/b]"
+            font_size: root.size[0]*.032
             size_hint_y: None
-            height: 30
+            height: 20
             markup: True
         BoxLayout:
             orientation: 'horizontal'
@@ -723,8 +724,9 @@ ParticleBuilder:
                 on_color_a: root.start_color_a_variance = self.color_a
         Label:
             text: "[b]End Color[/b]"
+            font_size: root.size[0]*.032
             size_hint_y: None
-            height: 30
+            height: 20
             markup: True
         BoxLayout:
             orientation: 'horizontal'

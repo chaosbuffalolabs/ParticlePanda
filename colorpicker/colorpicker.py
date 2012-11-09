@@ -289,7 +289,7 @@ class ColorPickerApp(App):
     def build(self):
         cp_width = min(Window.size)*.7
         cp_pos = [(Window.size[0]-cp_width)/2,(Window.size[1]-cp_width)/2]
-        cp = ColorPicker(pos = cp_pos, size=(cp_width,cp_width), size_hint=(None,None))
+        cp = ColorPicker(pos = cp_pos, size=(cp_width,cp_width), size_hint=(None,None), font_size=cp_width*.05)
         return cp
         
 
