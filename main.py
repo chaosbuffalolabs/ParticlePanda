@@ -85,6 +85,9 @@ class ParticleParamsLayout(Widget):
         th1.content = self.get_particle_content()
         th2.content = self.get_behavior_content()
         th3.content = self.get_color_content()
+        th1.font_size = self.size[0]*.036
+        th2.font_size = self.size[0]*.036
+        th3.font_size = self.size[0]*.036
         self.parent.parent.create_particle_system()
         self.all_tabs.append(th1)
         self.all_tabs2.append(th2)
@@ -679,6 +682,9 @@ class VariableDescriptions(Widget):
         particle_info = TabbedPanelHeader(text = 'Particle')
         behavior_info = TabbedPanelHeader(text = 'Behavior')
         color_info = TabbedPanelHeader(text = 'Color')
+        particle_info.font_size = self.size[0]*.28
+        behavior_info.font_size = self.size[0]*.28
+        color_info.font_size = self.size[0]*.28
         self.description_tab.default_tab = particle_info
         self.description_tab.tab_width = self.size[0]*4.36
         self.description_tab.tab_height = self.size[1]*.7
