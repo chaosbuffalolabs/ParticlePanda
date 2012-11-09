@@ -530,8 +530,8 @@ class BehaviorPanel(Widget):
     max_radius = BoundedNumericProperty(100., min=0., max=250.)
     max_radius_variance = BoundedNumericProperty(0., min=0., max=250.)
     min_radius = BoundedNumericProperty(0., min=0., max=250.)
-    rotate_per_second = BoundedNumericProperty(0., min=-180., max=180.)
-    rotate_per_second_variance = BoundedNumericProperty(0., min=0., max=180.)
+    rotate_per_second = BoundedNumericProperty(0., min=-720., max=720.)
+    rotate_per_second_variance = BoundedNumericProperty(0., min=0., max=720.)
 
     def __init__(self, pbuilder, **kwargs):
         super(BehaviorPanel, self).__init__(**kwargs)
@@ -598,7 +598,7 @@ class BehaviorPanel(Widget):
             setattr(self,p,getattr(self.particle_builder.demo_particle,p))
 
         angle_properties = ['rotate_per_second', 'rotate_per_second_variance']
-        for p in properties:
+        for p in angle_properties:
             setattr(self,p,math.degrees(getattr(self.particle_builder.demo_particle,p)))
 
 
