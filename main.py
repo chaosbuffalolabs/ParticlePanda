@@ -680,8 +680,8 @@ class VariableDescriptions(Widget):
         behavior_info = TabbedPanelHeader(text = 'Behavior')
         color_info = TabbedPanelHeader(text = 'Color')
         self.description_tab.default_tab = particle_info
-        self.description_tab.tab_width = self.size[0]
-        self.description_tab.tab_height = self.size[1]*.3
+        self.description_tab.tab_width = self.size[0]*4.36
+        self.description_tab.tab_height = self.size[1]*.7
         # particle_info.content = 'nothing'
         # behavior_info.content = 'nothing'
         # color_info.content = 'nothing'
