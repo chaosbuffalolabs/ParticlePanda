@@ -217,16 +217,7 @@ ParticleBuilder:
         size: root.size
         pos: root.pos
         orientation: 'vertical'
-        padding: 10
-        Label:
-            size_hint: (1., .08)
-            text: '[b]'+root.slider_text+'[/b]' if root.slider_text is not None else 'No Label'
-            font_size: root.size[0]*.07
-            markup: True
-            text_size: self.size
-            halign: 'center'
-            valign: 'middle'
-            color: (root.color_r_slider.value, root.color_g_slider.value, root.color_b_slider.value, root.color_a_slider.value)
+        padding: 5
         Slider:
             id: color_r_slider
             size_hint: (1., .23)
@@ -237,7 +228,7 @@ ParticleBuilder:
             on_value: root.color_r = root.clip(self.value, self.min, self.max)
             canvas:
                 Color:
-                    rgba: (color_r_slider.value, 0, 0, 1.)
+                    rgba: (self.value, 0, 0, 1.)
                 Rectangle:
                     pos: self.pos[0] + self.size[0]*.22, self.pos[1] - self.size[1]*.15
                     size: self.size[0]*.54, self.size[1]*.3
@@ -708,7 +699,7 @@ ParticleBuilder:
         pos: root.pos
         size: root.size
         orientation: 'vertical'
-        padding: 5
+        padding: 10
         Label:
             text: "[b]Start Color[/b]"
             size_hint_y: None
