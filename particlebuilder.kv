@@ -244,7 +244,7 @@ ParticleBuilder:
             Label:
                 size_hint: (.5,.5)
                 text: 'R +/- ' + str(int(self.parent.value * 255))
-                pos: self.parent.pos[0] + self.parent.width*.162, self.parent.pos[1] + self.parent.height*.453
+                pos: root.pos[0] + root.width*.162, root.pos[1] + root.height*.453
         Slider:
             id: color_g_slider
             size_hint: (1., 0.23)
