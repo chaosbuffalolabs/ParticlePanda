@@ -131,6 +131,9 @@ class ParticleSystem(Widget):
                 # if particle isn't initialized yet, you can't change its texture.
                 pass
 
+    def on_life_span(self,instance,value):
+        self.emission_rate = self.max_num_particles/value
+
     def _set_blend_func(self, instruction):
         #glBlendFunc(self.blend_factor_source, self.blend_factor_dest)
         #glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -218,7 +221,7 @@ class ParticleSystem(Widget):
         particle.velocity_y = speed * math.sin(angle)
 
         particle.emit_radius = random_variance(self.max_radius, self.max_radius_variance)
-        particle.emit_radius_delta = self.max_radius / life_span
+        particle.emit_radius_delta = (self.max_radius - self.min_radius) / life_span
 
         particle.emit_rotation = random_variance(self.emit_angle, self.emit_angle_variance)
         particle.emit_rotation_delta = random_variance(self.rotate_per_second, self.rotate_per_second_variance)
