@@ -102,6 +102,11 @@ class ParticleLoadSaveLayout(Widget):
 
         super(ParticleLoadSaveLayout,self).__init__(**kwargs)
 
+        Clock.schedule_once(self.load_default_particle)
+
+    def load_default_particle(self,dt):
+        self.load_particle()
+
     def _reset_layout(self, layout):
         for w in layout.children[:]:
             if isinstance(w, Label):
