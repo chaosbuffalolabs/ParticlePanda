@@ -610,9 +610,11 @@ class BehaviorPanel(Widget):
             setattr(self,p,math.degrees(getattr(self.particle_builder.demo_particle,p)))
 
         if self.particle_builder.demo_particle.emitter_type == 0:
-            self.gravity_button.state='down'
+            self.gravity_button.state = 'down'
+            self.radial_button.state = 'normal'
         elif self.particle_builder.demo_particle.emitter_type == 1:
             self.radial_button.state='down'
+            self.gravity_button.state = 'normal'
 
 
 class ColorPanel(Widget):
