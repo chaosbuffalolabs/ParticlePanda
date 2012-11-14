@@ -103,6 +103,7 @@ class ParticleLoadSaveLayout(Widget):
 
         super(ParticleLoadSaveLayout,self).__init__(**kwargs)
 
+        # load the default particle (scheduled for the next frame so that it doesn't break)
         Clock.schedule_once(self.load_default_particle)
 
     def load_default_particle(self,dt):
@@ -233,6 +234,9 @@ class ParticleLoadSaveLayout(Widget):
         return xml_element
 
     def load_particle(self,name='templates/fire.pex',texture_path='media/particle.png'):
+        progress_dialog = Popup(title="Loading...", content=Label(text="Please wait while the particle file is being loaded."), size_hint=(.5,.5))
+        progress_dialog.open()
+        
         pbuilder = self.parent.parent
         pl = pbuilder.params_layout
         pw = pbuilder.particle_window
@@ -259,6 +263,8 @@ class ParticleLoadSaveLayout(Widget):
         pl.particle_tabs.tab_list[1].content.get_values_from_particle()
         pl.particle_tabs.tab_list[2].content.get_values_from_particle()
         pl.open_first_tab()
+
+        progress_dialog.dismiss()
         
 class GetNewFilenameLayout(Widget):
     fname_input = ObjectProperty(None)
