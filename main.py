@@ -103,6 +103,11 @@ class ParticleLoadSaveLayout(Widget):
 
         super(ParticleLoadSaveLayout,self).__init__(**kwargs)
 
+        Clock.schedule_once(self.load_default_particle)
+
+    def load_default_particle(self,dt):
+        self.load_particle()
+
     def _reset_layout(self, layout):
         for w in layout.children[:]:
             if isinstance(w, Label):
@@ -354,6 +359,17 @@ class Particle_Property_Slider(Widget):
     slider_bounds_max = NumericProperty(100)
     slider_bounds_init_value = NumericProperty(0)
     slider_step = NumericProperty(1.0)
+    box_margin = NumericProperty(5)
+    prop_slider = ObjectProperty(None)
+
+    def increment_slider(self):
+        if self.prop_slider.value + 1 <= self.slider_bounds_max:
+            self.prop_slider.value += 1
+
+    def decrement_slider(self):
+        if self.prop_slider.value - 1 >= self.slider_bounds_min:
+            self.prop_slider.value -= 1
+
 
 class Particle_Color_Sliders(Widget):
     color_r = NumericProperty(1.)
@@ -601,9 +617,11 @@ class BehaviorPanel(Widget):
             setattr(self,p,math.degrees(getattr(self.particle_builder.demo_particle,p)))
 
         if self.particle_builder.demo_particle.emitter_type == 0:
-            self.gravity_button.state='down'
+            self.gravity_button.state = 'down'
+            self.radial_button.state = 'normal'
         elif self.particle_builder.demo_particle.emitter_type == 1:
             self.radial_button.state='down'
+            self.gravity_button.state = 'normal'
 
 
 class ColorPanel(Widget):
