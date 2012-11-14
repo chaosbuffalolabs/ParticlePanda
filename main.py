@@ -30,6 +30,7 @@ import xml.dom.minidom
 class ParticleBuilder(Widget):
     demo_particle = ObjectProperty(ParticleSystem)
     particle_window = ObjectProperty(None)
+    active_filename = StringProperty(None)
 
     def __init__(self, **kwargs):
         super(ParticleBuilder, self).__init__(**kwargs)
@@ -247,6 +248,7 @@ class ParticleLoadSaveLayout(Widget):
         pbuilder.demo_particle = new_particle
         pw.add_widget(pbuilder.demo_particle)
         pbuilder.demo_particle.start()
+        pbuilder.active_filename = os.path.basename(name)
 
         pl.particle_tabs.tab_list[0].content.get_values_from_particle()
         pl.particle_tabs.tab_list[1].content.get_values_from_particle()
@@ -690,6 +692,9 @@ class DebugPanel(Widget):
         self.fps = str(int(Clock.get_fps()))
         Clock.schedule_once(self.update_fps)
 
+class WorkingFile(Widget):
+    filename = StringProperty(None)
+
 class VariableDescriptions(Widget):
     
     def tab_info(self):
@@ -724,6 +729,7 @@ Factory.register('ImageChooser', ImageChooser)
 Factory.register('ColorPicker', ColorPicker)
 Factory.register('ColorWheel', ColorWheel)
 Factory.register('DebugPanel', DebugPanel)
+Factory.register('WorkingFile', WorkingFile)
 Factory.register('VariableDescriptions', VariableDescriptions)
 Builder.load_file('colorpicker/colorpicker.kv')
 

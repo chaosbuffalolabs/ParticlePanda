@@ -41,8 +41,12 @@ ParticleBuilder:
                     pos: self.pos
                     size: self.size
             DebugPanel:
-                size_hint: (.3,1)
-                pos: (root.pos[0]+root.size[0]*.35, root.pos[1]+root.size[1]*.53)
+                size_hint: (.3, .1)
+                pos: (root.pos[0]+root.size[0]*.34, root.pos[1]+root.height*.89)
+            WorkingFile:
+                size_hint: (.7, .1)
+                pos: (root.pos[0] + root.width*.02, root.pos[1]+root.height*.89)
+                filename: root.active_filename
 
 
 <ParticleLoadSaveLayout>:
@@ -71,12 +75,22 @@ ParticleBuilder:
     Label:
         pos: root.pos
         size: root.size
-        font_size: root.size[0]*.13
+        font_size: root.size[1]*.28
         halign: 'center'
         valign: 'middle'
         color: (1,1,1,1)
         text: 'FPS: ' + root.fps if root.fps != None else 'FPS:'
         on_touch_down: root.update_fps(None)
+
+<WorkingFile>:
+    Label:
+        pos: root.pos
+        size: root.size
+        font_size: root.size[1]*.28
+        halign: 'left'
+        valign: 'middle'
+        text_size: self.size
+        text: '   ' + root.filename if root.filename != None else ""
 
 <VariableDescriptions>:
     Label:
