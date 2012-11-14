@@ -347,11 +347,13 @@ ParticleBuilder:
                     state: 'down'
                     on_state: root.button_callback('load templates') if self.state == 'down' else None
                     size_hint: (.5, 1)
+                    font_size: self.size[1]*.35
                 ToggleButton:
                     text: 'user files'
                     group: 'importmode'
                     on_state: root.button_callback('load user files') if self.state == 'down' else None
                     size_hint: (.5, 1)
+                    font_size: self.size[1]*.35
 
 <SaveParticlePopupContents>:
     blayout: blayout
