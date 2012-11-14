@@ -1,0 +1,37 @@
+Max Particles: This controls the total number of particles present inside the effect. 
+It is recommended to use as few particles as necessary to achieve the desired visual effect.
+
+
+Life Span: The amount of time each particle exists in seconds.
+
+
+Start Size: Size in pixels that the particle begins at.
+
+
+End Size: Size in pixels that the particle ends at.
+
+
+Emit angle: The angle that the particles are emitted at from the center. 0 points in the direction of (1, 0)
+
+
+Start Rotation: Beginning rotation of particle.
+
+
+End Rotation: End Rotation of the particle.
+
+nonsense
+
+nonsense
+
+nonsense
+
+nonsense
+
+nonsense
+
+nonsense
+
+nonsense
+
+nonsense
+
