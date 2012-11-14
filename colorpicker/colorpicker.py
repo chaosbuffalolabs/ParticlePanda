@@ -245,7 +245,8 @@ class ColorPicker(Widget):
         self.selected_color = [x/255. for x in value]
 
     def button_callback(self,button_str):
-        np = NumPad(self)
+        current_val = int(self.selected_color[{'R': 0, 'G': 1, 'B': 2, 'A': 3}[button_str]]*255)
+        np = NumPad(self, init_value=current_val)
         np_popup = Popup(content=np, title="Please choose a color value (0-255) for " + str(button_str), size_hint=(.4,.6), id = button_str)
         np_popup.bind(on_dismiss = self.popup_dismissed)
         np_popup.open()
@@ -255,16 +256,18 @@ class ColorPicker(Widget):
         val = instance.content.display_value
         self.selected_color[{'R': 0, 'G': 1, 'B': 2, 'A': 3}[colr]] = val / 255.
 
-        # if it's the alpha value that's been edited, we actually need to change this in the colorwheel
-        if colr == 'A':
-            self.wheel.change_alpha(val / 255.)
+        # if it's the alpha value that's been edited, we could change this in the colorwheel, but we're not for now
+        # if colr == 'A':
+        #     self.wheel.change_alpha(val / 255.)
 
 class NumPad(Widget):
     display_text = StringProperty("0")
     display_value = NumericProperty(0)
 
-    def __init__(self, popup, **kwargs):
+    def __init__(self, popup, init_value=0, **kwargs):
         super(NumPad, self).__init__(**kwargs)
+        if init_value <= 255 and init_value >= 0:
+            self.display_text = str(int(init_value))
         self.popup = popup
 
     def button_callback(self,button_str):
