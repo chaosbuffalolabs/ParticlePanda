@@ -10,7 +10,7 @@ ParticleBuilder:
     FloatLayout: 
         canvas:
             Color:
-                rgb: (.5, .5, .5)
+                rgb: (.1, .1, .1)
             Rectangle:
                 pos: root.pos
                 size: root.size
@@ -40,6 +40,10 @@ ParticleBuilder:
                 Rectangle:
                     pos: self.pos
                     size: self.size
+            DebugPanel:
+                size_hint: (.3,1)
+                pos: (root.pos[0]+root.size[0]*.35, root.pos[1]+root.size[1]*.53)
+
 
 <ParticleLoadSaveLayout>:
     BoxLayout:
@@ -52,17 +56,15 @@ ParticleBuilder:
         Button:
             size_hint: (.3,1)
             text: 'Save'
-            font_size: root.size[0]*.05
+            font_size: root.size[0]*.04
             on_state: root.show_save_popup() if (self.state == 'down') else None
         Button:
             size_hint: (.3,1)
             text: 'Load'
-            font_size: root.size[0]*.05
+            font_size: root.size[0]*.04
             halign: 'center'
             valign: 'middle'
             on_state: root.show_load_popup() if (self.state == 'down') else None
-        DebugPanel:
-            size_hint: (.3,1)
 
 <DebugPanel>:
     fps: root.fps
@@ -96,7 +98,7 @@ ParticleBuilder:
         margin: 10
         spacing: 10
         orientation: 'vertical'
-        pos: root.pos
+        pos: (root.pos[0],root.pos[1]+root.size[1]*.68)
         size: root.size
 
         TextInput:
@@ -104,25 +106,27 @@ ParticleBuilder:
             multiline: False
             text: 'effect.pex'
             size_hint_y: None
-            height: 40
+            font_size: self.height * .5
+            height: 50
+            focus: True
         BoxLayout:
             orientation: 'horizontal'
             margin: 10
             spacing: 10
             size_hint_y: None
-            height: 40
+            height: 50
             Widget:
-                size_hint_x: .25
+                size_hint_x: .15
             Button:
-                size_hint_x: .25
+                size_hint_x: .35
                 text: 'Cancel'
                 on_release: root.cancel()
             Button:
-                size_hint_x: .25
+                size_hint_x: .35
                 text: 'OK'
                 on_release: root.ok()
             Widget:
-                size_hint_x: .25
+                size_hint_x: .15
 
 [LoadFilenameButton@Label]
     size_hint_x: 1.
@@ -173,8 +177,8 @@ ParticleBuilder:
 <Default_Particle_Panel>:
     Label:
         center: root.center
-        text: 'Add or Choose a Particle\n       to Begin Editing'
-        font_size: root.size[0]*.04
+        text: 'Load A File to\nBegin Editing'
+        font_size: root.size[0]*.06
 
 <Particle_Color_Sliders>:
     color_r_slider: color_r_slider

@@ -148,7 +148,7 @@ class ParticleLoadSaveLayout(Widget):
 
     def save_filename(self, fname):
         if fname == '[ New file... ]':
-            self.new_file_popup = Popup(title="Please choose a filename.", content = GetNewFilenameLayout(self), size_hint = (None, None), size = (512,256))
+            self.new_file_popup = Popup(title="Please choose a filename.", content = GetNewFilenameLayout(self), size_hint = (.5, .75))
             self.new_file_popup.open()
             return
 
@@ -685,7 +685,7 @@ class DebugPanel(Widget):
     fps = StringProperty(None)
 
     def update_fps(self,dt):
-        self.fps = str(int(Clock.get_rfps()))
+        self.fps = str(int(Clock.get_fps()))
         Clock.schedule_once(self.update_fps)
 
 class VariableDescriptions(Widget):

@@ -246,7 +246,7 @@ class ColorPicker(Widget):
 
     def button_callback(self,button_str):
         np = NumPad(self)
-        np_popup = Popup(content=np, title="Please choose a color value (0-255)", size_hint=(.4,.6), id = button_str)
+        np_popup = Popup(content=np, title="Please choose a color value (0-255) for " + str(button_str), size_hint=(.4,.6), id = button_str)
         np_popup.bind(on_dismiss = self.popup_dismissed)
         np_popup.open()
 
