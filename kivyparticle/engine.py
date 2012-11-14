@@ -48,6 +48,7 @@ class ParticleSystem(Widget):
     max_num_particles = NumericProperty(200)
     life_span = NumericProperty(2)
     texture = ObjectProperty(None)
+    texture_path = StringProperty(None)
     life_span_variance = NumericProperty(0)
     start_size = NumericProperty(16)
     start_size_variance = NumericProperty(0)
@@ -144,9 +145,8 @@ class ParticleSystem(Widget):
 
     def _parse_config(self, config):
         self._config = parse_xml(config)
-        # path = os.path.dirname(os.path.abspath(config))
-        # texture_path = os.path.join(path, self._parse_data('texture', 'name'))
-        # self.texture = Image(texture_path).texture
+        self.texture_path = self._parse_data('texture', 'name')
+        self.texture = Image(self.texture_path).texture
         # self.emitter_x = float(self._parse_data('sourcePosition', 'x'))
         # self.emitter_y = float(self._parse_data('sourcePosition', 'y'))
         self.emitter_x_variance = float(self._parse_data('sourcePositionVariance', 'x'))

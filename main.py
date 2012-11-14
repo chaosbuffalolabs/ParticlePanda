@@ -170,6 +170,7 @@ class ParticleLoadSaveLayout(Widget):
         new_particle.appendChild(particle_values)
 
 
+        particle_values.appendChild(self.xml_from_attribute(new_particle, 'texture', ('name'), (pbuilder.demo_particle.texture_path)))
         particle_values.appendChild(self.xml_from_attribute(new_particle, 'sourcePositionVariance', ('x', 'y'), (pbuilder.demo_particle.emitter_x_variance, pbuilder.demo_particle.emitter_y_variance)))
         particle_values.appendChild(self.xml_from_attribute(new_particle, 'gravity', ('x', 'y'), (pbuilder.demo_particle.gravity_x, pbuilder.demo_particle.gravity_y)))
         particle_values.appendChild(self.xml_from_attribute(new_particle, 'emitterType', ('value'), (pbuilder.demo_particle.emitter_type)))
@@ -219,13 +220,17 @@ class ParticleLoadSaveLayout(Widget):
         try:
             if isinstance(fields, basestring): raise TypeError
             for idx in range(len(fields)):
-                if int(float(values[idx])) == float(values[idx]):
+                if isinstance(values[idx], basestring):
+                    val = str(values[idx])
+                elif int(float(values[idx])) == float(values[idx]):
                     val = str(int(float(values[idx])))
                 else:
                     val = str(float(values[idx]))
                 xml_element.setAttribute(fields[idx], val)
         except TypeError:
-            if int(float(values)) == float(values):
+            if isinstance(values,basestring):
+                val = str(values)
+            elif int(float(values)) == float(values):
                 val = str(int(float(values)))
             else:
                 val = str(float(values))
@@ -233,10 +238,10 @@ class ParticleLoadSaveLayout(Widget):
 
         return xml_element
 
-    def load_particle(self,name='templates/fire.pex',texture_path='media/particle.png'):
+    def load_particle(self,name='templates/fire.pex'):
         progress_dialog = Popup(title="Loading...", content=Label(text="Please wait while the particle file is being loaded."), size_hint=(.5,.5))
         progress_dialog.open()
-        
+
         pbuilder = self.parent.parent
         pl = pbuilder.params_layout
         pw = pbuilder.particle_window
@@ -251,7 +256,6 @@ class ParticleLoadSaveLayout(Widget):
 
 
         new_particle = ParticleSystem(name)
-        new_particle.texture = Image(texture_path).texture
         new_particle.emitter_x = pw.center_x   
         new_particle.emitter_y = pw.center_y
         pbuilder.demo_particle = new_particle
@@ -402,7 +406,7 @@ class Particle_Color_Sliders(Widget):
 
 class ParticlePanel(Widget):
     particle_builder = ObjectProperty(None)
-    texture_location = StringProperty("media/particle.png")
+    texture_path = StringProperty("media/particle.png")
     max_num_particles = NumericProperty(200.)
     max_num_particles_min = NumericProperty(1.)
     max_num_particles_max = NumericProperty(500.)
@@ -486,13 +490,14 @@ class ParticlePanel(Widget):
     def on_end_rotation_variance(self, instance, value):
         self.particle_builder.demo_particle.end_rotation_variance = value * 0.0174532925
 
-    def on_texture_location(self,instance,value):
+    def on_texture_path(self,instance,value):
+        self.particle_builder.demo_particle.texture_path = value
         self.particle_builder.demo_particle.texture = Image(value).texture
 
     def get_values_from_particle(self):
         properties = ['max_num_particles', 'life_span', 'life_span_variance', 'start_size', 'start_size_variance', 
                     'end_size', 'end_size_variance', 'emit_angle', 'emit_angle_variance', 'start_rotation', 
-                    'start_rotation_variance', 'end_rotation', 'end_rotation_variance']
+                    'start_rotation_variance', 'end_rotation', 'end_rotation_variance', 'texture_path']
     
         for p in properties:
             if p in ['emit_angle', 'emit_angle_variance', 'start_rotation', 
@@ -500,6 +505,8 @@ class ParticlePanel(Widget):
                 setattr(self,p,getattr(self.particle_builder.demo_particle,p) / 0.0174532925 )
             else:
                 setattr(self,p,getattr(self.particle_builder.demo_particle,p))
+
+        self.image_chooser_button.image_location = self.particle_builder.demo_particle.texture_path
 
 class BehaviorPanel(Widget):
     particle_builder = ObjectProperty(None)
