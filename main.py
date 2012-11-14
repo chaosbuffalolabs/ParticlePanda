@@ -352,6 +352,17 @@ class Particle_Property_Slider(Widget):
     slider_bounds_max = NumericProperty(100)
     slider_bounds_init_value = NumericProperty(0)
     slider_step = NumericProperty(1.0)
+    box_margin = NumericProperty(5)
+    prop_slider = ObjectProperty(None)
+
+    def increment_slider(self):
+        if self.prop_slider.value + 1 <= self.slider_bounds_max:
+            self.prop_slider.value += 1
+
+    def decrement_slider(self):
+        if self.prop_slider.value - 1 >= self.slider_bounds_min:
+            self.prop_slider.value -= 1
+
 
 class Particle_Color_Sliders(Widget):
     color_r = NumericProperty(1.)

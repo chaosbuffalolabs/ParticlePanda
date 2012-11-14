@@ -278,20 +278,32 @@ ParticleBuilder:
         size: root.size
         orientation: 'horizontal'
         Label:
-            size_hint: (.3, 1.)
+            size_hint: (.2, 1.)
             text: root.slider_text if root.slider_text is not None else 'No Label'
             font_size: root.size[0]*.02
             halign: 'center'
             valign: 'middle'
+        Label:
+            size_hint: (.1, 1.)
+            text: '[b]-[/b]'
+            font_size: root.size[0]*.05
+            markup: True
+            on_touch_down: self.collide_point(*args[1].pos) and root.decrement_slider()
         Slider:
             id: prop_slider
-            size_hint: (.5, 1.)
+            size_hint: (.4, 1.)
             orientation: 'horizontal'
             min: root.slider_bounds_min
             max: root.slider_bounds_max
             value: root.slider_bounds_init_value
             on_value: root.value = self.value
             step: root.slider_step
+        Label:
+            size_hint: (.1, 1.)
+            text: '[b]+[/b]'
+            font_size: root.size[0]*.05
+            markup: True
+            on_touch_down: self.collide_point(*args[1].pos) and root.increment_slider()
         Label:
             size_hint: (.2, 1.)
             text: str(round(root.prop_slider.value,1))
