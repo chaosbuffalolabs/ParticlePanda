@@ -109,12 +109,21 @@
                     Rectangle:
                         pos: self.pos
                         size: self.size
-        ColorWheel:
-            id: wheel
-            size_hint: (1, 1)
-            origin: (self.center_x, self.center_y)
-            radius: 0.45*min(self.size)
-            on_rgba: root.rgba_callback(self.rgba)
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: (1,1)         
+            spacing: 5
+            padding: 5
+            Slider:
+                size_hint: (.01,.6)
+                orientation: 'vertical'
+
+            ColorWheel:
+                id: wheel
+                size_hint: (1, 1)
+                origin: (self.center_x, self.center_y)
+                radius: 0.45*min(self.size)
+                on_rgba: root.rgba_callback(self.rgba)
 
 <NumPad>:
     BoxLayout:

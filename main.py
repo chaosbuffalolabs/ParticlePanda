@@ -18,6 +18,7 @@ from colorpicker.colorpicker import ColorPicker, ColorWheel
 from kivy.properties import NumericProperty, BooleanProperty, ListProperty, StringProperty, ObjectProperty
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
 from kivy.lang import Builder
+from kivy.uix.scrollview import ScrollView
 import os
 import math
 from random import randint
@@ -723,17 +724,25 @@ class VariableDescriptions(Widget):
         particle_info.font_size = self.size[0]*.28
         behavior_info.font_size = self.size[0]*.28
         color_info.font_size = self.size[0]*.28
+        particle_info.content = Label(text=self.get_content("param_descriptions/ParticleTab.txt"), font_size = 12, text_size = self.size)
+        # behavior_info.content = 'nothing'
+        # color_info.content = 'nothing'
         self.description_tab.default_tab = particle_info
         self.description_tab.tab_width = self.size[0]*4.36
         self.description_tab.tab_height = self.size[1]*.7
-        # particle_info.content = 'nothing'
-        # behavior_info.content = 'nothing'
-        # color_info.content = 'nothing'
         self.description_tab.add_widget(particle_info)
         self.description_tab.add_widget(behavior_info)
         self.description_tab.add_widget(color_info)
         self.description_popup = Popup(title="Variable Descriptions", content = self.description_tab, size_hint = (.8,.8))
         self.description_popup.open()
+
+    def get_content(self, filename):
+        outstring = ""
+
+        with open(filename, 'r') as infile:
+            for line in infile:
+                outstring += (line.strip() + '\n')
+        return outstring
 
 Factory.register('ParticleBuilder', ParticleBuilder)
 Factory.register('ParticleLoadSaveLayout', ParticleLoadSaveLayout)
