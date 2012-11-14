@@ -15,8 +15,7 @@
         pos: root.pos
         BoxLayout:
             orientation: 'horizontal'
-            size_hint_y: None
-            height: 5*root.font_size
+            size_hint_y: .33         
             spacing: 10
             padding: 10
             GridLayout:
@@ -29,6 +28,7 @@
                     size_hint_y: .5
                     text_size: self.size
                     halign: "right"
+                    valign: "middle"
                     font_size: root.size[0]*.045
                     on_touch_down: self.collide_point(*args[1].pos) and root.button_callback('R')
                 Label:
@@ -38,6 +38,7 @@
                     size_hint_y: .5
                     text_size: self.size
                     halign: "left"
+                    valign: "middle"
                     font_size: root.size[0]*.045
                     on_touch_down: self.collide_point(*args[1].pos) and root.button_callback('R')
                 Label:
@@ -47,6 +48,7 @@
                     size_hint_y: .5
                     text_size: self.size
                     halign: "right"
+                    valign: "middle"
                     font_size: root.size[0]*.045
                     on_touch_down: self.collide_point(*args[1].pos) and root.button_callback('G')
                 Label:
@@ -56,6 +58,7 @@
                     size_hint_y: .5
                     text_size: self.size
                     halign: "left"
+                    valign: "middle"
                     font_size: root.size[0]*.045
                     on_touch_down: self.collide_point(*args[1].pos) and root.button_callback('G')
                 Label:
@@ -65,6 +68,7 @@
                     size_hint_y: .5
                     text_size: self.size
                     halign: "right"
+                    valign: "middle"
                     font_size: root.size[0]*.045
                     on_touch_down: self.collide_point(*args[1].pos) and root.button_callback('B')
                 Label:
@@ -74,6 +78,7 @@
                     size_hint_y: .5
                     text_size: self.size
                     halign: "left"
+                    valign: "middle"
                     font_size: root.size[0]*.045
                     on_touch_down: self.collide_point(*args[1].pos) and root.button_callback('B')
                 Label:
@@ -83,6 +88,7 @@
                     size_hint_y: .5
                     text_size: self.size
                     halign: "right"
+                    valign: "middle"
                     font_size: root.size[0]*.045
                     on_touch_down: self.collide_point(*args[1].pos) and root.button_callback('A')
                 Label:
@@ -92,6 +98,7 @@
                     size_hint_y: .5
                     text_size: self.size
                     halign: "left"                    
+                    valign: "middle"
                     font_size: root.size[0]*.045
                     on_touch_down: self.collide_point(*args[1].pos) and root.button_callback('A')
             Widget:
