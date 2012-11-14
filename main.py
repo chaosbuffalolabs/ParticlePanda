@@ -51,6 +51,9 @@ class ParticleParamsLayout(Widget):
 
     tabs_loaded = BooleanProperty(False)
 
+    def __init__(self,**kwargs):
+        super(ParticleParamsLayout, self).__init__(**kwargs)
+
     def create_tabs(self):
         pbuilder = self.parent
         th1 = TabbedPanelHeader(text = 'Particle')
@@ -272,8 +275,8 @@ class GetNewFilenameLayout(Widget):
 class LoadParticlePopupContents(Widget):
     blayout = ObjectProperty(None)
     blayout_height = NumericProperty(50)
-    menu_height = NumericProperty(40)
-    label_height = NumericProperty(30)
+    menu_height = NumericProperty(50)
+    label_height = NumericProperty(50)
 
     def __init__(self, load_save_widget, **kwargs):
         self.load_save_widget = load_save_widget
@@ -418,7 +421,6 @@ class ParticlePanel(Widget):
 
     def __init__(self, pbuilder, **kwargs):
         super(ParticlePanel, self).__init__(**kwargs)
-        print dir(self)
         self.particle_builder = pbuilder.parent
 
     def on_max_num_particles(self, instance, value):
