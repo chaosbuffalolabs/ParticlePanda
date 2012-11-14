@@ -15,43 +15,25 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivyparticle.engine import *
 from colorpicker.colorpicker import ColorPicker, ColorWheel
-from kivy.properties import NumericProperty, BooleanProperty, ListProperty, StringProperty, ObjectProperty, BoundedNumericProperty
+from kivy.properties import NumericProperty, BooleanProperty, ListProperty, StringProperty, ObjectProperty
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
 from kivy.lang import Builder
 import os
 import math
+from random import randint
 
 from time import sleep
 from xml.dom.minidom import Document
 import xml.dom.minidom
 
+
 class ParticleBuilder(Widget):
-    demo_particles = ListProperty(None)
     demo_particle = ObjectProperty(ParticleSystem)
-    active = BooleanProperty(False)
+    particle_window = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(ParticleBuilder, self).__init__(**kwargs)
-        
-    def create_particle_system(self):
-        texture = Image('media/particle.png').texture
-        demo_particle = ParticleSystem(None)
-        demo_particle.texture = texture
-        self.demo_particles.append(demo_particle)
 
-    def add_demo_particle_system(self, num_tab):
-        self.demo_particle = self.demo_particles[num_tab-1]
-        self.demo_particle.emitter_x = self.particle_window.pos[0] + self.particle_window.width *.5
-        self.demo_particle.emitter_y = self.particle_window.pos[1] + self.particle_window.height *.5
-        self.add_widget(self.demo_particle)
-        self.demo_particle.start()
-        self.active = True
-
-    def remove_demo_particle_system(self):
-        if not self.active: return
-        self.demo_particle.stop()
-        self.remove_widget(self.demo_particle)
-        self.active = False
 
     def on_touch_down(self, touch):
         super(ParticleBuilder, self).on_touch_down(touch)
@@ -66,100 +48,43 @@ class ParticleBuilder(Widget):
             self.demo_particle.emitter_y = touch.y
 
 class ParticleParamsLayout(Widget):
-    all_tabs = ListProperty(None)
-    all_tabs2 = ListProperty(None)
-    all_tabs3 = ListProperty(None)
-    current_tab = NumericProperty(0)
 
-    def create_tab(self, num_tab):
-        if num_tab == 1:
-            self.particle_tabs.default_tab = TabbedPanelHeader(text='new tab')
-            default = TabbedPanelHeader(text='Hello')
-            default.content = self.get_default_tab()
-            self.particle_tabs.add_widget(default)
-            self.particle_tabs.switch_to(self.particle_tabs.tab_list[0])
-        new_num_variants = num_tab
-        th1 = TabbedPanelHeader(text = 'Particle ' + str(num_tab))
-        th2 = TabbedPanelHeader(text = 'Behavior ' + str(num_tab))
-        th3 = TabbedPanelHeader(text = 'Color ' + str(num_tab))
-        th1.content = self.get_particle_content()
-        th2.content = self.get_behavior_content()
-        th3.content = self.get_color_content()
-        th1.font_size = self.size[0]*.036
-        th2.font_size = self.size[0]*.036
-        th3.font_size = self.size[0]*.036
-        self.parent.parent.create_particle_system()
-        self.all_tabs.append(th1)
-        self.all_tabs2.append(th2)
-        self.all_tabs3.append(th3)
+    tabs_loaded = BooleanProperty(False)
 
-    def add_tab_to_layout(self, num_tab):
-        try:
-            self.particle_tabs.remove_widget(self.particle_tabs.tab_list[0])
-            print 'removed hello tab'
-        except: 
-            print 'no tab to remove'
+    def create_tabs(self):
+        pbuilder = self.parent
+        th1 = TabbedPanelHeader(text = 'Particle')
+        th2 = TabbedPanelHeader(text = 'Behavior')
+        th3 = TabbedPanelHeader(text = 'Color')
+        th1.content = ParticlePanel(pbuilder)
+        th2.content = BehaviorPanel(pbuilder)
+        th3.content = ColorPanel(pbuilder)
+        th1.font_size = self.size[0] * .036
+        th2.font_size = self.size[0] * .036
+        th3.font_size = self.size[0] * .036
+        # self.parent.parent.create_particle_system()
 
-        self.particle_tabs.add_widget(self.all_tabs[num_tab-1])
-        self.particle_tabs.add_widget(self.all_tabs2[num_tab-1])
-        self.particle_tabs.add_widget(self.all_tabs3[num_tab-1])
-        self.parent.parent.add_demo_particle_system(num_tab)
-        self.current_tab = num_tab
-        self.particle_tabs.switch_to(self.particle_tabs.tab_list[2])
+        self.particle_tabs.default_tab = TabbedPanelHeader(text="default tab replaced"+str(randint(1,10000)))
 
-    def remove_tab_from_layout(self, num_tab):
-        self.particle_tabs.remove_widget(self.all_tabs[num_tab-1])
-        self.particle_tabs.remove_widget(self.all_tabs2[num_tab-1])
-        self.particle_tabs.remove_widget(self.all_tabs3[num_tab-1])
-        self.current_tab = 0
-        default = TabbedPanelHeader(text='Hello')
-        default.content = self.get_default_tab()
-        self.parent.parent.remove_demo_particle_system()
-        self.particle_tabs.add_widget(default)
-        self.particle_tabs.switch_to(self.particle_tabs.tab_list[0])
+        self.tabs_loaded = True
+        self.particle_tabs.add_widget(th1)
+        self.particle_tabs.add_widget(th2)
+        self.particle_tabs.add_widget(th3)
 
-    def get_current_tab(self):
-        return self.current_tab
 
     def get_default_tab(self):
         default_content = Default_Particle_Panel()
         return default_content
-    
-    def get_particle_content(self):
-        pbuilder = self.parent
-        return ParticlePanel(pbuilder)
 
-    def get_behavior_content(self):
-        pbuilder = self.parent
-        return BehaviorPanel(pbuilder)
+    def open_first_tab(self):
+        # this should be built into kivy.
+        for x in self.particle_tabs.tab_list:
+            x.state = 'normal'
 
-    def get_color_content(self):
-        pbuilder = self.parent
-        return ColorPanel(pbuilder)
-        
-class ParticleVariationLayout(Widget):
-    num_variants = NumericProperty(0)
-    
-    def add_variant(self):
-        if self.num_variants < 10:
-            self.num_variants += 1
-            num_tab = self.num_variants
-            pbuilder = self.parent.parent
-            ctx = {'text': 'Variant' + str(num_tab), 'group': 'PVar', 'pbuilder': pbuilder, 'num_tab': num_tab}
-            button = Builder.template('VariantButton', **ctx)
-            self.variation_layout.add_widget(button)
-            pbuilder.params_layout.create_tab(num_tab)
+        FIRSTbutton = self.particle_tabs.tab_list[-1]
+        FIRSTbutton.state="down"
+        self.particle_tabs.switch_to(FIRSTbutton)
 
-    def reset_variants(self):
-        for v in self.variation_layout.children:
-            if v.state == 'down': v.state = 'normal'
-
-        self.variation_layout.clear_widgets()
-        self.num_variants = 0
-
-
-    def on_num_variants(self, instance, value):
-        print "num variants changed to ", value
 
 class ParticleLoadSaveLayout(Widget):
     new_particle = ObjectProperty(None)
@@ -300,27 +225,30 @@ class ParticleLoadSaveLayout(Widget):
 
     def load_particle(self,name='templates/fire.pex',texture_path='media/particle.png'):
         pbuilder = self.parent.parent
-        vl = pbuilder.variation_layout
         pl = pbuilder.params_layout
-        vl.reset_variants()
+        pw = pbuilder.particle_window
 
-        # removing 'hello' tab
-        try:
-            pl.particle_tabs.remove_widget(pl.particle_tabs.tab_list[0])
-        except: 
-            print 'no tab to remove'
+        if not pl.tabs_loaded:
+            # if the default panel is loaded, we need to create tabs
+            pl.create_tabs()
+        else:
+            # if not, then the tabs are already there, but we do need to stop and remove the particle
+            pbuilder.demo_particle.stop()
+            pw.remove_widget(pbuilder.demo_particle)
+
 
         new_particle = ParticleSystem(name)
         new_particle.texture = Image(texture_path).texture
-        pbuilder.demo_particles = [new_particle]
+        new_particle.emitter_x = pw.center_x   
+        new_particle.emitter_y = pw.center_y
+        pbuilder.demo_particle = new_particle
+        pw.add_widget(pbuilder.demo_particle)
+        pbuilder.demo_particle.start()
 
-        vl.add_variant()
-        vl.variation_layout.children[0].state = 'down'
-
-        pl.all_tabs[-1].content.get_values_from_particle()
-        pl.all_tabs2[-1].content.get_values_from_particle()
-        pl.all_tabs3[-1].content.get_values_from_particle()
-        print pl.all_tabs2
+        pl.particle_tabs.tab_list[0].content.get_values_from_particle()
+        pl.particle_tabs.tab_list[1].content.get_values_from_particle()
+        pl.particle_tabs.tab_list[2].content.get_values_from_particle()
+        pl.open_first_tab()
         
 class GetNewFilenameLayout(Widget):
     fname_input = ObjectProperty(None)
@@ -423,10 +351,18 @@ class Particle_Property_Slider(Widget):
     slider_step = NumericProperty(1.0)
 
 class Particle_Color_Sliders(Widget):
-    color_r = BoundedNumericProperty(1., min=0, max=1.)
-    color_g = BoundedNumericProperty(1., min=0, max=1.)
-    color_b = BoundedNumericProperty(1., min=0, max=1.)
-    color_a = BoundedNumericProperty(1., min=0, max=1.)
+    color_r = NumericProperty(1.)
+    color_r_min = NumericProperty(0)
+    color_r_max = NumericProperty(1.)
+    color_g = NumericProperty(1.)
+    color_g_min = NumericProperty(0)
+    color_g_max = NumericProperty(1.)
+    color_b = NumericProperty(1.)
+    color_b_min = NumericProperty(0)
+    color_b_max = NumericProperty(1.)
+    color_a = NumericProperty(1.)
+    color_a_min = NumericProperty(0)
+    color_a_max = NumericProperty(1.)
 
     # necessary because of weird slider bug that allows values to go over bounds
     def clip(self, val, vmin, vmax):
@@ -440,19 +376,45 @@ class Particle_Color_Sliders(Widget):
 class ParticlePanel(Widget):
     particle_builder = ObjectProperty(None)
     texture_location = StringProperty("media/particle.png")
-    max_num_particles = BoundedNumericProperty(200., min=1., max=500.)
-    life_span = BoundedNumericProperty(2., min=.01, max=10.)
-    life_span_variance = BoundedNumericProperty(0., min=0., max=10.)
-    start_size = BoundedNumericProperty(8., min=0., max=256.)
-    start_size_variance = BoundedNumericProperty(0., min=0., max=256.)
-    end_size = BoundedNumericProperty(8., min=0., max=256.)
-    end_size_variance = BoundedNumericProperty(0., min=0., max=256.)
-    emit_angle = BoundedNumericProperty(0., min=0., max=360.)
-    emit_angle_variance = BoundedNumericProperty(0., min=0., max=360.)
-    start_rotation = BoundedNumericProperty(0., min=0., max=360.)
-    start_rotation_variance = BoundedNumericProperty(0., min=0., max=360.)
-    end_rotation = BoundedNumericProperty(0., min=0., max=360.)
-    end_rotation_variance = BoundedNumericProperty(0., min=0., max=360.)
+    max_num_particles = NumericProperty(200.)
+    max_num_particles_min = NumericProperty(1.)
+    max_num_particles_max = NumericProperty(500.)
+    life_span = NumericProperty(2.)
+    life_span_min = NumericProperty(.01)
+    life_span_max = NumericProperty(10.)
+    life_span_variance = NumericProperty(0.)
+    life_span_variance_min = NumericProperty(0.)
+    life_span_variance_max = NumericProperty(10.)
+    start_size = NumericProperty(8.)
+    start_size_min = NumericProperty(0.)
+    start_size_max = NumericProperty(256.)
+    start_size_variance = NumericProperty(0.)
+    start_size_variance_min = NumericProperty(0.)
+    start_size_variance_max = NumericProperty(256.)
+    end_size = NumericProperty(8.)
+    end_size_min = NumericProperty(0.)
+    end_size_max = NumericProperty(256.)
+    end_size_variance = NumericProperty(0.)
+    end_size_variance_min = NumericProperty(0.)
+    end_size_variance_max = NumericProperty(256.)
+    emit_angle = NumericProperty(0.)
+    emit_angle_min = NumericProperty(0.)
+    emit_angle_max = NumericProperty(360.)
+    emit_angle_variance = NumericProperty(0.)
+    emit_angle_variance_min = NumericProperty(0.)
+    emit_angle_variance_max = NumericProperty(360.)
+    start_rotation = NumericProperty(0.)
+    start_rotation_min = NumericProperty(0.)
+    start_rotation_max = NumericProperty(360.)
+    start_rotation_variance = NumericProperty(0.)
+    start_rotation_variance_min = NumericProperty(0.)
+    start_rotation_variance_max = NumericProperty(360.)
+    end_rotation = NumericProperty(0.)
+    end_rotation_min = NumericProperty(0.)
+    end_rotation_max = NumericProperty(360.)
+    end_rotation_variance = NumericProperty(0.)
+    end_rotation_variance_min = NumericProperty(0.)
+    end_rotation_variance_max = NumericProperty(360.)
 
     def __init__(self, pbuilder, **kwargs):
         super(ParticlePanel, self).__init__(**kwargs)
@@ -518,23 +480,53 @@ class BehaviorPanel(Widget):
     emitter_type = NumericProperty(0)
 
     ## Gravity Emitter Params
-    emitter_x_variance = BoundedNumericProperty(0., min=0., max=200.)
-    emitter_y_variance = BoundedNumericProperty(0., min=0., max=200.)
-    gravity_x = BoundedNumericProperty(0., min=-1500., max=1500.)
-    gravity_y = BoundedNumericProperty(0., min=-1500., max=1500.)
-    speed = BoundedNumericProperty(0., min=0., max=300.)
-    speed_variance = BoundedNumericProperty(0., min=0., max=300.)
-    radial_acceleration = BoundedNumericProperty(100., min=-400., max=400.)
-    radial_acceleration_variance = BoundedNumericProperty(0., min=0., max=400.)
-    tangential_acceleration = BoundedNumericProperty(0., min=-500., max=500.)
-    tangential_acceleration_variance = BoundedNumericProperty(0., min=0., max=500.)
+    emitter_x_variance = NumericProperty(0.)
+    emitter_x_variance_min = NumericProperty(0.)
+    emitter_x_variance_max = NumericProperty(200.)
+    emitter_y_variance = NumericProperty(0.)
+    emitter_y_variance_min = NumericProperty(0.)
+    emitter_y_variance_max = NumericProperty(200.)
+    gravity_x = NumericProperty(0)
+    gravity_x_min = NumericProperty(-1500)
+    gravity_x_max = NumericProperty(1500)
+    gravity_y = NumericProperty(0)
+    gravity_y_min = NumericProperty(-1500)
+    gravity_y_max = NumericProperty(1500)
+    speed = NumericProperty(0.)
+    speed_min = NumericProperty(0.)
+    speed_max = NumericProperty(300.)
+    speed_variance = NumericProperty(0.)
+    speed_variance_min = NumericProperty(0.)
+    speed_variance_max = NumericProperty(300.)
+    radial_acceleration = NumericProperty(0)
+    radial_acceleration_min = NumericProperty(-400)
+    radial_acceleration_max = NumericProperty(400)
+    radial_acceleration_variance = NumericProperty(0.)
+    radial_acceleration_variance_min = NumericProperty(0.)
+    radial_acceleration_variance_max = NumericProperty(400.)
+    tangential_acceleration = NumericProperty(0)
+    tangential_acceleration_min = NumericProperty(-500)
+    tangential_acceleration_max = NumericProperty(500)
+    tangential_acceleration_variance = NumericProperty(0.)
+    tangential_acceleration_variance_min = NumericProperty(0.)
+    tangential_acceleration_variance_max = NumericProperty(500.)
 
     ## Radial Emitter Params
-    max_radius = BoundedNumericProperty(100., min=0., max=250.)
-    max_radius_variance = BoundedNumericProperty(0., min=0., max=250.)
-    min_radius = BoundedNumericProperty(0., min=0., max=250.)
-    rotate_per_second = BoundedNumericProperty(0., min=-720., max=720.)
-    rotate_per_second_variance = BoundedNumericProperty(0., min=0., max=720.)
+    max_radius = NumericProperty(100.)
+    max_radius_min = NumericProperty(0.)
+    max_radius_max = NumericProperty(250.)
+    max_radius_variance = NumericProperty(0.)
+    max_radius_variance_min = NumericProperty(0.)
+    max_radius_variance_max = NumericProperty(250.)
+    min_radius = NumericProperty(0.)
+    min_radius_min = NumericProperty(0.)
+    min_radius_max = NumericProperty(250.)
+    rotate_per_second = NumericProperty(0)
+    rotate_per_second_min = NumericProperty(-720)
+    rotate_per_second_max = NumericProperty(720)
+    rotate_per_second_variance = NumericProperty(0.)
+    rotate_per_second_variance_min = NumericProperty(0.)
+    rotate_per_second_variance_max = NumericProperty(720.)
 
     def __init__(self, pbuilder, **kwargs):
         super(BehaviorPanel, self).__init__(**kwargs)
@@ -604,20 +596,41 @@ class BehaviorPanel(Widget):
         for p in angle_properties:
             setattr(self,p,math.degrees(getattr(self.particle_builder.demo_particle,p)))
 
+        if self.particle_builder.demo_particle.emitter_type == 0:
+            self.gravity_button.state='down'
+        elif self.particle_builder.demo_particle.emitter_type == 1:
+            self.radial_button.state='down'
+
 
 class ColorPanel(Widget):
     particle_builder = ObjectProperty(None)
 
     start_color = ListProperty([1,1,1,1])
     end_color = ListProperty([1,1,1,1])
-    start_color_r_variance = BoundedNumericProperty(.1, min=0, max=1.)
-    start_color_g_variance = BoundedNumericProperty(.1, min=0, max=1.)
-    start_color_b_variance = BoundedNumericProperty(.1, min=0, max=1.)
-    start_color_a_variance = BoundedNumericProperty(.1, min=0, max=1.)
-    end_color_r_variance = BoundedNumericProperty(.1, min=0, max=1.)
-    end_color_g_variance = BoundedNumericProperty(.1, min=0, max=1.)
-    end_color_b_variance = BoundedNumericProperty(.1, min=0, max=1.)
-    end_color_a_variance = BoundedNumericProperty(.1, min=0, max=1.)
+    start_color_r_variance = NumericProperty(.1)
+    start_color_r_variance_min = NumericProperty(0)
+    start_color_r_variance_max = NumericProperty(1.)
+    start_color_g_variance = NumericProperty(.1)
+    start_color_g_variance_min = NumericProperty(0)
+    start_color_g_variance_max = NumericProperty(1.)
+    start_color_b_variance = NumericProperty(.1)
+    start_color_b_variance_min = NumericProperty(0)
+    start_color_b_variance_max = NumericProperty(1.)
+    start_color_a_variance = NumericProperty(.1)
+    start_color_a_variance_min = NumericProperty(0)
+    start_color_a_variance_max = NumericProperty(1.)
+    end_color_r_variance = NumericProperty(.1)
+    end_color_r_variance_min = NumericProperty(0)
+    end_color_r_variance_max = NumericProperty(1.)
+    end_color_g_variance = NumericProperty(.1)
+    end_color_g_variance_min = NumericProperty(0)
+    end_color_g_variance_max = NumericProperty(1.)
+    end_color_b_variance = NumericProperty(.1)
+    end_color_b_variance_min = NumericProperty(0)
+    end_color_b_variance_max = NumericProperty(1.)
+    end_color_a_variance = NumericProperty(.1)
+    end_color_a_variance_min = NumericProperty(0)
+    end_color_a_variance_max = NumericProperty(1.)
 
     def __init__(self, pbuilder, **kwargs):
         super(ColorPanel, self).__init__(**kwargs)
@@ -698,7 +711,6 @@ class VariableDescriptions(Widget):
         self.description_popup.open()
 
 Factory.register('ParticleBuilder', ParticleBuilder)
-Factory.register('ParticleVariationLayout', ParticleVariationLayout)
 Factory.register('ParticleLoadSaveLayout', ParticleLoadSaveLayout)
 Factory.register('ParticleParamsLayout', ParticleParamsLayout)
 Factory.register('ParticlePanel', ParticlePanel)

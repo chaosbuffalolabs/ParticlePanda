@@ -4,7 +4,6 @@ ParticleBuilder:
 
 <ParticleBuilder>:
     params_layout: params_layout
-    variation_layout: variation_layout
     particle_window: particle_window
     load_save: load_save
     descriptions: descriptions
@@ -16,14 +15,10 @@ ParticleBuilder:
                 pos: root.pos
                 size: root.size
         size_hint: (1., 1.)
-        ParticleVariationLayout:
-            id: variation_layout
-            pos: root.pos[0] + root.width*.02, root.pos[1] + root.height*.032
-            size: (root.size[0]/3 - root.size[0]*.04, root.size[1]/2 - root.size[1]*.064)
         ParticleLoadSaveLayout:
             id: load_save
-            pos: root.pos[0] + root.width*.355, root.pos[1] + root.height*.1
-            size: (root.size[0]/8, root.size[1]/3)
+            pos: root.pos[0] + root.width*.02, root.pos[1] + root.height*.032
+            size: (root.size[0]/2 - root.size[0]*.04, root.size[1]/8)
         ParticleParamsLayout:
             id: params_layout
             pos: root.pos[0] + root.width*.02 + root.width/2, root.pos[1] + root.height*.032
@@ -34,8 +29,8 @@ ParticleBuilder:
             size: (root.size[0]/17, root.size[0]/17)
         FloatLayout:
             id: particle_window
-            pos: root.pos[0] + root.width*.02, root.pos[1] + root.height*.5 + root.height*.032
-            size: (root.size[0]/2 - root.size[0]*.04, root.size[1]/2 - root.size[1]*.064)
+            pos: root.pos[0] + root.width*.02, root.pos[1] + root.height*.032 + root.height/8
+            size: (root.size[0]/2 - root.size[0]*.04, root.size[1] - root.size[1]*.064 - root.height/8)
             on_size: 
                 root.demo_particle.emitter_x = self.pos[0] + self.width *.5
                 root.demo_particle.emitter_y = self.pos[1] + self.height *.5
@@ -46,54 +41,28 @@ ParticleBuilder:
                     pos: self.pos
                     size: self.size
 
-<ParticleVariationLayout>:
-    canvas:
-        Color:
-            rgb: (.75, .75, .75, 1)
-        Rectangle:
-            pos: self.pos
-            size: self.size
-    variation_layout: variationlayout
-    on_size:
-        print self.size
-    BoxLayout:
-        size_hint: (1., 1.)
-        pos: root.pos
-        size: root.size
-        orientation: 'vertical'
-        StackLayout:
-            id: variationlayout
-            size_hint: (1., .9)
-            spacing: 2
-        Button:
-            size_hint: (1., .1)
-            text: 'Add Variant'
-            font_size: root.size[0]*.06
-            halign: 'center'
-            valign: 'middle'
-            background_color: (.9,.9,.9,1)
-            on_state: root.add_variant() if (self.state == 'down') else None   
-
 <ParticleLoadSaveLayout>:
     BoxLayout:
         size: root.size
         pos: root.pos
-        orientation: 'vertical'
-        spacing: 20
-        DebugPanel:
-            size_hint: (1.,.3)
+        orientation: 'horizontal'
+        spacing: 15
+        padding: 15
+
         Button:
-            size_hint: (1.,.3)
+            size_hint: (.3,1)
             text: 'Save'
-            font_size: root.size[0]*.125
+            font_size: root.size[0]*.05
             on_state: root.show_save_popup() if (self.state == 'down') else None
         Button:
-            size_hint: (1.,.3)
+            size_hint: (.3,1)
             text: 'Load'
-            font_size: root.size[0]*.125
+            font_size: root.size[0]*.05
             halign: 'center'
             valign: 'middle'
             on_state: root.show_load_popup() if (self.state == 'down') else None
+        DebugPanel:
+            size_hint: (.3,1)
 
 <DebugPanel>:
     fps: root.fps
@@ -421,16 +390,16 @@ ParticleBuilder:
             id: max_particles_slider
             size_hint: (1., .2)
             slider_text: 'Max Particles'
-            slider_bounds_min: root.property('max_num_particles').get_min(root)
-            slider_bounds_max: root.property('max_num_particles').get_max(root)
+            slider_bounds_min: root.max_num_particles_min
+            slider_bounds_max: root.max_num_particles_max
             slider_bounds_init_value: root.max_num_particles
             on_value: root.max_num_particles = self.value
         Particle_Property_Slider:
             id: life_span_slider
             size_hint: (1., .2)
             slider_text: 'Life Span'
-            slider_bounds_min: root.property('life_span').get_min(root)
-            slider_bounds_max: root.property('life_span').get_max(root)
+            slider_bounds_min: root.life_span_min
+            slider_bounds_max: root.life_span_max
             slider_bounds_init_value: root.life_span
             slider_step: .025
             on_value: root.life_span = self.value
@@ -438,8 +407,8 @@ ParticleBuilder:
             id: life_span_variance_slider
             size_hint: (1., .2)
             slider_text: 'Life Span Variance'
-            slider_bounds_min: root.property('life_span_variance').get_min(root)
-            slider_bounds_max: root.property('life_span_variance').get_max(root)
+            slider_bounds_min: root.life_span_variance_min
+            slider_bounds_max: root.life_span_variance_max
             slider_bounds_init_value: root.life_span_variance
             slider_step: .025
             on_value: root.life_span_variance = self.value
@@ -447,84 +416,86 @@ ParticleBuilder:
             id: start_size_slider
             size_hint: (1., .2)
             slider_text: 'Start Size'
-            slider_bounds_min: root.property('start_size').get_min(root)
-            slider_bounds_max: root.property('start_size').get_max(root)
+            slider_bounds_min: root.start_size_min
+            slider_bounds_max: root.start_size_max
             slider_bounds_init_value: root.start_size
             on_value: root.start_size = self.value
         Particle_Property_Slider:
             id: start_size_variance_slider
             size_hint: (1., .2)
             slider_text: 'Start Size Variance'
-            slider_bounds_min: root.property('start_size_variance').get_min(root)
-            slider_bounds_max: root.property('start_size_variance').get_max(root)
+            slider_bounds_min: root.start_size_variance_min
+            slider_bounds_max: root.start_size_variance_max
             slider_bounds_init_value: root.start_size_variance
             on_value: root.start_size_variance = self.value
         Particle_Property_Slider:
             id: end_size_slider
             size_hint: (1., .2)
             slider_text: 'End Size'
-            slider_bounds_min: root.property('end_size').get_min(root)
-            slider_bounds_max: root.property('end_size').get_max(root)
+            slider_bounds_min: root.end_size_min
+            slider_bounds_max: root.end_size_max
             slider_bounds_init_value: root.end_size
             on_value: root.end_size = self.value
         Particle_Property_Slider:
             id: end_size_variance_slider
             size_hint: (1., .2)
             slider_text: 'End Size Variance'
-            slider_bounds_min: root.property('end_size_variance').get_min(root)
-            slider_bounds_max: root.property('end_size_variance').get_max(root)
+            slider_bounds_min: root.end_size_variance_min
+            slider_bounds_max: root.end_size_variance_max
             slider_bounds_init_value: root.end_size_variance
             on_value: root.end_size_variance = self.value
         Particle_Property_Slider:
             id: emit_angle_slider
             size_hint: (1., .2)
             slider_text: 'Emit Angle'
-            slider_bounds_min: root.property('emit_angle').get_min(root)
-            slider_bounds_max: root.property('emit_angle').get_max(root)
+            slider_bounds_min: root.emit_angle_min
+            slider_bounds_max: root.emit_angle_max
             slider_bounds_init_value: root.emit_angle
             on_value: root.emit_angle = self.value
         Particle_Property_Slider:
             id: emit_angle_variance_slider
             size_hint: (1., .2)
             slider_text: 'Emit Angle Variance'
-            slider_bounds_min: root.property('emit_angle_variance').get_min(root)
-            slider_bounds_max: root.property('emit_angle_variance').get_max(root)
+            slider_bounds_min: root.emit_angle_variance_min
+            slider_bounds_max: root.emit_angle_variance_max
             slider_bounds_init_value: root.emit_angle_variance
             on_value: root.emit_angle_variance = self.value
         Particle_Property_Slider:
             id: start_rotation_slider
             size_hint: (1., .2)
             slider_text: 'Start Rotation'
-            slider_bounds_min: root.property('start_rotation').get_min(root)
-            slider_bounds_max: root.property('start_rotation').get_max(root)
+            slider_bounds_min: root.start_rotation_min
+            slider_bounds_max: root.start_rotation_max
             slider_bounds_init_value: root.start_rotation
             on_value: root.start_rotation = self.value
         Particle_Property_Slider:
             id: start_rotation_variance_slider
             size_hint: (1., .2)
             slider_text: 'Start Rotation Variance'
-            slider_bounds_min: root.property('start_rotation_variance').get_min(root)
-            slider_bounds_max: root.property('start_rotation_variance').get_max(root)
+            slider_bounds_min: root.start_rotation_variance_min
+            slider_bounds_max: root.start_rotation_variance_max
             slider_bounds_init_value: root.start_rotation_variance
             on_value: root.start_rotation_variance = self.value
         Particle_Property_Slider:
             id: end_rotation_slider
             size_hint: (1., .2)
             slider_text: 'End Rotation'
-            slider_bounds_min: root.property('end_rotation').get_min(root)
-            slider_bounds_max: root.property('end_rotation').get_max(root)
+            slider_bounds_min: root.end_rotation_min
+            slider_bounds_max: root.end_rotation_max
             slider_bounds_init_value: root.end_rotation
             on_value: root.end_rotation = self.value
         Particle_Property_Slider:
             id: end_rotation_variance_slider
             size_hint: (1., .2)
             slider_text: 'End Rotation Variance'
-            slider_bounds_min: root.property('end_rotation_variance').get_min(root)
-            slider_bounds_max: root.property('end_rotation_variance').get_max(root)
+            slider_bounds_min: root.end_rotation_variance_min
+            slider_bounds_max: root.end_rotation_variance_max
             slider_bounds_init_value: root.end_rotation_variance
             on_value: root.end_rotation_variance = self.value
                   
 <BehaviorPanel>:
+    gravity_button: gravity_button
+    radial_button: radial_button
     emitter_x_variance_slider: emitter_x_variance_slider
     emitter_y_variance_slider: emitter_y_variance_slider
     gravity_x_slider: gravity_x_slider
@@ -547,12 +518,14 @@ ParticleBuilder:
         size_hint: (1., .1)
         padding: 8
         ToggleButton:
+            id: gravity_button
             text: 'Gravity Emitter'
             font_size: root.size[0]*.03
             group: 'emitter_type'
             background_color: (255,255,255,.35) if self.state == 'normal' else (0,1,1,1)
             on_state: root.set_emitter_type(0) if self.state == 'down' else None
         ToggleButton:
+            id: radial_button
             text: 'Radial Emitter'
             font_size: root.size[0]*.03
             group: 'emitter_type'
@@ -566,80 +539,80 @@ ParticleBuilder:
             id: emitter_x_variance_slider
             size_hint: (1., .1)
             slider_text: 'Emitter X Variance'
-            slider_bounds_min: root.property('emitter_x_variance').get_min(root)
-            slider_bounds_max: root.property('emitter_x_variance').get_max(root)
+            slider_bounds_min: root.emitter_x_variance_min
+            slider_bounds_max: root.emitter_x_variance_max
             slider_bounds_init_value: root.emitter_x_variance
             on_value: root.emitter_x_variance = self.value
         Particle_Property_Slider:
             id: emitter_y_variance_slider
             size_hint: (1., .1)
             slider_text: 'Emitter Y Variance'
-            slider_bounds_min: root.property('emitter_y_variance').get_min(root)
-            slider_bounds_max: root.property('emitter_y_variance').get_max(root)
+            slider_bounds_min: root.emitter_y_variance_min
+            slider_bounds_max: root.emitter_y_variance_max
             slider_bounds_init_value: root.emitter_y_variance
             on_value: root.emitter_y_variance = self.value
         Particle_Property_Slider:
             id: gravity_x_slider
             size_hint: (1., .1)
             slider_text: 'Gravity X'
-            slider_bounds_min: root.property('gravity_x').get_min(root)
-            slider_bounds_max: root.property('gravity_x').get_max(root)
+            slider_bounds_min: root.gravity_x_min
+            slider_bounds_max: root.gravity_x_max
             slider_bounds_init_value: root.gravity_x
             on_value: root.gravity_x = self.value
         Particle_Property_Slider:
             id: gravity_y_slider
             size_hint: (1., .1)
             slider_text: 'Gravity Y'
-            slider_bounds_min: root.property('gravity_y').get_min(root)
-            slider_bounds_max: root.property('gravity_y').get_max(root)
+            slider_bounds_min: root.gravity_y_min
+            slider_bounds_max: root.gravity_y_max
             slider_bounds_init_value: root.gravity_y
             on_value: root.gravity_y = self.value
         Particle_Property_Slider:
             id: speed_slider
             size_hint: (1., .1)
             slider_text: 'Speed'
-            slider_bounds_min: root.property('speed').get_min(root)
-            slider_bounds_max: root.property('speed').get_max(root)
+            slider_bounds_min: root.speed_min
+            slider_bounds_max: root.speed_max
             slider_bounds_init_value: root.speed
             on_value: root.speed = self.value
         Particle_Property_Slider:
             id: speed_variance_slider
             size_hint: (1., .1)
             slider_text: 'Speed Variance'
-            slider_bounds_min: root.property('speed_variance').get_min(root)
-            slider_bounds_max: root.property('speed_variance').get_max(root)
+            slider_bounds_min: root.speed_variance_min
+            slider_bounds_max: root.speed_variance_max
             slider_bounds_init_value: root.speed_variance
             on_value: root.speed_Variance = self.value
         Particle_Property_Slider:
             id: radial_acceleration_slider
             size_hint: (1., .1)
             slider_text: 'Radial Acceleration'
-            slider_bounds_min: root.property('radial_acceleration').get_min(root)
-            slider_bounds_max: root.property('radial_acceleration').get_max(root)
+            slider_bounds_min: root.radial_acceleration_min
+            slider_bounds_max: root.radial_acceleration_max
             slider_bounds_init_value: root.radial_acceleration
             on_value: root.radial_acceleration = self.value
         Particle_Property_Slider:
             id: radial_acceleration_variance_slider
             size_hint: (1., .1)
             slider_text: 'Radial Acceleration\n Variance'
-            slider_bounds_min: root.property('radial_acceleration_variance').get_min(root)
-            slider_bounds_max: root.property('radial_acceleration_variance').get_max(root)
+            slider_bounds_min: root.radial_acceleration_variance_min
+            slider_bounds_max: root.radial_acceleration_variance_max
             slider_bounds_init_value: root.radial_acceleration_variance
             on_value: root.radial_acceleration_variance = self.value
         Particle_Property_Slider:
             id: tangential_acceleration_slider
             size_hint: (1., .1)
             slider_text: 'Tangential Acceleration'
-            slider_bounds_min: root.property('tangential_acceleration').get_min(root)
-            slider_bounds_max: root.property('tangential_acceleration').get_max(root)
+            slider_bounds_min: root.tangential_acceleration_min
+            slider_bounds_max: root.tangential_acceleration_max
             slider_bounds_init_value: root.tangential_acceleration
             on_value: root.tangential_acceleration = self.value
         Particle_Property_Slider:
             id: tangential_acceleration_variance_slider
             size_hint: (1., .1)
             slider_text: 'Tangential Acceleration\n Variance'
-            slider_bounds_min: root.property('tangential_acceleration_variance').get_min(root)
-            slider_bounds_max: root.property('tangential_acceleration_variance').get_max(root)
+            slider_bounds_min: root.tangential_acceleration_variance_min
+            slider_bounds_max: root.tangential_acceleration_variance_max
             slider_bounds_init_value: root.tangential_acceleration_variance
             on_value: root.tangential_acceleration_variance = self.value
     
@@ -651,32 +624,32 @@ ParticleBuilder:
             id: max_radius_slider
             size_hint: (1., .1)
             slider_text: 'Max Radius'
-            slider_bounds_min: root.property('max_radius').get_min(root)
-            slider_bounds_max: root.property('max_radius').get_max(root)
+            slider_bounds_min: root.max_radius_min
+            slider_bounds_max: root.max_radius_max
             slider_bounds_init_value: root.max_radius
             on_value: root.max_radius = self.value
         Particle_Property_Slider:
             id: max_radius_variance_slider
             size_hint: (1., .1)
             slider_text: 'Max Radius Variance'
-            slider_bounds_min: root.property('max_radius_variance').get_min(root)
-            slider_bounds_max: root.property('max_radius_variance').get_max(root)
+            slider_bounds_min: root.max_radius_variance_min
+            slider_bounds_max: root.max_radius_variance_max
             slider_bounds_init_value: root.max_radius_variance
             on_value: root.max_radius_variance = self.value
         Particle_Property_Slider:
             id: min_radius_slider
             size_hint: (1., .1)
             slider_text: 'Min Radius'
-            slider_bounds_min: root.property('min_radius').get_min(root)
-            slider_bounds_max: root.property('min_radius').get_max(root)
+            slider_bounds_min: root.min_radius_min
+            slider_bounds_max: root.min_radius_max
             slider_bounds_init_value: root.min_radius
             on_value: root.min_radius = self.value
         Particle_Property_Slider:
             id: rotate_per_second_slider
             size_hint: (1., .1)
             slider_text: 'Rotate Per Second'
-            slider_bounds_min: root.property('rotate_per_second').get_min(root)
-            slider_bounds_max: root.property('rotate_per_second').get_max(root)
+            slider_bounds_min: root.rotate_per_second_min
+            slider_bounds_max: root.rotate_per_second_max
             slider_bounds_init_value: root.rotate_per_second
             step: .025
             on_value: root.rotate_per_second = self.value
@@ -684,8 +657,8 @@ ParticleBuilder:
             id: rotate_per_second_variance_slider
             size_hint: (1., .1)
             slider_text: 'Rotate Per Second\n Variance'
-            slider_bounds_min: root.property('rotate_per_second_variance').get_min(root)
-            slider_bounds_max: root.property('rotate_per_second_variance').get_max(root)
+            slider_bounds_min: root.rotate_per_second_variance_min
+            slider_bounds_max: root.rotate_per_second_variance_max
             slider_bounds_init_value: root.rotate_per_second_variance
             step: .025
             on_value: root.rotate_per_second_variance = self.value
