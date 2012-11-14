@@ -120,10 +120,12 @@ ParticleBuilder:
             Button:
                 size_hint_x: .35
                 text: 'Cancel'
+                font_size: self.size[1] * .35
                 on_release: root.cancel()
             Button:
                 size_hint_x: .35
                 text: 'OK'
+                font_size: self.size[1] * .35
                 on_release: root.ok()
             Widget:
                 size_hint_x: .15
