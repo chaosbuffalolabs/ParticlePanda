@@ -117,7 +117,9 @@ class ParticleLoadSaveLayout(Widget):
 
     def _reset_layout(self, layout):
         for w in layout.children[:]:
-            if isinstance(w, Label):
+            # this removes all the kivy template instances without removing the toggle buttons on top. 
+            # can't use isinstance(w, BoxLayout) because they are all boxlayouts.
+            if hasattr(w, 'thisisabutton'):
                 layout.remove_widget(w)
 
     def _load_show_filenames(self, fnames):
@@ -174,7 +176,6 @@ class ParticleLoadSaveLayout(Widget):
         new_particle = Document()
         particle_values = new_particle.createElement("particleEmitterConfig")
         new_particle.appendChild(particle_values)
-
 
         particle_values.appendChild(self.xml_from_attribute(new_particle, 'texture', ('name'), (pbuilder.demo_particle.texture_path)))
         particle_values.appendChild(self.xml_from_attribute(new_particle, 'sourcePositionVariance', ('x', 'y'), (pbuilder.demo_particle.emitter_x_variance, pbuilder.demo_particle.emitter_y_variance)))
