@@ -707,11 +707,13 @@ class ColorPanel(Widget):
 
     def get_values_from_particle(self):
         self.start_color_picker.selected_color = self.particle_builder.demo_particle.start_color
+        self.start_color_picker.get_alpha()
         self.start_color_variation_sliders.color_r_slider.value = self.particle_builder.demo_particle.start_color_variance[0]
         self.start_color_variation_sliders.color_g_slider.value = self.particle_builder.demo_particle.start_color_variance[1]
         self.start_color_variation_sliders.color_b_slider.value = self.particle_builder.demo_particle.start_color_variance[2]
         self.start_color_variation_sliders.color_a_slider.value = self.particle_builder.demo_particle.start_color_variance[3]
         self.end_color_picker.selected_color = self.particle_builder.demo_particle.end_color
+        self.end_color_picker.get_alpha()
         self.end_color_variation_sliders.color_r_slider.value = self.particle_builder.demo_particle.end_color_variance[0]
         self.end_color_variation_sliders.color_g_slider.value = self.particle_builder.demo_particle.end_color_variance[1]
         self.end_color_variation_sliders.color_b_slider.value = self.particle_builder.demo_particle.end_color_variance[2]
