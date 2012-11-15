@@ -56,19 +56,45 @@ ParticleBuilder:
         orientation: 'horizontal'
         spacing: 15
         padding: 15
-
         Button:
-            size_hint: (.3,1)
-            text: 'Save'
-            font_size: root.size[0]*.04
+            id: savebutton
+            size_hint: (.3,1) 
             on_state: root.show_save_popup() if (self.state == 'down') else None
+            BoxLayout:
+                pos: savebutton.pos
+                size: savebutton.size
+                orientation: 'horizontal'
+                Image:
+                    source: "media/icons/5_content_save.png"
+                    size_hint: (.4, 1.)
+                Label:
+                    text: 'Save'
+                    size_hint: (.6, 1.)
+                    font_size: root.size[0]*.04
+                    text_size: self.size
+                    halign: 'left'
+                    valign: 'middle' 
         Button:
+            id: loadbutton
             size_hint: (.3,1)
-            text: 'Load'
             font_size: root.size[0]*.04
             halign: 'center'
             valign: 'middle'
             on_state: root.show_load_popup() if (self.state == 'down') else None
+            BoxLayout:
+                pos: loadbutton.pos
+                size: loadbutton.size
+                orientation: 'horizontal'
+                Image:
+                    source: "media/icons/4_collections_collection.png"
+                    size_hint: (.4, 1.)
+                Label:
+                    text: 'Load'
+                    size_hint: (.6, 1.)
+                    font_size: root.size[0]*.04
+                    text_size: self.size
+                    halign: 'left'
+                    valign: 'middle'
 
 <DebugPanel>:
     fps: root.fps
@@ -93,16 +119,14 @@ ParticleBuilder:
         text: '   ' + root.filename if root.filename != None else ""
 
 <VariableDescriptions>:
-    Label:
-        text: '?'
-        color: (0,.9,.9,1)
-        bold: True
-        font_size: root.size[0]*.3
+    BoxLayout:
         pos: root.pos
         size: root.size
-        halign: "center"
-        valign: 'middle'
-        on_touch_down: self.collide_point(*args[1].pos) and root.tab_info()
+        Image:
+            source: "media/icons/2_action_help.png"
+            size_hint: (1., 1.)
+            on_touch_down: self.collide_point(*args[1].pos) and root.tab_info()
+
 
 <GetNewFileNameLayout>:
     fname_input: fname_input
@@ -162,21 +186,6 @@ ParticleBuilder:
     text_size: self.size
     on_touch_down: self.collide_point(*args[1].pos) and ctx.parent.save_filename(self.text)
 
-[VariantButton@ToggleButton]
-    size_hint: (1., .1)
-    text: ctx.text
-    font_size: root.size[0]*.06
-    group: ctx.group
-    num_tab: ctx.num_tab
-    pbuilder: ctx.pbuilder
-    pos: self.pos
-    on_state: self.pbuilder.params_layout.add_tab_to_layout(ctx.num_tab) if root.state == 'down' else self.pbuilder.params_layout.remove_tab_from_layout(ctx.num_tab)
-    canvas: 
-        Color:
-            rgba: (.4, .4, .4, 0)
-        Rectangle:
-            pos: self.pos
-            size: self.size
 
 <ParticleParamsLayout>:
     particle_tabs: particle_tabs
@@ -757,34 +766,5 @@ ParticleBuilder:
                 on_color_g: root.end_color_g_variance = self.color_g
                 on_color_b: root.end_color_b_variance = self.color_b
                 on_color_a: root.end_color_a_Variance = self.color_a
-
-
-#            id: start_color_sliders
-#            slider_text: 'Start Color RGBA'
-#            on_color_r: root.start_color_r = self.color_r
-#            on_color_g: root.start_color_g = self.color_g
-#            on_color_b: root.start_color_b = self.color_b
-#            on_color_a: root.start_color_a = self.color_a
-#        Particle_Color_Sliders:
-#            id: start_color_variation_sliders
-#            slider_text: 'Start Color\n Variation RGBA'
-#            on_color_r: root.start_color_r_variance = self.color_r
-#            on_color_g: root.start_color_g_variance = self.color_g
-#            on_color_b: root.start_color_b_variance = self.color_b
-#            on_color_a: root.start_color_a_variance = self.color_a
-#        Particle_Color_Sliders:
-#            id: end_color_sliders
-#            slider_text: 'End Color RGBA'
-#            on_color_r: root.end_color_r = self.color_r
-#            on_color_g: root.end_color_g = self.color_g
-#            on_color_b: root.end_color_b = self.color_b
-#            on_color_a: root.end_color_a = self.color_a
-#        Particle_Color_Sliders:
-#            id: end_color_variation_sliders
-#            slider_text: 'End Color\n Variation RGBA'
-#            on_color_r: root.end_color_r_variance = self.color_r
-#            on_color_g: root.end_color_g_variance = self.color_g
-#            on_color_b: root.end_color_b_variance = self.color_b
-#            on_color_a: root.end_color_a_Variance = self.color_a
 
     
