@@ -400,6 +400,7 @@ ParticleBuilder:
 
 <ParticlePanel>:
     max_particles_slider: max_particles_slider
+    image_chooser_button: image_chooser_button
     life_span_slider: life_span_slider
     life_span_variance_slider: life_span_variance_slider
     start_size_slider: start_size_slider
@@ -420,7 +421,7 @@ ParticleBuilder:
         ImageChooser:
             id: image_chooser_button
             size_hint: (1., .2)
-            on_image_location: root.texture_location = self.image_location
+            on_image_location: root.texture_path = self.image_location
         Particle_Property_Slider:
             id: max_particles_slider
             size_hint: (1., .2)
