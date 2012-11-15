@@ -195,14 +195,27 @@ ParticleBuilder:
             Widget:
                 size_hint_x: .15
 
-[LoadFilenameButton@Label]
+[LoadFilenameButton@BoxLayout]
+    thisisabutton: True
+    orientation: 'horizontal'
     size_hint_x: 1.
     size_hint_y: None
     height: ctx.height
-    text: ctx.text
-    font_size: self.height * .46
-    text_size: self.size
-    on_touch_down: self.collide_point(*args[1].pos) and ctx.parent.open_filename(self.text)
+    Image:
+        source: ctx.icon
+        size_hint_x: None
+        size_hint_y: 1.
+        width: self.height
+    Widget:
+        # spacer
+        size_hint_x: None
+        width: 10
+    Label:
+        text: ctx.text
+        valign: 'middle'
+        font_size: self.height * .46
+        text_size: self.size
+        on_touch_down: self.collide_point(*args[1].pos) and ctx.parent.open_filename(self.text)
 
 [SaveFilenameButton@Label]
     size_hint_x: 1.
@@ -384,6 +397,7 @@ ParticleBuilder:
     Image:
         pos: root.pos
         size: root.size
+        # allow_stretch: True
         source: root.image_location if root.image_location is not None else None
         on_touch_down: self.collide_point(*args[1].pos) and root.cell_press()
 

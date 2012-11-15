@@ -20,10 +20,13 @@ from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
 from kivy.lang import Builder
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.rst import RstDocument
+from kivy.core.window import Window
+from kivy.core.gl import glReadPixels, GL_RGBA, GL_UNSIGNED_BYTE
 import os
 import math
+import pygame
 from random import randint
-
+from functools import partial
 from time import sleep
 from xml.dom.minidom import Document
 import xml.dom.minidom
@@ -110,10 +113,13 @@ class ParticleLoadSaveLayout(Widget):
 
     def load_default_particle(self,dt):
         self.load_particle()
+        self.pbuilder = self.parent.parent
 
     def _reset_layout(self, layout):
         for w in layout.children[:]:
-            if isinstance(w, Label):
+            # this removes all the kivy template instances without removing the toggle buttons on top. 
+            # can't use isinstance(w, BoxLayout) because they are all boxlayouts.
+            if hasattr(w, 'thisisabutton'):
                 layout.remove_widget(w)
 
     def _load_show_filenames(self, fnames):
@@ -123,7 +129,7 @@ class ParticleLoadSaveLayout(Widget):
         self.load_particle_popup.content.blayout_height = self.load_particle_popup.content.menu_height + 2*layout.padding + len(fnames)*(layout.spacing + self.load_particle_popup.content.label_height)
 
         for f in fnames:
-            ctx = {'text': f, 'height': self.load_particle_popup.content.label_height, 'parent': self}
+            ctx = {'text': f, 'icon': os.path.join(self.load_dir, os.path.splitext(f)[0] + '.png') ,'height': self.load_particle_popup.content.label_height, 'parent': self}
             button = Builder.template('LoadFilenameButton', **ctx)
             layout.add_widget(button)
 
@@ -171,7 +177,6 @@ class ParticleLoadSaveLayout(Widget):
         particle_values = new_particle.createElement("particleEmitterConfig")
         new_particle.appendChild(particle_values)
 
-
         particle_values.appendChild(self.xml_from_attribute(new_particle, 'texture', ('name'), (pbuilder.demo_particle.texture_path)))
         particle_values.appendChild(self.xml_from_attribute(new_particle, 'sourcePositionVariance', ('x', 'y'), (pbuilder.demo_particle.emitter_x_variance, pbuilder.demo_particle.emitter_y_variance)))
         particle_values.appendChild(self.xml_from_attribute(new_particle, 'gravity', ('x', 'y'), (pbuilder.demo_particle.gravity_x, pbuilder.demo_particle.gravity_y)))
@@ -213,12 +218,31 @@ class ParticleLoadSaveLayout(Widget):
         with open(os.path.join('user_effects', fname), 'w') as outf:
             new_particle.writexml(outf, indent = "  ", newl = "\n")
 
+        Clock.schedule_once(partial(self.save_thumbnail, os.path.join('user_effects',os.path.splitext(fname)[0]+'.png')), .5)
         self.save_particle_popup.dismiss()
         self.save_particle_popup_content = SaveParticlePopupContents(self)
+
+    def save_thumbnail(self, thumbnail_filename, *largs):
+        print 'saving thumbnail to', thumbnail_filename
+        canvas_pos = [int(x) for x in self.pbuilder.particle_window.pos]
+        canvas_size = [int(x) for x in self.pbuilder.particle_window.size]
+        particle_y = int(self.pbuilder.demo_particle.emitter_y)
+        screenshot_y = particle_y - canvas_size[0]/2
+        if screenshot_y < canvas_pos[1]:
+            screenshot_y = canvas_pos[1]
+        elif screenshot_y > canvas_pos[1] + 0.9*canvas_size[1] - canvas_size[0]:
+            screenshot_y = canvas_pos[1] + 0.9*canvas_size[1] - canvas_size[0]
+
+        data = glReadPixels(canvas_pos[0], screenshot_y, canvas_size[0], canvas_size[0], GL_RGBA, GL_UNSIGNED_BYTE)
+        data = str(buffer(data))
+
+        image = pygame.image.fromstring(data, (canvas_size[0], canvas_size[0]), 'RGBA', True)
+        pygame.image.save(image, thumbnail_filename)
 
     def xml_from_attribute(self,parent, attribute, fields, values):
 
         xml_element = parent.createElement(attribute)
+
         try:
             if isinstance(fields, basestring): raise TypeError
             for idx in range(len(fields)):
@@ -255,7 +279,6 @@ class ParticleLoadSaveLayout(Widget):
             # if not, then the tabs are already there, but we do need to stop and remove the particle
             pbuilder.demo_particle.stop()
             pw.remove_widget(pbuilder.demo_particle)
-
 
         new_particle = ParticleSystem(name)
         new_particle.emitter_x = pw.center_x   
@@ -330,12 +353,12 @@ class ImageChooserCell(Widget):
 
 class ImageChooserPopupContent(GridLayout):
     def __init__(self, image_chooser = None, **kwargs):
-        super(ImageChooserPopupContent,self).__init__(rows = 8, cols = 8, col_force_default = True, row_force_default = True, row_default_height = 64, col_default_width = 64, **kwargs)
+        super(ImageChooserPopupContent,self).__init__(rows = 6, cols = 6, col_force_default = True, row_force_default = True, row_default_height = 80, col_default_width = 80, **kwargs)
         self.image_chooser = image_chooser
         png_files = self.get_all_images('./media/particles', '.png')
         # atlasses = self.get_all_images('.', '.atlas')
         for i in png_files:
-            self.add_widget(ImageChooserCell(image_location=i, image_chooser = self.image_chooser))
+            self.add_widget(ImageChooserCell(image_location=i, image_chooser = self.image_chooser, size=(self.col_default_width, self.row_default_height)))
         
 
     def get_all_images(self,dir_name,extension):
