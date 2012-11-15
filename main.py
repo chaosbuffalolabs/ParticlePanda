@@ -20,10 +20,13 @@ from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
 from kivy.lang import Builder
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.rst import RstDocument
+from kivy.core.window import Window
+from kivy.core.gl import glReadPixels, GL_RGBA, GL_UNSIGNED_BYTE
 import os
 import math
+import pygame
 from random import randint
-
+from functools import partial
 from time import sleep
 from xml.dom.minidom import Document
 import xml.dom.minidom
@@ -110,20 +113,21 @@ class ParticleLoadSaveLayout(Widget):
 
     def load_default_particle(self,dt):
         self.load_particle()
+        self.pbuilder = self.parent.parent
 
     def _reset_layout(self, layout):
         for w in layout.children[:]:
             if isinstance(w, Label):
                 layout.remove_widget(w)
 
-    def _load_show_filenames(self, fnames):
+    def _load_show_filenames(self, fnames, directory):
         layout = self.load_particle_popup.content.blayout
 
         self._reset_layout(layout)
         self.load_particle_popup.content.blayout_height = self.load_particle_popup.content.menu_height + 2*layout.padding + len(fnames)*(layout.spacing + self.load_particle_popup.content.label_height)
 
         for f in fnames:
-            ctx = {'text': f, 'height': self.load_particle_popup.content.label_height, 'parent': self}
+            ctx = {'text': f, 'icon': os.path.join(directory, os.path.splitext(f)[0] + '.png') ,'height': self.load_particle_popup.content.label_height, 'parent': self}
             button = Builder.template('LoadFilenameButton', **ctx)
             layout.add_widget(button)
 
@@ -213,12 +217,31 @@ class ParticleLoadSaveLayout(Widget):
         with open(os.path.join('user_effects', fname), 'w') as outf:
             new_particle.writexml(outf, indent = "  ", newl = "\n")
 
+        Clock.schedule_once(partial(self.save_thumbnail, os.path.join('user_effects',os.path.splitext(fname)[0]+'.png')), .5)
         self.save_particle_popup.dismiss()
         self.save_particle_popup_content = SaveParticlePopupContents(self)
+
+    def save_thumbnail(self, thumbnail_filename, *largs):
+        print 'saving thumbnail to', thumbnail_filename
+        canvas_pos = [int(x) for x in self.pbuilder.particle_window.pos]
+        canvas_size = [int(x) for x in self.pbuilder.particle_window.size]
+        particle_y = int(self.pbuilder.demo_particle.emitter_y)
+        screenshot_y = particle_y - canvas_size[0]/2
+        if screenshot_y < canvas_pos[1]:
+            screenshot_y = canvas_pos[1]
+        elif screenshot_y > canvas_pos[1] + 0.9*canvas_size[1] - canvas_size[0]:
+            screenshot_y = canvas_pos[1] + 0.9*canvas_size[1] - canvas_size[0]
+
+        data = glReadPixels(canvas_pos[0], screenshot_y, canvas_size[0], canvas_size[0], GL_RGBA, GL_UNSIGNED_BYTE)
+        data = str(buffer(data))
+
+        image = pygame.image.fromstring(data, (canvas_size[0], canvas_size[0]), 'RGBA', True)
+        pygame.image.save(image, thumbnail_filename)
 
     def xml_from_attribute(self,parent, attribute, fields, values):
 
         xml_element = parent.createElement(attribute)
+
         try:
             if isinstance(fields, basestring): raise TypeError
             for idx in range(len(fields)):

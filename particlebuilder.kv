@@ -145,14 +145,21 @@ ParticleBuilder:
             Widget:
                 size_hint_x: .15
 
-[LoadFilenameButton@Label]
+[LoadFilenameButton@BoxLayout]
+    orientation: 'horizontal'
     size_hint_x: 1.
     size_hint_y: None
     height: ctx.height
-    text: ctx.text
-    font_size: self.height * .46
-    text_size: self.size
-    on_touch_down: self.collide_point(*args[1].pos) and ctx.parent.open_filename(self.text)
+    Image:
+        source: ctx.icon
+        size_hint_x: None
+        size_hint_y: 1.
+        width: self.height
+    Label:
+        text: ctx.text
+        font_size: self.height * .46
+        text_size: self.size
+        on_touch_down: self.collide_point(*args[1].pos) and ctx.parent.open_filename(self.text)
 
 [SaveFilenameButton@Label]
     size_hint_x: 1.
