@@ -260,7 +260,6 @@ class ParticleSystem(Widget):
             particle.emit_radius -= particle.emit_radius_delta * passed_time
             particle.x = self.emitter_x - math.cos(particle.emit_rotation) * particle.emit_radius
             particle.y = self.emitter_y - math.sin(particle.emit_rotation) * particle.emit_radius
-            print particle.current_time
 
             if particle.emit_radius < self.min_radius:
                 particle.current_time = particle.total_time
@@ -310,7 +309,10 @@ class ParticleSystem(Widget):
         new_capacity = max(0, self.capacity - by_amount)
         
         for i in range(int(old_capacity - new_capacity)):
-            self.canvas.remove(self.particles_dict[self.particles.pop()]['rect'])
+            try:
+                self.canvas.remove(self.particles_dict[self.particles.pop()]['rect'])
+            except: 
+                pass
 
         self.num_particles = int(new_capacity)
         self.capacity = new_capacity
