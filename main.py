@@ -19,6 +19,7 @@ from kivy.properties import NumericProperty, BooleanProperty, ListProperty, Stri
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
 from kivy.lang import Builder
 from kivy.uix.scrollview import ScrollView
+from kivy.uix.rst import RstDocument
 import os
 import math
 from random import randint
@@ -724,7 +725,7 @@ class VariableDescriptions(Widget):
         particle_info.font_size = self.size[0]*.28
         behavior_info.font_size = self.size[0]*.28
         color_info.font_size = self.size[0]*.28
-        particle_info.content = Label(text=self.get_content("param_descriptions/ParticleTab.txt"), font_size = 12, text_size = self.size)
+        particle_info.content = RstDocument(source="param_descriptions/ParticleTab.rst")
         # behavior_info.content = 'nothing'
         # color_info.content = 'nothing'
         self.description_tab.default_tab = particle_info
@@ -736,13 +737,6 @@ class VariableDescriptions(Widget):
         self.description_popup = Popup(title="Variable Descriptions", content = self.description_tab, size_hint = (.8,.8))
         self.description_popup.open()
 
-    def get_content(self, filename):
-        outstring = ""
-
-        with open(filename, 'r') as infile:
-            for line in infile:
-                outstring += (line.strip() + '\n')
-        return outstring
 
 Factory.register('ParticleBuilder', ParticleBuilder)
 Factory.register('ParticleLoadSaveLayout', ParticleLoadSaveLayout)
