@@ -34,7 +34,7 @@ BLEND_FUNC = {0: GL_ZERO,
 
 class Particle(object):
     x, y, rotation, current_time = -256, -256, 0, 0
-    scale, total_time = 1.0, 0.
+    scale, total_time = 1.0, 1.0
     color = [1.0, 1.0, 1.0, 1.0]
     color_delta = [0.0, 0.0, 0.0, 0.0]
     start_x, start_y, velocity_x, velocity_y = 0, 0, 0, 0
@@ -260,6 +260,7 @@ class ParticleSystem(Widget):
             particle.emit_radius -= particle.emit_radius_delta * passed_time
             particle.x = self.emitter_x - math.cos(particle.emit_rotation) * particle.emit_radius
             particle.y = self.emitter_y - math.sin(particle.emit_rotation) * particle.emit_radius
+            print particle.current_time
 
             if particle.emit_radius < self.min_radius:
                 particle.current_time = particle.total_time
@@ -309,10 +310,7 @@ class ParticleSystem(Widget):
         new_capacity = max(0, self.capacity - by_amount)
         
         for i in range(int(old_capacity - new_capacity)):
-            try:
-                self.canvas.remove(self.particles_dict[self.particles.pop()]['rect'])
-            except: 
-                pass
+            self.canvas.remove(self.particles_dict[self.particles.pop()]['rect'])
 
         self.num_particles = int(new_capacity)
         self.capacity = new_capacity
