@@ -34,7 +34,7 @@ BLEND_FUNC = {0: GL_ZERO,
 
 class Particle(object):
     x, y, rotation, current_time = -256, -256, 0, 0
-    scale, total_time = 1.0, 1.0
+    scale, total_time = 1.0, 0.
     color = [1.0, 1.0, 1.0, 1.0]
     color_delta = [0.0, 0.0, 0.0, 0.0]
     start_x, start_y, velocity_x, velocity_y = 0, 0, 0, 0
