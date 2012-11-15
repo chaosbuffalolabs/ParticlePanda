@@ -353,12 +353,12 @@ class ImageChooserCell(Widget):
 
 class ImageChooserPopupContent(GridLayout):
     def __init__(self, image_chooser = None, **kwargs):
-        super(ImageChooserPopupContent,self).__init__(rows = 8, cols = 8, col_force_default = True, row_force_default = True, row_default_height = 64, col_default_width = 64, **kwargs)
+        super(ImageChooserPopupContent,self).__init__(rows = 6, cols = 6, col_force_default = True, row_force_default = True, row_default_height = 80, col_default_width = 80, **kwargs)
         self.image_chooser = image_chooser
         png_files = self.get_all_images('./media/particles', '.png')
         # atlasses = self.get_all_images('.', '.atlas')
         for i in png_files:
-            self.add_widget(ImageChooserCell(image_location=i, image_chooser = self.image_chooser))
+            self.add_widget(ImageChooserCell(image_location=i, image_chooser = self.image_chooser, size=(self.col_default_width, self.row_default_height)))
         
 
     def get_all_images(self,dir_name,extension):
