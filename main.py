@@ -120,14 +120,14 @@ class ParticleLoadSaveLayout(Widget):
             if isinstance(w, Label):
                 layout.remove_widget(w)
 
-    def _load_show_filenames(self, fnames, directory):
+    def _load_show_filenames(self, fnames):
         layout = self.load_particle_popup.content.blayout
 
         self._reset_layout(layout)
         self.load_particle_popup.content.blayout_height = self.load_particle_popup.content.menu_height + 2*layout.padding + len(fnames)*(layout.spacing + self.load_particle_popup.content.label_height)
 
         for f in fnames:
-            ctx = {'text': f, 'icon': os.path.join(directory, os.path.splitext(f)[0] + '.png') ,'height': self.load_particle_popup.content.label_height, 'parent': self}
+            ctx = {'text': f, 'icon': os.path.join(self.load_dir, os.path.splitext(f)[0] + '.png') ,'height': self.load_particle_popup.content.label_height, 'parent': self}
             button = Builder.template('LoadFilenameButton', **ctx)
             layout.add_widget(button)
 
@@ -278,7 +278,6 @@ class ParticleLoadSaveLayout(Widget):
             # if not, then the tabs are already there, but we do need to stop and remove the particle
             pbuilder.demo_particle.stop()
             pw.remove_widget(pbuilder.demo_particle)
-
 
         new_particle = ParticleSystem(name)
         new_particle.emitter_x = pw.center_x   
