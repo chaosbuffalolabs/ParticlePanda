@@ -257,11 +257,13 @@ class ColorPicker(Widget):
         self.selected_color[{'R': 0, 'G': 1, 'B': 2, 'A': 3}[colr]] = val / 255.
 
         # if it's the alpha value that's been edited, we could change this in the colorwheel, but we're not for now
-        # if colr == 'A':
-        #     self.wheel.change_alpha(val / 255.)
+        if colr == 'A':
+            self.alphaslider.value = val
+
+    def get_alpha(self):
+        self.alphaslider.value = self.selected_color[3] * 255
 
     def alpha_slide(self,value):
-        print value
         self.selected_color[3] = value / 255
 
 class NumPad(Widget):

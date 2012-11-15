@@ -2,6 +2,7 @@
 
 <ColorPicker>:
     wheel: wheel
+    alphaslider: alphaslider
     canvas:
         Color:
             rgba: root.bg_color
@@ -112,11 +113,11 @@
         BoxLayout:
             orientation: 'horizontal'
             size_hint: (1,1)         
-            spacing: 5
-            padding: 5
+            spacing: 1
+            padding: 1
             BoxLayout:
                 orientation: 'vertical'
-                size_hint: (.1,1)
+                size_hint: (.22,1)
                 spacing: 5
                 padding: 5
                 Label:
@@ -125,6 +126,7 @@
                     valign: 'middle'
                     text: 'A'
                 Slider:
+                    id: alphaslider
                     size_hint: (1,.6)
                     orientation: 'vertical'
                     min: 0
