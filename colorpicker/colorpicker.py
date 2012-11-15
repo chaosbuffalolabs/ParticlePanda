@@ -259,6 +259,10 @@ class ColorPicker(Widget):
         if colr == 'A':
             self.wheel.change_alpha(val / 255.)
 
+    def alpha_slide(self,value):
+        print value
+        self.selected_color[3] = value / 255
+
 class NumPad(Widget):
     display_text = StringProperty("0")
     display_value = NumericProperty(0)

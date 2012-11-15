@@ -114,9 +114,24 @@
             size_hint: (1,1)         
             spacing: 5
             padding: 5
-            Slider:
-                size_hint: (.01,.6)
+            BoxLayout:
                 orientation: 'vertical'
+                size_hint: (.1,1)
+                spacing: 5
+                padding: 5
+                Label:
+                    size_hint: (1,.2)
+                    halign: 'center'
+                    valign: 'middle'
+                    text: 'A'
+                Slider:
+                    size_hint: (1,.6)
+                    orientation: 'vertical'
+                    min: 0
+                    max: 255
+                    on_value: root.alpha_slide(self.value)
+                Widget:
+                    size_hint: (1,.1)
 
             ColorWheel:
                 id: wheel
