@@ -33,7 +33,7 @@ BLEND_FUNC = {0: GL_ZERO,
 
 
 class Particle(object):
-    x, y, rotation, current_time = 0, 0, 0, 0
+    x, y, rotation, current_time = -256, -256, 0, 0
     scale, total_time = 1.0, 1.0
     color = [1.0, 1.0, 1.0, 1.0]
     color_delta = [0.0, 0.0, 0.0, 0.0]
@@ -260,6 +260,7 @@ class ParticleSystem(Widget):
             particle.emit_radius -= particle.emit_radius_delta * passed_time
             particle.x = self.emitter_x - math.cos(particle.emit_rotation) * particle.emit_radius
             particle.y = self.emitter_y - math.sin(particle.emit_rotation) * particle.emit_radius
+            print particle.current_time
 
             if particle.emit_radius < self.min_radius:
                 particle.current_time = particle.total_time
