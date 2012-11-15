@@ -343,6 +343,7 @@ ParticleBuilder:
         Image:
             size_hint: (.3, 1.)
             source: root.image_location
+            on_touch_down: self.collide_point(*args[1].pos) and root.button_callback()
 
 <ImageChooserCell>:
     Image:
@@ -354,9 +355,10 @@ ParticleBuilder:
 <LoadParticlePopupContents>:
     blayout: blayout
 
-    ScrollView:
+    ScrollViewWithBars:
         pos: root.pos
         size: root.size
+        do_scroll_x: False
         BoxLayout:
             id: blayout
             size_hint_x: 1.
@@ -387,7 +389,7 @@ ParticleBuilder:
 <SaveParticlePopupContents>:
     blayout: blayout
 
-    ScrollView:
+    ScrollViewWithBars:
         pos: root.pos
         size: root.size
         BoxLayout:

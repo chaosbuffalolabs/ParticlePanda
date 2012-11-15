@@ -719,6 +719,9 @@ class ColorPanel(Widget):
         self.end_color_variation_sliders.color_b_slider.value = self.particle_builder.demo_particle.end_color_variance[2]
         self.end_color_variation_sliders.color_a_slider.value = self.particle_builder.demo_particle.end_color_variance[3]
 
+class ScrollViewWithBars(ScrollView):
+    def _start_decrease_alpha(self, *l):
+        pass
 
 class DebugPanel(Widget):
     fps = StringProperty(None)
@@ -767,6 +770,8 @@ Factory.register('ColorWheel', ColorWheel)
 Factory.register('DebugPanel', DebugPanel)
 Factory.register('WorkingFile', WorkingFile)
 Factory.register('VariableDescriptions', VariableDescriptions)
+Factory.register('ScrollViewWithBars', ScrollViewWithBars)
+
 Builder.load_file('colorpicker/colorpicker.kv')
 
 class ParticleBuilderApp(App):
