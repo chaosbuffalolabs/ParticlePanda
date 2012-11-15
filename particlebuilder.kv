@@ -54,8 +54,28 @@ ParticleBuilder:
         size: root.size
         pos: root.pos
         orientation: 'horizontal'
-        spacing: 15
-        padding: 15
+        spacing: 4
+        padding: 10
+        Button:
+            id: saveasbutton
+            size_hint: (.3,1) 
+            on_state: root.show_save_popup() if (self.state == 'down') else None
+            BoxLayout:
+                pos: saveasbutton.pos
+                size: saveasbutton.size
+                orientation: 'horizontal'
+                padding: 5
+                spacing: 5
+                Image:
+                    source: "media/icons/5_content_save.png"
+                    size_hint: (.4, 1.)
+                Label:
+                    text: 'Save As'
+                    size_hint: (.6, 1.)
+                    font_size: root.size[0]*.03
+                    text_size: self.size
+                    halign: 'left'
+                    valign: 'middle' 
         Button:
             id: savebutton
             size_hint: (.3,1) 
@@ -64,13 +84,15 @@ ParticleBuilder:
                 pos: savebutton.pos
                 size: savebutton.size
                 orientation: 'horizontal'
+                padding: 5
+                spacing: 5
                 Image:
                     source: "media/icons/5_content_save.png"
                     size_hint: (.4, 1.)
                 Label:
                     text: 'Save'
                     size_hint: (.6, 1.)
-                    font_size: root.size[0]*.04
+                    font_size: root.size[0]*.03
                     text_size: self.size
                     halign: 'left'
                     valign: 'middle' 
@@ -85,13 +107,15 @@ ParticleBuilder:
                 pos: loadbutton.pos
                 size: loadbutton.size
                 orientation: 'horizontal'
+                padding: 5
+                spacing: 5
                 Image:
                     source: "media/icons/4_collections_collection.png"
                     size_hint: (.4, 1.)
                 Label:
                     text: 'Load'
                     size_hint: (.6, 1.)
-                    font_size: root.size[0]*.04
+                    font_size: root.size[0]*.03
                     text_size: self.size
                     halign: 'left'
                     valign: 'middle'
@@ -123,8 +147,10 @@ ParticleBuilder:
         pos: root.pos
         size: root.size
         Image:
+            center: root.center
             source: "media/icons/2_action_help.png"
-            size_hint: (1., 1.)
+            size_hint: (.9, .9)
+            color: (.19921875, .70703125, .89453125, 1.)
             on_touch_down: self.collide_point(*args[1].pos) and root.tab_info()
 
 
