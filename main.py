@@ -22,6 +22,7 @@ from kivy.core.window import Window
 from kivy.uix.rst import RstDocument
 from kivy.core.window import Window
 from kivy.core.gl import glReadPixels, GL_RGBA, GL_UNSIGNED_BYTE
+from kivy.uix.scrollview import ScrollView
 import os
 import math
 import pygame
