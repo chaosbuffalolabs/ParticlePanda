@@ -780,8 +780,8 @@ class VariableDescriptions(Widget):
         behavior_info.font_size = self.size[0]*.28
         color_info.font_size = self.size[0]*.28
         particle_info.content = RstDocument(source="param_descriptions/ParticleTab.rst")
-        # behavior_info.content = 'nothing'
-        # color_info.content = 'nothing'
+        behavior_info.content = RstDocument(source="param_descriptions/BehaviorTab.rst")
+        color_info.content = RstDocument(source="param_descriptions/ColorTab.rst")
         self.description_tab.default_tab = particle_info
         self.description_tab.tab_width = self.size[0]*4.36
         self.description_tab.tab_height = self.size[1]*.7
