@@ -18,7 +18,7 @@ from colorpicker.colorpicker import ColorPicker, ColorWheel
 from kivy.properties import NumericProperty, BooleanProperty, ListProperty, StringProperty, ObjectProperty
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
 from kivy.lang import Builder
-from kivy.uix.scrollview import ScrollView
+from kivy.core.window import Window
 from kivy.uix.rst import RstDocument
 from kivy.core.window import Window
 from kivy.core.gl import glReadPixels, GL_RGBA, GL_UNSIGNED_BYTE
@@ -311,6 +311,7 @@ class ParticleLoadSaveLayout(Widget):
 class GetNewFilenameLayout(Widget):
     fname_input = ObjectProperty(None)
 
+
     def __init__(self, load_save_widget, **kwargs):
         self.load_save_widget = load_save_widget
         super(GetNewFilenameLayout,self).__init__(**kwargs)
@@ -320,11 +321,13 @@ class GetNewFilenameLayout(Widget):
         if not text.endswith('.pex'): text += '.pex'
         self.load_save_widget.save_filename(text)
         self.load_save_widget.new_file_popup.dismiss()
+        Window.release_all_keyboards()
         
 
     def cancel(self):
         self.fname_input.text = 'effect.pex'
         self.load_save_widget.new_file_popup.dismiss()
+        Window.release_all_keyboards()
         
 
 class LoadParticlePopupContents(Widget):
