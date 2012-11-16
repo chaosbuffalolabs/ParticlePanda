@@ -79,7 +79,7 @@ ParticleBuilder:
         Button:
             id: savebutton
             size_hint: (.3,1) 
-            on_state: root.show_save_popup() if (self.state == 'down') else None
+            on_state: root.save_pressed() if (self.state == 'down') else None
             BoxLayout:
                 pos: savebutton.pos
                 size: savebutton.size
