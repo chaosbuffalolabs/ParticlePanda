@@ -158,7 +158,7 @@ class ParticleLoadSaveLayout(Widget):
         self.load_particle_popup.open()
 
     def show_save_popup(self):
-        self._save_show_filenames([fn for fn in os.listdir('user_effects') if fn.endswith('.pex')] + ['[ New file... ]'])
+        self._save_show_filenames(['[ New file... ]'] + [fn for fn in os.listdir('user_effects') if fn.endswith('.pex')])
         self.save_particle_popup.open()
 
     def save_pressed(self):
