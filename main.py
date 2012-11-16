@@ -153,6 +153,10 @@ class ParticleLoadSaveLayout(Widget):
         self._save_show_filenames([fn for fn in os.listdir('user_effects') if fn.endswith('.pex')] + ['[ New file... ]'])
         self.save_particle_popup.open()
 
+    def save_pressed(self):
+        pbuilder = self.parent.parent
+        self.save_filename(pbuilder.active_filename)
+
     def _save_show_filenames(self, fnames):
         layout = self.save_particle_popup.content.blayout
 
@@ -173,6 +177,7 @@ class ParticleLoadSaveLayout(Widget):
         print "writing to", fname
 
         pbuilder = self.parent.parent
+        pbuilder.active_filename = os.path.basename(fname)
         new_particle = Document()
         particle_values = new_particle.createElement("particleEmitterConfig")
         new_particle.appendChild(particle_values)
