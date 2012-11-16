@@ -138,10 +138,18 @@ class ParticleLoadSaveLayout(Widget):
         self.load_particle(name=os.path.join(self.load_dir,fname))
 
     def load_templates(self):
+
+        self.load_particle_popup.content.templatebutton.state = 'down'
+        self.load_particle_popup.content.userbutton.state = 'normal'
+
         self.load_dir = 'templates'
+
         self._load_show_filenames([fn for fn in os.listdir(self.load_dir) if fn.endswith('.pex')])
 
     def load_user_files(self):
+        self.load_particle_popup.content.templatebutton.state = 'normal'
+        self.load_particle_popup.content.userbutton.state = 'down'
+
         self.load_dir = 'user_effects'
         self._load_show_filenames([fn for fn in os.listdir(self.load_dir) if fn.endswith('.pex')])
 

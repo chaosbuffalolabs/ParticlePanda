@@ -402,7 +402,8 @@ ParticleBuilder:
 
 <LoadParticlePopupContents>:
     blayout: blayout
-
+    userbutton: userbutton
+    templatebutton: templatebutton
     ScrollViewWithBars:
         pos: root.pos
         size: root.size
@@ -421,6 +422,7 @@ ParticleBuilder:
                 size_hint_y: None
                 height: root.menu_height
                 ToggleButton:
+                    id: templatebutton
                     text: 'templates'
                     group: 'importmode'
                     state: 'down'
@@ -428,6 +430,7 @@ ParticleBuilder:
                     size_hint: (.5, 1)
                     font_size: self.size[1]*.35
                 ToggleButton:
+                    id: userbutton
                     text: 'user files'
                     group: 'importmode'
                     on_state: root.button_callback('load user files') if self.state == 'down' else None
