@@ -319,6 +319,9 @@ class GetNewFilenameLayout(Widget):
 
     def ok(self):
         text = self.fname_input.text[:]
+        if text.strip() == "": 
+            self.cancel()
+            return
         if not text.endswith('.pex'): text += '.pex'
         self.load_save_widget.save_filename(text)
         self.load_save_widget.new_file_popup.dismiss()
@@ -326,7 +329,6 @@ class GetNewFilenameLayout(Widget):
         
 
     def cancel(self):
-        self.fname_input.text = 'effect.pex'
         self.load_save_widget.new_file_popup.dismiss()
         Window.release_all_keyboards()
         
