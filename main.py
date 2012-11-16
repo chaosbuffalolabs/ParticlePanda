@@ -129,8 +129,8 @@ class ParticleLoadSaveLayout(Widget):
         self.load_particle_popup.content.blayout_height = self.load_particle_popup.content.menu_height + 2*layout.padding + len(fnames)*(layout.spacing + self.load_particle_popup.content.label_height)
 
         for f in fnames:
-            ctx = {'text': f, 'icon': os.path.join(self.load_dir, os.path.splitext(f)[0] + '.png') ,'height': self.load_particle_popup.content.label_height, 'parent': self}
-            button = Builder.template('LoadFilenameButton', **ctx)
+            ctx = {'text': f, 'icon': os.path.join(self.load_dir, os.path.splitext(f)[0] + '.png') ,'height': self.load_particle_popup.content.label_height, 'callback': self.open_filename}
+            button = Builder.template('FilenameButton', **ctx)
             layout.add_widget(button)
 
     def open_filename(self,fname):
@@ -172,8 +172,8 @@ class ParticleLoadSaveLayout(Widget):
         self.save_particle_popup.content.blayout_height = 2*layout.padding + len(fnames)*(layout.spacing + self.save_particle_popup.content.label_height)
 
         for f in fnames:
-            ctx = {'text': f, 'height': self.save_particle_popup.content.label_height, 'parent': self}
-            button = Builder.template('SaveFilenameButton', **ctx)
+            ctx = {'text': f, 'icon': os.path.join('user_effects', os.path.splitext(f)[0] + '.png') ,'height': self.save_particle_popup.content.label_height, 'callback': self.save_filename}
+            button = Builder.template('FilenameButton', **ctx)
             layout.add_widget(button)
 
     def save_filename(self, fname):
@@ -346,7 +346,7 @@ class LoadParticlePopupContents(Widget):
 class SaveParticlePopupContents(Widget):
     blayout = ObjectProperty(None)
     blayout_height = NumericProperty(50)
-    label_height = NumericProperty(30)
+    label_height = NumericProperty(50)
 
     def __init__(self, load_save_widget, **kwargs):
         self.load_save_widget = load_save_widget
