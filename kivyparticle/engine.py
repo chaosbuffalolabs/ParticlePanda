@@ -2,7 +2,7 @@
 
 from kivy.uix.widget import Widget
 from kivy.clock import Clock
-from kivy.graphics import Rectangle, Color, Callback
+from kivy.graphics import Rectangle, Color, Callback, Rotate, PushMatrix, PopMatrix, Translate, Quad
 from kivy.graphics.opengl import glBlendFunc, GL_SRC_ALPHA, GL_ONE, GL_ZERO, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR
 from kivy.core.image import Image
 from xml.dom.minidom import parse as parse_xml
@@ -367,8 +367,17 @@ class ParticleSystem(Widget):
                 color = particle.color[:]
                 with self.canvas:
                     self.particles_dict[particle]['color'] = Color(color[0], color[1], color[2], color[3])
-                    self.particles_dict[particle]['rect'] = Rectangle(texture=self.texture, pos=(particle.x - size[0] * 0.5, particle.y - size[1] * 0.5), size=size)
+                    PushMatrix()
+                    self.particles_dict[particle]['translate'] = Translate()
+                    self.particles_dict[particle]['rotate'] = Rotate()
+                    self.particles_dict[particle]['rotate'].set(particle.rotation, 0, 0, 1)
+                    self.particles_dict[particle]['rect'] = Quad(texture=self.texture, points=(-size[0] * 0.5, -size[1] * 0.5, 
+                        size[0] * 0.5,  -size[1] * 0.5, size[0] * 0.5,  size[1] * 0.5, 
+                        -size[0] * 0.5,  size[1] * 0.5))    
+                    self.particles_dict[particle]['translate'].xy = (particle.x, particle.y)
+                    PopMatrix()
+                    
             else:
+                self.particles_dict[particle]['rotate'].angle = particle.rotation
+                self.particles_dict[particle]['translate'].xy = (particle.x, particle.y)
                 self.particles_dict[particle]['color'].rgba = particle.color
-                self.particles_dict[particle]['rect'].pos = (particle.x - size[0] * 0.5, particle.y - size[1] * 0.5)
-                self.particles_dict[particle]['rect'].size = size

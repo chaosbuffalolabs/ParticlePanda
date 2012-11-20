@@ -523,16 +523,16 @@ class ParticlePanel(Widget):
         self.particle_builder.demo_particle.emit_angle_variance = value * 0.0174532925
 
     def on_start_rotation(self, instance, value):
-        self.particle_builder.demo_particle.start_rotation = value * 0.0174532925
+        self.particle_builder.demo_particle.start_rotation = value
 
     def on_start_rotation_variance(self, instance, value):
-        self.particle_builder.demo_particle.start_rotation_variance = value * 0.0174532925
+        self.particle_builder.demo_particle.start_rotation_variance = value
 
     def on_end_rotation(self, instance, value):
-        self.particle_builder.demo_particle.end_rotation = value * 0.0174532925
+        self.particle_builder.demo_particle.end_rotation = value
 
     def on_end_rotation_variance(self, instance, value):
-        self.particle_builder.demo_particle.end_rotation_variance = value * 0.0174532925
+        self.particle_builder.demo_particle.end_rotation_variance = value
 
     def on_texture_path(self,instance,value):
         self.particle_builder.demo_particle.texture_path = value
@@ -544,8 +544,7 @@ class ParticlePanel(Widget):
                     'start_rotation_variance', 'end_rotation', 'end_rotation_variance', 'texture_path']
     
         for p in properties:
-            if p in ['emit_angle', 'emit_angle_variance', 'start_rotation', 
-                    'start_rotation_variance', 'end_rotation', 'end_rotation_variance']:
+            if p in ['emit_angle', 'emit_angle_variance', ]:
                 setattr(self,p,getattr(self.particle_builder.demo_particle,p) / 0.0174532925 )
             else:
                 setattr(self,p,getattr(self.particle_builder.demo_particle,p))
