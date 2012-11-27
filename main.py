@@ -787,6 +787,12 @@ class VariableDescriptions(Widget):
         particle_info.content = RstDocument(source="param_descriptions/ParticleTab.rst")
         behavior_info.content = RstDocument(source="param_descriptions/BehaviorTab.rst")
         color_info.content = RstDocument(source="param_descriptions/ColorTab.rst")
+        particle_info.scroll_distance = 5
+        particle_info.scroll_timeout = 250
+        behavior_info.scroll_distance = 5
+        behavior_info.scroll_timeout = 250
+        color_info.scroll_distance = 5
+        color_info.scroll_timeout = 250
         self.description_tab.default_tab = particle_info
         self.description_tab.tab_width = self.size[0]*4.36
         self.description_tab.tab_height = self.size[1]*.7
