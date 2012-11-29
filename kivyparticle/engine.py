@@ -381,3 +381,6 @@ class ParticleSystem(Widget):
                 self.particles_dict[particle]['rotate'].angle = particle.rotation
                 self.particles_dict[particle]['translate'].xy = (particle.x, particle.y)
                 self.particles_dict[particle]['color'].rgba = particle.color
+                self.particles_dict[particle]['rect'].points = (-size[0] * 0.5, -size[1] * 0.5, 
+                        size[0] * 0.5,  -size[1] * 0.5, size[0] * 0.5,  size[1] * 0.5, 
+                        -size[0] * 0.5,  size[1] * 0.5) 
