@@ -240,17 +240,19 @@ class ParticleLoadSaveLayout(Widget):
         print 'saving thumbnail to', thumbnail_filename
         canvas_pos = [int(x) for x in self.pbuilder.particle_window.pos]
         canvas_size = [int(x) for x in self.pbuilder.particle_window.size]
+        # particle_x = int(self.pbuilder.demo_particle.emitter_x)
         particle_y = int(self.pbuilder.demo_particle.emitter_y)
-        screenshot_y = particle_y - canvas_size[0]/2
+        screenshot_y = particle_y - min(canvas_size)/2
+        
         if screenshot_y < canvas_pos[1]:
             screenshot_y = canvas_pos[1]
         elif screenshot_y > canvas_pos[1] + 0.9*canvas_size[1] - canvas_size[0]:
             screenshot_y = canvas_pos[1] + 0.9*canvas_size[1] - canvas_size[0]
 
-        data = glReadPixels(canvas_pos[0], screenshot_y, canvas_size[0], canvas_size[0], GL_RGBA, GL_UNSIGNED_BYTE)
+        data = glReadPixels(canvas_pos[0], screenshot_y, min(canvas_size), min(canvas_size), GL_RGBA, GL_UNSIGNED_BYTE)
         data = str(buffer(data))
 
-        image = pygame.image.fromstring(data, (canvas_size[0], canvas_size[0]), 'RGBA', True)
+        image = pygame.image.fromstring(data, (min(canvas_size), min(canvas_size)), 'RGBA', True)
         pygame.image.save(image, thumbnail_filename)
 
     def xml_from_attribute(self,parent, attribute, fields, values):
@@ -387,9 +389,6 @@ class ImageChooserPopupContent(GridLayout):
                 if fl.endswith(extension): outputList.append(os.path.join(root,fl))
         return outputList
 
-    # # not yet implemented:
-    # def get_image_urls_from_atlas(self,atlas_file):
-    #     pass
 
 class ImageChooser(Widget):
     button_text = StringProperty("Choose a texture...")
@@ -787,6 +786,12 @@ class VariableDescriptions(Widget):
         particle_info.content = RstDocument(source="param_descriptions/ParticleTab.rst")
         behavior_info.content = RstDocument(source="param_descriptions/BehaviorTab.rst")
         color_info.content = RstDocument(source="param_descriptions/ColorTab.rst")
+        particle_info.scroll_distance = 5
+        particle_info.scroll_timeout = 250
+        behavior_info.scroll_distance = 5
+        behavior_info.scroll_timeout = 250
+        color_info.scroll_distance = 5
+        color_info.scroll_timeout = 250
         self.description_tab.default_tab = particle_info
         self.description_tab.tab_width = self.size[0]*4.36
         self.description_tab.tab_height = self.size[1]*.7
