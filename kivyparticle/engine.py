@@ -83,6 +83,9 @@ class ParticleSystem(Widget):
     blend_factor_dest = NumericProperty(1)
     emitter_type = NumericProperty(0)
 
+    update_interval = NumericProperty(1./30.)
+    _is_paused = BooleanProperty(False)
+
     def __init__(self, config, **kwargs):
         super(ParticleSystem, self).__init__(**kwargs)
         self.capacity = 0
@@ -103,7 +106,7 @@ class ParticleSystem(Widget):
         with self.canvas.after:
             Callback(self._reset_blend_func)
 
-        Clock.schedule_interval(self._update, 1.0 / 60.0)
+        Clock.schedule_once(self._update, self.update_interval)
 
     def start(self, duration=sys.maxint):
         if self.emission_rate != 0:
@@ -195,9 +198,18 @@ class ParticleSystem(Widget):
         value = int(self._parse_data(name))
         return BLEND_FUNC[value]
 
+    def pause(self):
+        self._is_paused = True
+
+    def resume(self):
+        self._is_paused = False
+        Clock.schedule_once(self._update, self.update_interval)
+
     def _update(self, dt):
         self._advance_time(dt)
         self._render()
+        if not self._is_paused:
+            Clock.schedule_once(self._update, self.update_interval)
 
     def _create_particle(self):
         return Particle()

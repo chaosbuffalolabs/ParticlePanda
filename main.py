@@ -102,10 +102,10 @@ class ParticleLoadSaveLayout(Widget):
    
     def __init__(self,**kwargs):
         load_particle_popup_content = LoadParticlePopupContents(self)
-        self.load_particle_popup = Popup(title="Particle Effects", content=load_particle_popup_content, size_hint = (None,None), size=(512,512))
+        self.load_particle_popup = Popup(title="Particle Effects", content=load_particle_popup_content, size_hint = (None,None), size=(512,512), on_open=self._popup_opened, on_dismiss=self._popup_dismissed)
 
         save_particle_popup_content = SaveParticlePopupContents(self)
-        self.save_particle_popup = Popup(title="Particle Effects", content=save_particle_popup_content, size_hint = (None,None), size=(512,512))
+        self.save_particle_popup = Popup(title="Particle Effects", content=save_particle_popup_content, size_hint = (None,None), size=(512,512), on_open=self._popup_opened, on_dismiss=self._popup_dismissed)
 
         super(ParticleLoadSaveLayout,self).__init__(**kwargs)
 
@@ -115,6 +115,12 @@ class ParticleLoadSaveLayout(Widget):
     def load_default_particle(self,dt):
         self.load_particle()
         self.pbuilder = self.parent.parent
+
+    def _popup_opened(self, instance):
+        self.pbuilder.demo_particle.pause()
+
+    def _popup_dismissed(self, instance):
+        self.pbuilder.demo_particle.resume()
 
     def _reset_layout(self, layout):
         for w in layout.children[:]:
@@ -156,6 +162,7 @@ class ParticleLoadSaveLayout(Widget):
 
     def show_load_popup(self):
         self.load_templates()
+        # self.pbuilder.demo_particle.stop()
         self.load_particle_popup.open()
 
     def show_save_popup(self):
@@ -776,6 +783,7 @@ class WorkingFile(Widget):
 class VariableDescriptions(Widget):
     
     def tab_info(self):
+        self.pbuilder = self.parent.parent
         self.description_tab = TabbedPanel()
         particle_info = TabbedPanelHeader(text = 'Particle')
         behavior_info = TabbedPanelHeader(text = 'Behavior')
@@ -786,20 +794,26 @@ class VariableDescriptions(Widget):
         particle_info.content = RstDocument(source="param_descriptions/ParticleTab.rst")
         behavior_info.content = RstDocument(source="param_descriptions/BehaviorTab.rst")
         color_info.content = RstDocument(source="param_descriptions/ColorTab.rst")
-        particle_info.scroll_distance = 5
-        particle_info.scroll_timeout = 250
-        behavior_info.scroll_distance = 5
-        behavior_info.scroll_timeout = 250
-        color_info.scroll_distance = 5
-        color_info.scroll_timeout = 250
+        particle_info.scroll_distance = 2
+        particle_info.scroll_timeout = 500
+        behavior_info.scroll_distance = 2
+        behavior_info.scroll_timeout = 500
+        color_info.scroll_distance = 2
+        color_info.scroll_timeout = 500
         self.description_tab.default_tab = particle_info
         self.description_tab.tab_width = self.size[0]*4.36
         self.description_tab.tab_height = self.size[1]*.7
         self.description_tab.add_widget(particle_info)
         self.description_tab.add_widget(behavior_info)
         self.description_tab.add_widget(color_info)
-        self.description_popup = Popup(title="Variable Descriptions", content = self.description_tab, size_hint = (.8,.8))
+        self.description_popup = Popup(title="Variable Descriptions", content = self.description_tab, size_hint = (.8,.8), on_open=self._popup_opened, on_dismiss=self._popup_dismissed)
         self.description_popup.open()
+
+    def _popup_opened(self, instance):
+        self.pbuilder.demo_particle.pause()
+
+    def _popup_dismissed(self, instance):
+        self.pbuilder.demo_particle.resume()
 
 
 Factory.register('ParticleBuilder', ParticleBuilder)
