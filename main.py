@@ -248,18 +248,19 @@ class ParticleLoadSaveLayout(Widget):
         canvas_pos = [int(x) for x in self.pbuilder.particle_window.pos]
         canvas_size = [int(x) for x in self.pbuilder.particle_window.size]
         # particle_x = int(self.pbuilder.demo_particle.emitter_x)
-        particle_y = int(self.pbuilder.demo_particle.emitter_y)
-        screenshot_y = particle_y - min(canvas_size)/2
+        # particle_y = int(self.pbuilder.demo_particle.emitter_y)
+        # screenshot_y = particle_y - min(canvas_size)/2
         
-        if screenshot_y < canvas_pos[1]:
-            screenshot_y = canvas_pos[1]
-        elif screenshot_y > canvas_pos[1] + 0.9*canvas_size[1] - canvas_size[0]:
-            screenshot_y = canvas_pos[1] + 0.9*canvas_size[1] - canvas_size[0]
+        # if screenshot_y < canvas_pos[1]:
+        #     screenshot_y = canvas_pos[1]
+        # elif screenshot_y > canvas_pos[1] + 0.9*canvas_size[1] - canvas_size[0]:
+        #     screenshot_y = canvas_pos[1] + 0.9*canvas_size[1] - canvas_size[0]
 
-        data = glReadPixels(canvas_pos[0], screenshot_y, min(canvas_size), min(canvas_size), GL_RGBA, GL_UNSIGNED_BYTE)
+        # data = glReadPixels(canvas_pos[0], screenshot_y, min(canvas_size), min(canvas_size), GL_RGBA, GL_UNSIGNED_BYTE)
+        data = glReadPixels(canvas_pos[0], canvas_pos[1], canvas_size[0], int(0.9*canvas_size[1]), GL_RGBA, GL_UNSIGNED_BYTE)
         data = str(buffer(data))
 
-        image = pygame.image.fromstring(data, (min(canvas_size), min(canvas_size)), 'RGBA', True)
+        image = pygame.image.fromstring(data, (canvas_size[0], int(0.9*canvas_size[1])), 'RGBA', True)
         pygame.image.save(image, thumbnail_filename)
 
     def xml_from_attribute(self,parent, attribute, fields, values):
@@ -287,7 +288,7 @@ class ParticleLoadSaveLayout(Widget):
 
         return xml_element
 
-    def load_particle(self,name='templates/fire.pex'):
+    def load_particle(self,name='templates/thelight.pex'):
         progress_dialog = Popup(title="Loading...", content=Label(text="Please wait while the particle file is being loaded."), size_hint=(.5,.5))
         progress_dialog.open()
 
