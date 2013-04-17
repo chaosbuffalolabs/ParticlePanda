@@ -7,13 +7,12 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.togglebutton import ToggleButton
-from kivy.factory import Factory
 from kivy.uix.boxlayout import BoxLayout
 from kivy.core.image import Image
 from kivy.uix.image import Image as ImageWidget
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.floatlayout import FloatLayout
-from kivyparticle.engine import *
+import kivyparticle
 from colorpicker.colorpicker import ColorPicker, ColorWheel
 from kivy.properties import NumericProperty, BooleanProperty, ListProperty, StringProperty, ObjectProperty
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
@@ -31,28 +30,34 @@ from functools import partial
 from time import sleep
 from xml.dom.minidom import Document
 import xml.dom.minidom
+from kivy.uix.dropdown import DropDown
 
 
 class ParticleBuilder(Widget):
-    demo_particle = ObjectProperty(ParticleSystem)
+    demo_particle = ObjectProperty(kivyparticle.ParticleSystem)
     particle_window = ObjectProperty(None)
     active_filename = StringProperty(None)
+    init_count = NumericProperty(0)
 
     def __init__(self, **kwargs):
         super(ParticleBuilder, self).__init__(**kwargs)
 
+    def adjust_particle_system_position(self, center_x, center_y):
+        #on the first on_size the pos property of demo_particle is not accessible
+        if self.init_count == 0:
+            self.init_count += 1
+        else:
+            self.demo_particle.pos = center_x, center_y
 
     def on_touch_down(self, touch):
         super(ParticleBuilder, self).on_touch_down(touch)
         if self.particle_window.collide_point(touch.x, touch.y):
-            self.demo_particle.emitter_x = touch.x
-            self.demo_particle.emitter_y = touch.y
+            self.demo_particle.pos = touch.x, touch.y
 
     def on_touch_move(self, touch):
         super(ParticleBuilder, self).on_touch_move(touch)
         if self.particle_window.collide_point(touch.x, touch.y):
-            self.demo_particle.emitter_x = touch.x
-            self.demo_particle.emitter_y = touch.y
+            self.demo_particle.pos = touch.x, touch.y
 
 class ParticleParamsLayout(Widget):
 
@@ -72,8 +77,6 @@ class ParticleParamsLayout(Widget):
         th1.font_size = self.size[0] * .036
         th2.font_size = self.size[0] * .036
         th3.font_size = self.size[0] * .036
-        # self.parent.parent.create_particle_system()
-
         self.particle_tabs.default_tab = TabbedPanelHeader(text="default tab replaced"+str(randint(1,10000)))
 
         self.tabs_loaded = True
@@ -117,10 +120,10 @@ class ParticleLoadSaveLayout(Widget):
         self.pbuilder = self.parent.parent
 
     def _popup_opened(self, instance):
-        self.pbuilder.demo_particle.pause()
+        self.pbuilder.demo_particle.stop()
 
     def _popup_dismissed(self, instance):
-        self.pbuilder.demo_particle.resume()
+        self.pbuilder.demo_particle.start()
 
     def _reset_layout(self, layout):
         for w in layout.children[:]:
@@ -301,12 +304,11 @@ class ParticleLoadSaveLayout(Widget):
             pl.create_tabs()
         else:
             # if not, then the tabs are already there, but we do need to stop and remove the particle
-            pbuilder.demo_particle.stop()
+            pbuilder.demo_particle.stop(clear = True)
             pw.remove_widget(pbuilder.demo_particle)
 
-        new_particle = ParticleSystem(name)
-        new_particle.emitter_x = pw.center_x   
-        new_particle.emitter_y = pw.center_y
+        new_particle = kivyparticle.ParticleSystem(name)
+        new_particle.pos = pw.center_x, pw.center_y   
         pbuilder.demo_particle = new_particle
         pw.add_widget(pbuilder.demo_particle)
         pbuilder.demo_particle.start()
@@ -422,14 +424,15 @@ class Particle_Property_Slider(Widget):
     slider_step = NumericProperty(1.0)
     box_margin = NumericProperty(5)
     prop_slider = ObjectProperty(None)
+    increment_slider_by = NumericProperty(1.0)
 
     def increment_slider(self):
-        if self.prop_slider.value + 1 <= self.slider_bounds_max:
-            self.prop_slider.value += 1
+        if self.prop_slider.value + self.increment_slider_by <= self.slider_bounds_max:
+            self.prop_slider.value += self.increment_slider_by
 
     def decrement_slider(self):
-        if self.prop_slider.value - 1 >= self.slider_bounds_min:
-            self.prop_slider.value -= 1
+        if self.prop_slider.value - self.increment_slider_by >= self.slider_bounds_min:
+            self.prop_slider.value -= self.increment_slider_by
 
 
 class Particle_Color_Sliders(Widget):
@@ -716,12 +719,20 @@ class ColorPanel(Widget):
     end_color_a_variance = NumericProperty(.1)
     end_color_a_variance_min = NumericProperty(0)
     end_color_a_variance_max = NumericProperty(1.)
+    current_blend_src = NumericProperty(0, allownone = True)
+    current_blend_dest = NumericProperty(0, allownone = True)
 
     def __init__(self, pbuilder, **kwargs):
         super(ColorPanel, self).__init__(**kwargs)
         self.particle_builder = pbuilder.parent
 
+    def on_current_blend_src(self, instance, value):
+        if not value == None: 
+            self.particle_builder.demo_particle.blend_factor_source = value
 
+    def on_current_blend_dest(self, instance, value):
+        if not value == None:
+            self.particle_builder.demo_particle.blend_factor_dest = value
 
     def on_start_color(self, instance, value):
         self.particle_builder.demo_particle.start_color = value
@@ -766,6 +777,8 @@ class ColorPanel(Widget):
         self.end_color_variation_sliders.color_g_slider.value = self.particle_builder.demo_particle.end_color_variance[1]
         self.end_color_variation_sliders.color_b_slider.value = self.particle_builder.demo_particle.end_color_variance[2]
         self.end_color_variation_sliders.color_a_slider.value = self.particle_builder.demo_particle.end_color_variance[3]
+        self.blend_func_chooser.current_src = self.particle_builder.demo_particle.blend_factor_source
+        self.blend_func_chooser.current_dest = self.particle_builder.demo_particle.blend_factor_dest
 
 class ScrollViewWithBars(ScrollView):
     def _start_decrease_alpha(self, *l):
@@ -773,10 +786,13 @@ class ScrollViewWithBars(ScrollView):
 
 class DebugPanel(Widget):
     fps = StringProperty(None)
+    def __init__(self, **kwargs):
+        super(DebugPanel, self).__init__(**kwargs)
+        Clock.schedule_once(self.update_fps, .03)
 
     def update_fps(self,dt):
         self.fps = str(int(Clock.get_fps()))
-        Clock.schedule_once(self.update_fps)
+        Clock.schedule_once(self.update_fps, .03)
 
 class WorkingFile(Widget):
     filename = StringProperty(None)
@@ -816,22 +832,100 @@ class VariableDescriptions(Widget):
     def _popup_dismissed(self, instance):
         self.pbuilder.demo_particle.resume()
 
+class BlendFuncChoices(Popup):
 
-Factory.register('ParticleBuilder', ParticleBuilder)
-Factory.register('ParticleLoadSaveLayout', ParticleLoadSaveLayout)
-Factory.register('ParticleParamsLayout', ParticleParamsLayout)
-Factory.register('ParticlePanel', ParticlePanel)
-Factory.register('BehaviorPanel', BehaviorPanel)
-Factory.register('ColorPanel', ColorPanel)
-Factory.register('Particle_Property_Slider', Particle_Property_Slider)
-Factory.register('Particle_Color_Sliders', Particle_Color_Sliders)
-Factory.register('ImageChooser', ImageChooser)
-Factory.register('ColorPicker', ColorPicker)
-Factory.register('ColorWheel', ColorWheel)
-Factory.register('DebugPanel', DebugPanel)
-Factory.register('WorkingFile', WorkingFile)
-Factory.register('VariableDescriptions', VariableDescriptions)
-Factory.register('ScrollViewWithBars', ScrollViewWithBars)
+    def __init__(self, func_chooser, **kwargs):
+        super(BlendFuncChoices, self).__init__(**kwargs)
+        self.func_chooser = func_chooser
+        self.populate_list()
+        
+
+    def populate_list(self):
+        self.src_choices_box.clear_widgets()
+        self.dest_choices_box.clear_widgets()
+        label = Label(text = 'Source')
+        self.src_choices_box.add_widget(label)
+        label = Label(text = 'Dest')
+        self.dest_choices_box.add_widget(label)
+        for each in kivyparticle.BLEND_FUNC:
+            
+            button = ToggleButton(text = str(self.func_chooser.translate_blend_func_value(each)), font_size = self.size[0]*.12, id = str(each), group = 'func_choices')
+            self.src_choices_box.add_widget(button)
+            button.bind(on_press=self.press_src_button)
+            if self.func_chooser.current_src == each:
+                button.state = 'down'
+            button = ToggleButton(text = str(self.func_chooser.translate_blend_func_value(each)), font_size = self.size[0]*.12, id = str(each), group = 'func_choices2')
+            button.bind(on_press=self.press_dest_button)
+            self.dest_choices_box.add_widget(button)
+            if self.func_chooser.current_dest == each:
+                button.state = 'down'
+        
+
+    def press_src_button(self, instance):
+        self.func_chooser.set_source_text(instance.text, instance.id, instance.state)
+
+    def press_dest_button(self, instance):
+        self.func_chooser.set_dest_text(instance.text, instance.id, instance.state)
+            
+    
+
+    def on_open(self):
+        #self.populate_list()
+        pass
+
+class BlendFuncChooser(BoxLayout):
+    func_choices = ObjectProperty(None)
+    current_src = NumericProperty(None)
+    current_dest = NumericProperty(None)
+
+    def __init__(self, **kwargs):
+        super(BlendFuncChooser, self).__init__(**kwargs)
+        Clock.schedule_once(self.setup_chooser)
+
+    def setup_chooser(self, dt):
+        self.func_choices = BlendFuncChoices(self)
+
+    def open_popup(self):
+        self.func_choices.open()
+
+    def on_current_src(self, instance, value):
+        source_text = str(self.translate_blend_func_value(self.current_src))
+        dest_text = str(self.translate_blend_func_value(self.current_dest))
+        self.blend_button.text = source_text + ' -> ' + dest_text
+
+    def on_current_dest(self, instance, value):
+        source_text = str(self.translate_blend_func_value(self.current_src))
+        dest_text = str(self.translate_blend_func_value(self.current_dest))
+        self.blend_button.text = source_text + ' -> ' + dest_text
+
+    def set_source_text(self, text, button_id, state):
+        if state == 'down':
+            self.current_src = int(button_id)
+            
+
+    def set_dest_text(self, text, button_id, state):
+        print 'setting dest', state
+        if state == 'down':
+            self.current_dest = int(button_id)
+
+    def translate_blend_func_value(self, func_value):
+        blend_func_names = {0: 'GL_ZERO',
+            1: 'GL_ONE',
+            0x300: 'GL_SRC_COLOR',
+            0x301: 'GL_ONE_MINUS_SRC_COLOR',
+            0x302: 'GL_SRC_ALPHA',
+            0x303: 'GL_ONE_MINUS_SRC_ALPHA',
+            0x304: 'GL_DST_ALPHA',
+            0x305: 'GL_ONE_MINUS_DST_ALPHA',
+            0x306: 'GL_DST_COLOR',
+            0x307: 'GL_ONE_MINUS_DST_COLOR'
+        }
+
+        if func_value in blend_func_names:
+            return blend_func_names[func_value]
+        else:
+            return func_value
+            
 
 Builder.load_file('colorpicker/colorpicker.kv')
 

@@ -32,8 +32,7 @@ ParticleBuilder:
             pos: root.pos[0] + root.width*.02, root.pos[1] + root.height*.032 + root.height/8
             size: (root.size[0]/2 - root.size[0]*.04, root.size[1] - root.size[1]*.064 - root.height/8)
             on_size: 
-                root.demo_particle.emitter_x = self.pos[0] + self.width *.5
-                root.demo_particle.emitter_y = self.pos[1] + self.height *.5
+                root.adjust_particle_system_position(self.pos[0] + self.width *.5, self.pos[1] + self.height *.5)
             canvas:
                 Color:
                     rgb: (0., 0., 0.)
@@ -129,7 +128,7 @@ ParticleBuilder:
         valign: 'middle'
         color: (1,1,1,1)
         text: 'FPS: ' + root.fps if root.fps != None else 'FPS:'
-        on_touch_down: root.update_fps(None)
+        
 
 <WorkingFile>:
     Label:
@@ -205,6 +204,7 @@ ParticleBuilder:
         size_hint_x: None
         size_hint_y: 1.
         width: self.height
+        on_touch_down: self.collide_point(*args[1].pos) and ctx.callback(ctx.text)
     Widget:
         # spacer
         size_hint_x: None
@@ -487,11 +487,13 @@ ParticleBuilder:
             slider_bounds_max: root.life_span_max
             slider_bounds_init_value: root.life_span
             slider_step: .025
+            increment_slider_by: .1
             on_value: root.life_span = self.value
         Particle_Property_Slider:
             id: life_span_variance_slider
             size_hint: (1., .2)
             slider_text: 'Life Span\n Variance'
+            increment_slider_by: .1
             slider_bounds_min: root.life_span_variance_min
             slider_bounds_max: root.life_span_variance_max
             slider_bounds_init_value: root.life_span_variance
@@ -753,6 +755,10 @@ ParticleBuilder:
     end_color_picker: end_color_picker
     start_color_variation_sliders: start_color_variation_sliders
     end_color_variation_sliders: end_color_variation_sliders
+    blend_func_chooser: blend_func_chooser
+    current_blend_src: blend_func_chooser.current_src
+    current_blend_dest: blend_func_chooser.current_dest
+
 
     BoxLayout:
         pos: root.pos
@@ -767,7 +773,7 @@ ParticleBuilder:
             markup: True
         BoxLayout:
             orientation: 'horizontal'
-            size_hint: (1., 0.5)
+            size_hint: (1., 0.4)
             ColorPicker:
                 id: start_color_picker
                 size_hint: (0.6, 1.)
@@ -803,5 +809,45 @@ ParticleBuilder:
                 on_color_g: root.end_color_g_variance = self.color_g
                 on_color_b: root.end_color_b_variance = self.color_b
                 on_color_a: root.end_color_a_Variance = self.color_a
+        BlendFuncChooser:
+            id: blend_func_chooser
+            size_hint: (1., .1)
+
+
+
+<BlendFuncChooser>:
+    blend_button: blend_button
+    orientation: 'vertical' 
+    Label:
+        text: 'Blend Function'
+        size_hint: (.9, .4)
+        font_size: root.size[0]*.03
+        halign: 'left'
+    Button:
+        id: blend_button
+        text: 'Source -> Dest'
+        font_size: root.size[0]*.03
+        size_hint: (.9, .6)
+        on_press: root.open_popup()
+
+
+<BlendFuncChoices>:
+    choices_box: choices_box
+    src_choices_box: src_choices_box
+    dest_choices_box: dest_choices_box
+    background_color: (0, 0, 0, 0)
+    pos_hint: {'x': .5, 'y': .2}
+    size_hint: (.5, .6)
+    BoxLayout:
+        id: choices_box
+        orientation: 'horizontal'
+        BoxLayout:
+            id: src_choices_box
+            orientation: 'vertical'
+        BoxLayout
+            id: dest_choices_box
+            orientation: 'vertical'
+
+
 
     

@@ -32,6 +32,6 @@
   <startColorVariance alpha="0" blue="0" green="0" red="0.143067304156"/>
   <finishColor alpha="0.21568627451" blue="0.300000011921" green="0" red="0.262500017881"/>
   <finishColorVariance alpha="0" blue="0" green="0" red="0"/>
-  <blendFuncSource value="772"/>
-  <blendFuncDestination value="771"/>
+  <blendFuncSource value="770"/>
+  <blendFuncDestination value="1"/>
   </particleEmitterConfig>
