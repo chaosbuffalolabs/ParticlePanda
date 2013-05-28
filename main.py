@@ -13,7 +13,7 @@ from kivy.uix.image import Image as ImageWidget
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.floatlayout import FloatLayout
 import kivyparticle
-from colorpicker.colorpicker import CBLColorPicker, CBLColorWheel
+from colorpicker.cblcolorpicker import CBLColorPicker, CBLColorWheel
 from kivy.properties import NumericProperty, BooleanProperty, ListProperty, StringProperty, ObjectProperty
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
 from kivy.lang import Builder
