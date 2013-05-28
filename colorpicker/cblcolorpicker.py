@@ -33,7 +33,7 @@ def rect_to_polar(origin, x, y):
 
     return (distance((x,y),origin), t)
 
-class ColorWheel(Widget):
+class CBLColorWheel(Widget):
     r = NumericProperty(255)
     g = NumericProperty(255)
     b = NumericProperty(255)
@@ -55,7 +55,7 @@ class ColorWheel(Widget):
     bg_color_hsv = ListProperty([1,1,0,0])
 
     def __init__(self, **kwargs):
-        super(ColorWheel,self).__init__(**kwargs)
+        super(CBLColorWheel,self).__init__(**kwargs)
 
         self.SVs = [(float(x)/self.piece_divisions,1) for x in range(self.piece_divisions)] + [(1, float(y)/self.piece_divisions) for y in reversed(range(self.piece_divisions))]
 
@@ -231,15 +231,16 @@ class ColorArc(InstructionGroup):
         self.color_instr = Color(*self.color, mode='hsv')
         self.insert(0, self.color_instr)            
 
-class ColorPicker(Widget):
+class CBLColorPicker(Widget):
     label_color = ListProperty((1,1,1,1))
     font_size = NumericProperty(12)
     bg_color = ListProperty((.3,.3,.3,1))
     selected_color = ListProperty((1,1,1,1))
     wheel = ObjectProperty(None)
 
-    # def __init__(self, **kwargs):
-    #     super(ColorPicker, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        super(CBLColorPicker, self).__init__(**kwargs)
+
 
     def rgba_callback(self,value):
         self.selected_color = [x/255. for x in value]
@@ -292,15 +293,13 @@ class NumPad(Widget):
         self.display_value = int(value)
 
 
-Factory.register('ColorWheel', ColorWheel)
-
-class ColorPickerApp(App):
+class CBLColorPickerApp(App):
     def build(self):
         cp_width = min(Window.size)*.7
         cp_pos = [(Window.size[0]-cp_width)/2,(Window.size[1]-cp_width)/2]
-        cp = ColorPicker(pos = cp_pos, size=(cp_width,cp_width), size_hint=(None,None), font_size=cp_width*.05)
+        cp = CBLColorPicker(pos = cp_pos, size=(cp_width,cp_width), size_hint=(None,None), font_size=cp_width*.05)
         return cp
         
 
 if __name__ in ('__android__', '__main__'):
-    ColorPickerApp().run()
+    CBLColorPickerApp().run()

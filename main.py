@@ -13,7 +13,7 @@ from kivy.uix.image import Image as ImageWidget
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.floatlayout import FloatLayout
 import kivyparticle
-from colorpicker.colorpicker import ColorPicker, ColorWheel
+from colorpicker.colorpicker import CBLColorPicker, CBLColorWheel
 from kivy.properties import NumericProperty, BooleanProperty, ListProperty, StringProperty, ObjectProperty
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
 from kivy.lang import Builder
@@ -927,7 +927,7 @@ class BlendFuncChooser(BoxLayout):
             return func_value
             
 
-Builder.load_file('colorpicker/colorpicker.kv')
+Builder.load_file('colorpicker/cblcolorpicker.kv')
 
 class ParticleBuilderApp(App):
     def build(self):
