@@ -136,7 +136,7 @@ class ParticleLoadSaveLayout(Widget):
         layout = self.load_particle_popup.content.blayout
 
         self._reset_layout(layout)
-        self.load_particle_popup.content.blayout_height = self.load_particle_popup.content.menu_height + 2*layout.padding + len(fnames)*(layout.spacing + self.load_particle_popup.content.label_height)
+        self.load_particle_popup.content.blayout_height = self.load_particle_popup.content.menu_height + 2*layout.padding[0] + len(fnames)*(layout.spacing + self.load_particle_popup.content.label_height)
 
         for f in fnames:
             ctx = {'text': f, 'icon': os.path.join(self.load_dir, os.path.splitext(f)[0] + '.png') ,'height': self.load_particle_popup.content.label_height, 'callback': self.open_filename}
@@ -180,7 +180,7 @@ class ParticleLoadSaveLayout(Widget):
         layout = self.save_particle_popup.content.blayout
 
         self._reset_layout(layout)
-        self.save_particle_popup.content.blayout_height = 2*layout.padding + len(fnames)*(layout.spacing + self.save_particle_popup.content.label_height)
+        self.save_particle_popup.content.blayout_height = 2*layout.padding[0] + len(fnames)*(layout.spacing + self.save_particle_popup.content.label_height)
 
         for f in fnames:
             ctx = {'text': f, 'icon': os.path.join('user_effects', os.path.splitext(f)[0] + '.png') ,'height': self.save_particle_popup.content.label_height, 'callback': self.save_filename}
