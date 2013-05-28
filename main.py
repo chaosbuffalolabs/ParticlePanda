@@ -927,7 +927,7 @@ class BlendFuncChooser(BoxLayout):
             return func_value
             
 
-Builder.load_file('colorpicker/cblcolorpicker.kv')
+Builder.load_file(os.path.dirname(__file__) + '/colorpicker/cblcolorpicker.kv')
 
 class ParticleBuilderApp(App):
     def build(self):
