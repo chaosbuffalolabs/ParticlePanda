@@ -77,8 +77,6 @@ class ParticleParamsLayout(Widget):
         th1.font_size = self.size[0] * .036
         th2.font_size = self.size[0] * .036
         th3.font_size = self.size[0] * .036
-        self.particle_tabs.default_tab = TabbedPanelHeader(text="default tab replaced"+str(randint(1,10000)))
-
         self.tabs_loaded = True
         self.particle_tabs.add_widget(th1)
         self.particle_tabs.add_widget(th2)
