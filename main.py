@@ -12,7 +12,7 @@ from kivy.core.image import Image
 from kivy.uix.image import Image as ImageWidget
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.floatlayout import FloatLayout
-import kivyparticle
+import particlesystem as kivyparticle 
 from colorpicker.cblcolorpicker import CBLColorPicker, CBLColorWheel
 from kivy.properties import NumericProperty, BooleanProperty, ListProperty, StringProperty, ObjectProperty
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelHeader
@@ -20,7 +20,7 @@ from kivy.lang import Builder
 from kivy.core.window import Window
 from kivy.uix.rst import RstDocument
 from kivy.core.window import Window
-from kivy.core.gl import glReadPixels, GL_RGBA, GL_UNSIGNED_BYTE
+from kivy.graphics.opengl import glReadPixels, GL_RGBA, GL_UNSIGNED_BYTE
 from kivy.uix.scrollview import ScrollView
 import os
 import math
